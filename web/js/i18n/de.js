@@ -10,7 +10,9 @@ export default {
   'seo.linkCodebook': 'Schlüsseltafel',
   'seo.linkPlay': 'Android-App',
   'seo.linkContact': 'Kontakt',
-  'seo.footerCopy': '© My Engineering Tools · alberich.pro',
+  'seo.linkLicense': 'AGPL-3.0',
+  'seo.linkSource': 'Quellcode',
+  'seo.footerCopy': '© My Engineering Tools · AGPL-3.0-only · alberich.pro',
 
   'brand.tagline': 'Vier-Walzen-Chiffre',
   'brand.taglineCourier': 'Kurier-Brücke — nur Geheimtext',
@@ -607,6 +609,8 @@ export default {
     'Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.',
   'about.imprint': 'Impressum',
   'about.emailLabel': 'E-Mail:',
+  'about.license':
+    'Alberich steht unter der <strong>GNU Affero General Public License 3.0 only</strong> (AGPL-3.0-only). <a href="LICENSE">Lizenztext</a>. Entsprechender Quellcode: <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">github.com/MyEngineeringTools/alberich</a>. Name und Markenzeichen sind nicht unter der AGPL lizenziert.',
   'about.thirdParty':
     'QR und Kompression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Hinweise Dritter</a>. „QR Code“ ist eine Marke von DENSO WAVE.',
 };

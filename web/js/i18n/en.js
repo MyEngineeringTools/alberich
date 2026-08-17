@@ -10,7 +10,9 @@ export default {
   'seo.linkCodebook': 'Code sheet',
   'seo.linkPlay': 'Android app',
   'seo.linkContact': 'Contact',
-  'seo.footerCopy': '© My Engineering Tools · alberich.pro',
+  'seo.linkLicense': 'AGPL-3.0',
+  'seo.linkSource': 'Source',
+  'seo.footerCopy': '© My Engineering Tools · AGPL-3.0-only · alberich.pro',
 
   'brand.tagline': 'Four-rotor cipher',
   'brand.taglineCourier': 'Courier bridge — ciphertext only',
@@ -607,6 +609,8 @@ export default {
     'The name Alberich refers to the dwarf Alberich of Germanic mythology — guardian of the Nibelung treasure and master of the forge. His cloak of invisibility hides the wearer: secrets remain open only to those who know the secret.',
   'about.imprint': 'Legal notice',
   'about.emailLabel': 'Email:',
+  'about.license':
+    'Alberich is licensed under the <strong>GNU Affero General Public License 3.0 only</strong> (AGPL-3.0-only). <a href="LICENSE">License text</a>. Corresponding source: <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">github.com/MyEngineeringTools/alberich</a>. The name and mark are not licensed under the AGPL.',
   'about.thirdParty':
     'QR and compression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Third-party notices</a>. “QR Code” is a trademark of DENSO WAVE.',
 };

@@ -68,6 +68,11 @@ fi
 # --- AGPL notice ---
 grep -Fq 'GNU AFFERO GENERAL PUBLIC LICENSE' LICENSE || bad "LICENSE"
 grep -Fq 'AGPL-3.0-only' THIRD_PARTY.md || bad "THIRD_PARTY still denies OSS"
+cmp -s LICENSE web/LICENSE || bad "web/LICENSE must match root LICENSE"
+grep -Fq 'about.license' web/index.html || bad "About missing license paragraph"
+grep -Fq 'href="LICENSE"' web/index.html || bad "web footer/About must link LICENSE"
+grep -Fq 'github.com/MyEngineeringTools/alberich' web/js/i18n/de.js || bad "DE About missing source offer"
+grep -Fq 'github.com/MyEngineeringTools/alberich' web/js/i18n/en.js || bad "EN About missing source offer"
 ok "license notices"
 
 # --- SPDX: first-party has AGPL; vendor must not claim Alberich copyright ---

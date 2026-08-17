@@ -12,6 +12,7 @@ path = [
   "docs/**",
   "web/docs/**",
   "web/CHANGELOG.md",
+  "web/package.json",
   "VERSIONS",
   "CHANGELOG.md",
   "README.md",

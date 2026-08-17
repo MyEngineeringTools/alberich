@@ -11,8 +11,9 @@ Alberich is a small solo project. Patches are welcome if they stay focused.
   0.x). Bump that file first, then `web/js/app.js`, `web/index.html`, the
   extension manifests, and (outside this tree) Android `version.properties`.
   Do not let studio copies drift. Sync studio → this tree, never the reverse.
-- Keep the web app a static site. Do not add a bundler or a package.json just
-  to look like a workspace.
+- Keep the web app a static site. Do not add a bundler or an npm dependency
+  tree. `web/package.json` exists only so Node treats `web/**/*.js` as ESM
+  (`"type": "module"`). Do not add `dependencies`.
 - Android stays out of this tree.
 - Browser companion lives in `extensions/browser/`. Chrome is the UI
   source; run `sync-from-chrome.sh` after panel changes.

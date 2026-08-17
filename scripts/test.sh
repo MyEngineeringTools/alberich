@@ -8,6 +8,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/web"
 
+# web/package.json sets "type": "module" so Node 18+ accepts import in *.js
 node js/tests/modern-crypto-selftest.js
 node js/tests/modern-v3-selftest.js
 node js/tests/codebook-selftest.js

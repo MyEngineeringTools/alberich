@@ -6,14 +6,14 @@
   "status": "NOT CURRENT MODERN V3",
   "note": "nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.",
   "script": "research/state-graph.mjs",
-  "generatedAt": "2026-08-17T16:51:17+02:00",
-  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "generatedAt": "2026-08-17T18:27:35+02:00",
+  "sourceCommit": "9de6bd4d6a90112993b331622fca934fdc3d495c",
   "invertibility": {
-    "samples": 81,
+    "samples": 27,
     "allInvertible": true
   },
   "bijection": {
-    "samples": 81,
+    "samples": 27,
     "allBijective": true,
     "typical": {
       "counts": {
@@ -31,7 +31,7 @@
     }
   },
   "period": {
-    "n": 81,
+    "n": 27,
     "min": 456976,
     "p5": 456976,
     "p25": 456976,
@@ -40,7 +40,7 @@
     "p95": 456976,
     "max": 456976
   },
-  "fullPeriodCount": 81,
+  "fullPeriodCount": 27,
   "fullPeriodFraction": 1,
   "cycles": 1,
   "cycleLength": 456976,

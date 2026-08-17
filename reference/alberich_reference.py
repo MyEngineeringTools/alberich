@@ -280,14 +280,11 @@ class Machine:
             right_at = self.right.at_notch()
             middle_at = self.middle.at_notch()
             left_at = self.left.at_notch()
-            step_middle = right_at
-            step_left = step_middle and middle_at
-            step_thin = step_left and left_at
-            if step_thin:
+            if left_at:
                 self.thin.pos = (self.thin.pos + 1) % 26
-            if step_left:
+            if left_at or middle_at:
                 self.left.pos = (self.left.pos + 1) % 26
-            if step_middle:
+            if middle_at or right_at:
                 self.middle.pos = (self.middle.pos + 1) % 26
             self.right.pos = (self.right.pos + 1) % 26
             return

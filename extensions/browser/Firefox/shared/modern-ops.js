@@ -14,6 +14,7 @@ import {
   modernV3DecryptPayload,
   modernV3EncryptPayload,
   randomMessageId,
+  resolveV3Epoch,
   validateLueckenfueller,
 } from './crypto/modern-v3.js';
 
@@ -45,6 +46,20 @@ import {
  */
 function isV3Config(config) {
   return Boolean(config?.endwalzeWiring && validateLueckenfueller(config.lueckenfueller || config.notches).ok);
+}
+
+function v3DayAuthConfig(config) {
+  return {
+    ...config,
+    notches: config.lueckenfueller || config.notches,
+    networkContext: config.networkContext || 'ALB',
+    epoch: resolveV3Epoch({
+      date: config.epoch || config.date,
+      year: config.year,
+      month: config.month,
+      day: config.day,
+    }),
+  };
 }
 
 export function configureModernEngine(engine, config, keyCode4) {
@@ -113,12 +128,7 @@ export async function encryptModern(config, plainText, messageKey) {
     plainText: String(plainText ?? ''),
     messageKey: mk,
     messageId: config.messageId || randomMessageId(),
-    dayConfig: {
-      ...config,
-      notches: config.lueckenfueller || config.notches,
-      networkContext: config.networkContext || 'ALB',
-      epoch: config.epoch || config.date || 'MANUAL',
-    },
+    dayConfig: v3DayAuthConfig(config),
   });
   if (!result.ok) return { ok: false, error: result.error };
   return {
@@ -154,12 +164,7 @@ export async function decryptModern(config, cipherText) {
     configure: (code) => configureModernEngine(engine, config, code).ok,
     groundKey: config.keyCode,
     cipherLetters: letters,
-    dayConfig: {
-      ...config,
-      notches: config.lueckenfueller || config.notches,
-      networkContext: config.networkContext || 'ALB',
-      epoch: config.epoch || config.date || 'MANUAL',
-    },
+    dayConfig: v3DayAuthConfig(config),
   });
   if (!result.ok) return { ok: false, error: result.error };
   return {

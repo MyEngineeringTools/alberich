@@ -3,7 +3,7 @@
 Schlanke Companion-Extension für [alberich.pro](https://alberich.pro) – **nur Modern-Modus**.
 
 - Lokal · JSON-Tafel · Demo-Tafel (Info) · Seitenleiste · Kontextmenü · DE|EN  
-- Version **1.0.23** (Chrome / Edge / Firefox) — folgt 1.0.22; Modern (ALBV, formatVersion 3)
+- Version **1.0.24** (Chrome / Edge / Firefox) — folgt 1.0.23; Modern (ALBV, formatVersion 3)
 
 ## Struktur
 

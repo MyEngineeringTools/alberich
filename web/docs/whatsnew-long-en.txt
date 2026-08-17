@@ -14,4 +14,4 @@ Unchanged: historic Enigma M4, generate/view/print monthly sheets, JSON and QR, 
 
 Modern is an experimental rotor protocol. It is not an AES replacement and has no security proof. Confidentiality remains a rotor cipher.
 
-Version 1.0 (Revision 47). Spec: crypto-spec-modern-v3.md
+Version 1.0 (Revision 49). Spec: crypto-spec-modern-v3.md

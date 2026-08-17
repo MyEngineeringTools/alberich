@@ -2,6 +2,20 @@
 
 Format: Version **X.Y (Revision N)**
 
+## 1.0 (Revision 49)
+
+- Live-V3 wieder mit Double-Step wie Revision 47 (Kaskade nur Research)
+- Sprüche von 47/48 mit Double-Step wieder entschlüsselbar
+
+Folgt **1.0 (Revision 48)**.
+
+## 1.0 (Revision 48)
+
+- Companion und Thunderbird nutzen dasselbe Tafeltags-`epoch` wie Web/Android
+- Kurier-Überlänge: Hinweis, dass die Meldung ohne Kurier ignorierbar ist
+
+Folgt **1.0 (Revision 47)**.
+
 ## 1.0 (Revision 47)
 
 - V3-Authentisierung bindet die Grundstellung (`ground:` in `canonicalDayKey`)

@@ -8,7 +8,7 @@ security rating and not an AES comparison.
 | Area | Status | Notes |
 |---|---|---|
 | Independent implementation | PASS | Python reference matches Web JS |
-| Golden vectors | PASS | Regenerated after cascade + `ground:` IKM |
+| Golden vectors | PASS | Match live double-step + `ground:` IKM |
 | Traditional M4 | PASS | Unchanged, involutory vector kept |
 | V3 state graph (cascade) | PASS | Bijection on sampled full `26^4` maps |
 | V3 state graph (old double-step) | OPEN | Short cycles; not live |

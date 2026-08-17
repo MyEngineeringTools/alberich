@@ -47,7 +47,6 @@ import {
   payloadToQrPngBlob,
 } from './codebook-export.js';
 import { tafelwort } from './codebook-tafelwort.js';
-import { LIMITS } from './limits.js';
 import {
   MAX_CIPHER_LETTERS,
   buildCourierPayload,
@@ -92,6 +91,7 @@ import {
 import {
   ReplayCache,
   generateEndwalzeWiring,
+  resolveV3Epoch,
   generateLueckenfueller,
   isV3Telegram,
   modernV3DecryptPayload,
@@ -122,9 +122,7 @@ import {
 } from './endwalze-policy.js';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 47)';
-const PROTOCOL = 'Modern V3';
-const BUILD_COMMIT = 'unpublished';
+const VERSION = '1.0 (Revision 49)';
 const replayCache = new ReplayCache(512);
 /** Last V3 telegram this session produced — re-decrypt is a self-test, not a replay. */
 let lastOutgoingCipher = '';
@@ -682,20 +680,10 @@ function onCodebookFileSelected(event) {
   const input = event.target;
   const file = input.files?.[0];
   if (!file) return;
-  if (file.size > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
-    showToast(t('toast.fileTooLarge') || 'File too large');
-    input.value = '';
-    return;
-  }
 
   const reader = new FileReader();
   reader.onload = () => {
     const text = typeof reader.result === 'string' ? reader.result : '';
-    if (text.length > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
-      showToast(t('toast.fileTooLarge') || 'File too large');
-      input.value = '';
-      return;
-    }
     const result = parseCodebookJson(text);
     if (!result.ok) {
       showToast(localizeError(result.error));
@@ -2093,10 +2081,12 @@ function modernExplainerKey() {
 function currentDayConfig() {
   const sheet = state.codebookSheet;
   const day = sheet ? findCodebookDay(sheet, state.codebookDay) : null;
-  const epoch = day?.date
-    || (sheet
-      ? `${sheet.year}-${String(sheet.month).padStart(2, '0')}-${String(state.codebookDay).padStart(2, '0')}`
-      : 'MANUAL');
+  const epoch = resolveV3Epoch({
+    date: day?.date,
+    year: sheet?.year,
+    month: sheet?.month,
+    day: state.codebookDay,
+  });
   return {
     rotorThin: state.rotorThin,
     rotorLeft: state.rotorLeft,
@@ -4052,11 +4042,5 @@ function renderAll() {
   else renderCodebookUi();
   document.getElementById('doraSection').hidden = state.reflectorId !== REFLECTOR_ID_DORA;
   const versionLabel = document.getElementById('versionLabel');
-  if (versionLabel) {
-    versionLabel.textContent = t('info.version', {
-      version: VERSION,
-      protocol: PROTOCOL,
-      commit: BUILD_COMMIT,
-    });
-  }
+  if (versionLabel) versionLabel.textContent = t('info.version', { version: VERSION });
 }

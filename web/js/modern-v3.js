@@ -263,6 +263,26 @@ export function normalizeEpoch(value) {
   return 'MANUAL';
 }
 
+/**
+ * Same epoch Web and Android use for a sheet day.
+ * Companion/Thunderbird must use this, not a silent MANUAL fallback.
+ */
+export function resolveV3Epoch({ date, year, month, day } = {}) {
+  const stamped = normalizeEpoch(date);
+  if (stamped !== 'MANUAL') return stamped;
+  const y = Number(year);
+  const m = Number(month);
+  const n = Number(day);
+  if (
+    Number.isInteger(y) && y >= 1900 && y <= 2100
+    && Number.isInteger(m) && m >= 1 && m <= 12
+    && Number.isInteger(n) && n >= 1 && n <= 31
+  ) {
+    return `${y}-${String(m).padStart(2, '0')}-${String(n).padStart(2, '0')}`;
+  }
+  return 'MANUAL';
+}
+
 /** A–Z only, at most four letters. No locale-dependent mapping. */
 export function normalizeGroundKey(value) {
   return String(value ?? '')
@@ -430,20 +450,29 @@ export function parseV3Telegram(letters) {
 }
 
 /**
- * Vierstufige Lückenfüller-Kaskade (Dokumentation / Tests / Research).
- * Engine.step() implementiert dasselbe, wenn modernProtocol === 'v3'.
+ * Live V3 (published Rev 47): double-step, four rotors.
+ * Engine.step() does the same when modernProtocol === 'v3'.
  *
- * Notch-Prüfung vor jeder Bewegung. Reiner Carry, kein Double-Step:
+ * Notch-Prüfung vor jeder Bewegung.
  * Right läuft immer.
- * stepMiddle = rightAtNotch
- * stepLeft   = stepMiddle && middleAtNotch
- * stepThin   = stepLeft && leftAtNotch
- * Thin hat keine Kerben und treibt nichts.
- *
- * Die Abbildung ist bijektiv auf 26^4 (eindeutiger Vorgänger, weil Right
- * immer zurückgedreht wird und die Carries aus den Vor-Positionen folgen).
+ * Right-Kerbe → Middle.
+ * Middle-Kerbe → Left und Middle (Doppel Schritt).
+ * Left-Kerbe → Thin und Left (Doppel Schritt).
  */
 export function nextV3Positions(pos, notchesAt) {
+  const stepThin = !!notchesAt.left;
+  const stepLeft = !!notchesAt.left || !!notchesAt.middle;
+  const stepMiddle = !!notchesAt.middle || !!notchesAt.right;
+  return {
+    thin: (pos.thin + (stepThin ? 1 : 0)) % 26,
+    left: (pos.left + (stepLeft ? 1 : 0)) % 26,
+    middle: (pos.middle + (stepMiddle ? 1 : 0)) % 26,
+    right: (pos.right + 1) % 26,
+  };
+}
+
+/** Research-only: pure carry, no double-step. Not the live path. */
+export function nextV3PositionsCascade(pos, notchesAt) {
   const stepMiddle = !!notchesAt.right;
   const stepLeft = stepMiddle && !!notchesAt.middle;
   const stepThin = stepLeft && !!notchesAt.left;
@@ -455,17 +484,9 @@ export function nextV3Positions(pos, notchesAt) {
   };
 }
 
-/** Historical double-step V3 (research comparison only). Not the live path. */
+/** @deprecated Use nextV3Positions (live is double-step again). */
 export function nextV3PositionsDoubleStep(pos, notchesAt) {
-  const stepThin = !!notchesAt.left;
-  const stepLeft = !!notchesAt.left || !!notchesAt.middle;
-  const stepMiddle = !!notchesAt.middle || !!notchesAt.right;
-  return {
-    thin: (pos.thin + (stepThin ? 1 : 0)) % 26,
-    left: (pos.left + (stepLeft ? 1 : 0)) % 26,
-    middle: (pos.middle + (stepMiddle ? 1 : 0)) % 26,
-    right: (pos.right + 1) % 26,
-  };
+  return nextV3Positions(pos, notchesAt);
 }
 
 export const V3_STANDARD_PROFILE = Object.freeze({

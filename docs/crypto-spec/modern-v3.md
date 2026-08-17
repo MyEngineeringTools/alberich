@@ -54,26 +54,23 @@ Entschlüsseln: invertierter Weg, gleiche Schrittfolge.
 
 ### Schritt V3
 
-Kerben werden **vor** jeder Bewegung gelesen. Live-V3 ist eine **reine
-Lückenfüller-Kaskade** (kein Double-Step):
+Kerben werden **vor** jeder Bewegung gelesen. **Live-V3** (ab Revision 47)
+ist der vierstufige Double-Step — derselbe, der online ging:
 
-```
-stepMiddle = rightAtNotch
-stepLeft   = stepMiddle && middleAtNotch
-stepThin   = stepLeft && leftAtNotch
-```
+- Right läuft immer.
+- Right an einer Kerbe → Middle.
+- Middle an einer Kerbe → Left und Middle (Doppel Schritt).
+- Left an einer Kerbe → Thin und Left (Doppel Schritt).
+- Thin hat keine Kerben. Thin treibt nichts.
 
-Right läuft immer. Thin hat keine Kerben und treibt nichts.
-
-Die Abbildung auf `26^4` ist bijektiv: Right hat immer einen eindeutigen
-Vorgänger `R-1`; ob Middle/Left/Thin mitgelaufen sind, folgt aus den
-Kerben der Vor-Position. Double-Step (historische M4 / älteres V3) ist
-nicht injektiv und bleibt nur als Research-Vergleich.
+Die reine Lückenfüller-Kaskade (Carry ohne Double-Step) bleibt Research
+(`nextV3PositionsCascade`). Sie ist bijektiv, bricht aber Sprüche der
+veröffentlichten 47 und ist deshalb nicht der Live-Pfad.
 
 Eine volle Periode ist **kein Sicherheitsbeweis**.
 
 Traditional und V2 behalten den historischen Dreier-Schritt (linke Kerbe
-tot, Thin fest, Double-Step der mittleren Walze).
+tot, Thin fest).
 
 ### Thin-Ring
 

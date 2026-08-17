@@ -1,5 +1,11 @@
 # Changelog – Alberich Thunderbird
 
+## 1.0.14
+
+- Tafeltags-`epoch` wie Web/Android — ALBV-Sprüche von der Website wieder entschlüsselbar
+
+Folgt der veröffentlichten **1.0.13**.
+
 ## 1.0.13
 
 - V3-Authentisierung bindet die Grundstellung (`ground:`); Endwalzen-Fallback ist ein 3-Zyklus

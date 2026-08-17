@@ -3,12 +3,12 @@
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
  *
- * Measure V3 stepping: live cascade vs historical double-step.
+ * Measure V3 stepping: live double-step vs research cascade.
  */
 import {
   generateLueckenfueller,
   nextV3Positions,
-  nextV3PositionsDoubleStep,
+  nextV3PositionsCascade,
 } from '../web/js/modern-v3.js';
 import { mulberry32, seededInt, wantsSmoke, writeJson } from './lib.mjs';
 
@@ -42,7 +42,7 @@ function flags(pos, notches) {
 }
 
 function nextOf(kind, pos, notches) {
-  const fn = kind === 'cascade' ? nextV3Positions : nextV3PositionsDoubleStep;
+  const fn = kind === 'cascade' ? nextV3PositionsCascade : nextV3Positions;
   return fn(pos, flags(pos, notches));
 }
 
@@ -114,8 +114,8 @@ const out = {
   walks,
   bijections,
   note:
-    'Live V3 uses the pure Lückenfüller cascade. Double-step is historical comparison only. A full period is not a security proof.',
-  liveRule: 'cascade',
+    'Live V3 uses double-step (Rev 47). Cascade is research only. A full period is not a security proof.',
+  liveRule: 'double-step',
   cascade: { cycles: [], transients: [], bijections: [] },
   doubleStep: { cycles: [], transients: [], bijections: [] },
 };
@@ -156,7 +156,7 @@ const result = {
   cascade: report('cascade', out.cascade),
   doubleStep: report('doubleStep', out.doubleStep),
   decision:
-    'Adopt the pure cascade as live V3. It is invertible (unique predecessor from the forced right step). Double-step is not injective and produces short cycles. Traditional M4 is unchanged.',
+    'Live stays double-step for published 47 interop. Cascade remains research: invertible, often full 26^4, but it is not the shipped protocol. Traditional M4 is unchanged.',
 };
 
 if (!smoke) writeJson('state-graph.json', result);

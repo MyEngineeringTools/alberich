@@ -14,4 +14,4 @@ Unverändert: historische Enigma M4, Monatstafeln erzeugen/zeigen/drucken, JSON 
 
 Modern ist ein experimentelles Rotorprotokoll. Es ist kein AES-Ersatz und trägt keinen Sicherheitsbeweis. Die Vertraulichkeit bleibt eine Rotorchiffre.
 
-Version 1.0 (Revision 47). Spezifikation: crypto-spec-modern-v3.md
+Version 1.0 (Revision 49). Spezifikation: crypto-spec-modern-v3.md

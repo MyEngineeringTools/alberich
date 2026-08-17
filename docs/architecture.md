@@ -20,12 +20,11 @@ browser
 | Mode | Path | Involutory | Alphabet |
 |---|---|---|---|
 | Traditional | Stecker → R M L Thin → UKW → back → Stecker | yes | A–Z (punctuation spelled) |
-| Modern (live) | Stecker → R M L Thin → Endwalze → Stecker; four-rotor cascade | no | UTF-8 via Base-26 |
+| Modern (live) | Stecker → R M L Thin → Endwalze → Stecker; four-rotor double-step | no | UTF-8 via Base-26 |
 
 Modern decrypt inverts the Endwalze and walks the rotors backward. Stepping
-is the same as on encrypt. Live V3 uses a pure notch cascade (Right always;
-carry to Middle/Left/Thin only when the driving wheel is on a notch). There
-is no double-step. Traditional / V2 keep the historical three-wheel step.
+is the same as on encrypt. Live V3 uses the four-rotor double-step published
+in Revision 47. Traditional / V2 keep the historical three-wheel step.
 `modern-crypto.js` still holds older V2 helpers for tests; they are not a
 live product path.
 

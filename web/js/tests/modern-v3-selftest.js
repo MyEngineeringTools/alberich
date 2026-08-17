@@ -184,15 +184,11 @@ assert(base26v2ToUtf8('ABC').ok === false, 'v2 invalid length rejected');
   const n0 = nextV3Positions(pos, { left: false, middle: false, right: false });
   assert(n0.right === 1 && n0.thin === 0 && n0.left === 0 && n0.middle === 0, 'only right steps');
   const nR = nextV3Positions(pos, { left: false, middle: false, right: true });
-  assert(nR.middle === 1 && nR.right === 1 && nR.left === 0 && nR.thin === 0, 'right notch drives middle only');
+  assert(nR.middle === 1 && nR.right === 1 && nR.left === 0, 'right notch drives middle');
   const nM = nextV3Positions(pos, { left: false, middle: true, right: false });
-  assert(nM.left === 0 && nM.middle === 0 && nM.thin === 0, 'middle notch alone does not carry');
+  assert(nM.left === 1 && nM.middle === 1, 'middle notch double-steps middle and drives left');
   const nL = nextV3Positions(pos, { left: true, middle: false, right: false });
-  assert(nL.thin === 0 && nL.left === 0, 'left notch alone does not carry');
-  const nRM = nextV3Positions(pos, { left: false, middle: true, right: true });
-  assert(nRM.middle === 1 && nRM.left === 1 && nRM.thin === 0, 'right+middle carry to left');
-  const nAll = nextV3Positions(pos, { left: true, middle: true, right: true });
-  assert(nAll.thin === 1 && nAll.left === 1 && nAll.middle === 1, 'full cascade reaches thin');
+  assert(nL.thin === 1 && nL.left === 1, 'left notch drives thin and double-steps left');
 }
 
 {
@@ -364,6 +360,28 @@ assert(!timingSafeEqualLetters('ABCD', 'ABCE'), 'ct neq');
   assert(
     !wrongGround.ok && wrongGround.error === 'modern.macFailed' && !wrongGround.plainText,
     'wrong ground fails MAC before plaintext',
+  );
+
+  const dated = { ...DAY, epoch: '2026-08-16' };
+  const encDated = await modernV3EncryptPayload({
+    engine,
+    configure: (key) => configureV3(engine, key),
+    groundKey: 'CDSZ',
+    plainText: 'Hello',
+    messageKey: 'LDNQ',
+    messageId: 'TESTMSGX',
+    dayConfig: dated,
+  });
+  const wrongEpoch = await modernV3DecryptPayload({
+    engine,
+    configure: (key) => configureV3(engine, key),
+    groundKey: 'CDSZ',
+    cipherLetters: encDated.cipher,
+    dayConfig: { ...DAY, epoch: 'MANUAL' },
+  });
+  assert(
+    !wrongEpoch.ok && wrongEpoch.error === 'modern.macFailed',
+    'sheet epoch vs MANUAL fails MAC (companion bug)',
   );
 }
 

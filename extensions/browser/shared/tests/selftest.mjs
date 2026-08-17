@@ -214,6 +214,15 @@ const demoV3 = parseCodebookJson(readFileSync(demoV3Path, 'utf8'));
 assert(demoV3.ok && demoV3.sheet.formatVersion === 3, 'bundled V3 demo parses');
 assert(tafelwort(demoV3.sheet) === 'CPTZ YYH', `V3 demo tafelwort (got ${demoV3.ok ? tafelwort(demoV3.sheet) : '?'})`);
 assert(demoV3.ok && demoV3.sheet.days.some((d) => d.day === 16 && d.keyCode === 'CDSZ'), 'V3 demo has golden day 16');
+{
+  const store = createMemoryStorage();
+  const demoKeys = createKeyManager(store);
+  await demoKeys.importSheet(readFileSync(demoV3Path, 'utf8'));
+  await demoKeys.setDay(16);
+  const fromSheet = demoKeys.getDayConfig();
+  assert(fromSheet?.epoch === '2026-08-16', `sheet day epoch (got ${fromSheet?.epoch})`);
+  assert(fromSheet?.networkContext === 'ALB', 'sheet network context');
+}
 
 if (process.exitCode) {
   console.error('\nSelftest FAILED');

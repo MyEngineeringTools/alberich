@@ -215,9 +215,10 @@ export class CipherEngine {
   }
 
   /**
-   * Modern V3: reine Lückenfüller-Kaskade. Kerben vor der Bewegung lesen.
-   * Right läuft immer. Carry nur entlang Right → Middle → Left → Thin.
-   * Kein Double-Step. Traditional / V2 bleiben bei stepLegacyThreeRotor.
+   * Modern V3 live (Rev 47+): historical-style double-step, four rotors.
+   * Kerben vor der Bewegung. Right immer. Middle-Kerbe → Left+Middle.
+   * Left-Kerbe → Thin+Left. Die reine Kaskade bleibt nur Research
+   * (nextV3PositionsCascade) — sie bricht Sprüche der veröffentlichten 47.
    */
   stepModernV3() {
     const { right, middle, left, thin } = this.rotors;
@@ -225,9 +226,9 @@ export class CipherEngine {
     const middleAt = this.atNotch(middle);
     const leftAt = this.atNotch(left);
 
-    const stepMiddle = rightAt;
-    const stepLeft = stepMiddle && middleAt;
-    const stepThin = stepLeft && leftAt;
+    const stepThin = leftAt;
+    const stepLeft = leftAt || middleAt;
+    const stepMiddle = middleAt || rightAt;
 
     if (stepThin) thin.pos = (thin.pos + 1) % 26;
     if (stepLeft) left.pos = (left.pos + 1) % 26;

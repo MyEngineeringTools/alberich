@@ -3,6 +3,22 @@
 Versions in this repository are the same as the shipped apps. There is no
 separate GitHub 0.x line.
 
+## 1.0 (Revision 49) — web
+
+Folgt **1.0 (Revision 48)**. Live V3 stepping is again the Revision 47
+double-step. The cascade-only step shipped in 48 made authentic 47
+telegrams fail as invalid UTF-8 after a valid MAC.
+
+- Web app under `web/` — version `1.0 (Revision 49)`.
+- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
+- Android (outside this tree) — `1.0 (Revision 29)`, `versionCode` 29.
+
+## 1.0 (Revision 48) — web
+
+Folgt **1.0 (Revision 47)**. Companion and Thunderbird now use the same
+sheet-day `epoch` as Web/Android, so ALBV telegrams verify again.
+
 ## 1.0 (Revision 47) — web
 
 Folgt **1.0 (Revision 46)**. V3 auth IKM now includes `ground:`. Endwalze

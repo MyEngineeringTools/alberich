@@ -1,13 +1,13 @@
 # Alberich Web – Release Notes (English)
 
-**Current: 1.0 (Revision 47)** — follows the live revision 46.
+**Current: 1.0 (Revision 49)** — follows the live revision 48.
 
 | Platform | Now |
 |---|---|
-| **Web** | 1.0 (Revision 47) |
-| **Android** | 1.0 (Revision 28), `versionCode` 28 |
-| **Companion** | 1.0.23 |
-| **Thunderbird** | 1.0.13 |
+| **Web** | 1.0 (Revision 49) |
+| **Android** | 1.0 (Revision 29), `versionCode` 29 |
+| **Companion** | 1.0.24 |
+| **Thunderbird** | 1.0.14 |
 
 What’s new (short): [`whatsnew-en.txt`](whatsnew-en.txt)  
 Long form: [`whatsnew-long-en.txt`](whatsnew-long-en.txt)  

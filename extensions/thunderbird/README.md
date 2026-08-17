@@ -6,7 +6,7 @@ Begleitet [alberich.pro](https://alberich.pro) und denselben JSON-Codebook-Expor
 
 | | |
 |---|---|
-| **Version** | 1.0.13 |
+| **Version** | 1.0.14 |
 | **Extension-Ordner** | `thunderbird/` |
 | **ID** | `alberich-mail@alberich.pro` |
 | **Mindest-Thunderbird** | 128 (Manifest V3) |

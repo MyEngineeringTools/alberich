@@ -1,5 +1,11 @@
 # Changelog – Alberich Companion (Chrome / Edge / Firefox)
 
+## 1.0.24
+
+- Tafeltags-`epoch` wie Web/Android — ALBV-Sprüche von der Website wieder entschlüsselbar
+
+Folgt der veröffentlichten **1.0.23**.
+
 ## 1.0.23
 
 - V3-Authentisierung bindet die Grundstellung (`ground:`); Endwalzen-Fallback ist ein 3-Zyklus

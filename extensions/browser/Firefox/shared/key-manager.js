@@ -17,6 +17,7 @@ import {
   reflectorLabel,
 } from './crypto/cipher-data.js';
 import { t } from './i18n.js';
+import { resolveV3Epoch } from './crypto/modern-v3.js';
 
 const STORAGE_KEY = 'alberichCompanion.v1';
 
@@ -110,7 +111,17 @@ export function createKeyManager(storage) {
     if (!cache.sheet || !cache.selectedDay) return null;
     const entry = findCodebookDay(cache.sheet, cache.selectedDay);
     if (!entry) return null;
-    return dayEntryToSettingsPatch(entry);
+    const patch = dayEntryToSettingsPatch(entry);
+    return {
+      ...patch,
+      networkContext: cache.sheet.networkContext || 'ALB',
+      epoch: resolveV3Epoch({
+        date: entry.date,
+        year: cache.sheet.year,
+        month: cache.sheet.month,
+        day: entry.day,
+      }),
+    };
   }
 
   /**

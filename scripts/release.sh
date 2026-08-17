@@ -48,18 +48,25 @@ writeFileSync('dist/release/BUILD_INFO.json', `${JSON.stringify(info, null, 2)}\
 console.log('BUILD_INFO', info.gitCommit, info.algorithmFingerprint);
 JS
 
+EPOCH="$(git log -1 --format=%ct)"
+stamp() {
+  find "$1" -exec touch -d "@${EPOCH}" {} +
+}
+
 tmp="$(mktemp -d)"
 mkdir -p "$tmp/alberich-web"
 cp -a "$ROOT/web/." "$tmp/alberich-web/"
 sed -i "s/const BUILD_COMMIT = 'unpublished';/const BUILD_COMMIT = '${SHORT}';/" \
   "$tmp/alberich-web/js/app.js"
 cp "$OUT/BUILD_INFO.json" "$tmp/alberich-web/BUILD_INFO.json"
-(cd "$tmp" && zip -qr "$OUT/alberich-web-${VER}.zip" alberich-web)
+stamp "$tmp/alberich-web"
+(cd "$tmp" && zip -Xqr "$OUT/alberich-web-${VER}.zip" alberich-web)
 rm -rf "$tmp"
 
-(cd "$ROOT/dist/extensions/chrome" && zip -qr "$OUT/alberich-chrome-${VER}.zip" .)
-(cd "$ROOT/dist/extensions/edge" && zip -qr "$OUT/alberich-edge-${VER}.zip" .)
-(cd "$ROOT/dist/extensions/firefox" && zip -qr "$OUT/alberich-firefox-${VER}.zip" .)
+for browser in chrome edge firefox; do
+  stamp "$ROOT/dist/extensions/${browser}"
+  (cd "$ROOT/dist/extensions/${browser}" && zip -Xqr "$OUT/alberich-${browser}-${VER}.zip" .)
+done
 
 (cd "$OUT" && sha256sum alberich-*.zip BUILD_INFO.json > SHA256SUMS)
 echo "Release artefacts in $OUT"

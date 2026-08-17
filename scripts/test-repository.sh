@@ -133,30 +133,54 @@ ok "CSP hardened and documented"
 
 # --- algorithm provenance ---
 if [[ -f research/results/fingerprint.json ]]; then
-  python3 - <<'PY' || bad "research provenance"
-import json, subprocess
-from pathlib import Path
-fp = json.loads(Path("research/results/fingerprint.json").read_text())
-commit = fp.get("algorithmSourceCommit") or fp.get("sourceCommit")
-if not commit or commit == "unpublished":
-    raise SystemExit("fingerprint missing algorithmSourceCommit")
-head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-files = [
-    "VERSIONS",
-    "web/js/cipher-data.js",
-    "web/js/cipher-engine.js",
-    "web/js/codebook-generate.js",
-    "web/js/codebook.js",
-    "web/js/limits.js",
-    "web/js/modern-crypto.js",
-    "web/js/modern-v3.js",
-    "web/js/secure-random.js",
-]
-diff = subprocess.run(["git", "diff", "--quiet", commit, "HEAD", "--", *files])
-if diff.returncode != 0:
-    raise SystemExit(f"algorithm files changed since algorithmSourceCommit {commit}")
-print("OK   algorithm files unchanged since", commit[:12], "HEAD", head[:12])
-PY
+  node --input-type=module - <<'JS' || bad "research provenance"
+import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { algorithmFingerprint } from './research/lib.mjs';
+
+const recorded = JSON.parse(readFileSync('research/results/fingerprint.json', 'utf8'));
+const live = algorithmFingerprint();
+if (recorded.algorithmFingerprint !== live) {
+  throw new Error(
+    `fingerprint.json ${recorded.algorithmFingerprint} != live ${live}`,
+  );
+}
+const commit = recorded.algorithmSourceCommit || recorded.sourceCommit;
+if (!commit || commit === 'unpublished') {
+  throw new Error('fingerprint missing algorithmSourceCommit');
+}
+let haveCommit = false;
+try {
+  execFileSync('git', ['cat-file', '-e', `${commit}^{commit}`], { stdio: 'ignore' });
+  haveCommit = true;
+} catch {
+  haveCommit = false;
+}
+if (haveCommit) {
+  const files = [
+    'VERSIONS',
+    'web/js/cipher-data.js',
+    'web/js/cipher-engine.js',
+    'web/js/codebook-generate.js',
+    'web/js/codebook.js',
+    'web/js/limits.js',
+    'web/js/modern-crypto.js',
+    'web/js/modern-v3.js',
+    'web/js/secure-random.js',
+  ];
+  try {
+    execFileSync('git', ['diff', '--quiet', commit, 'HEAD', '--', ...files]);
+  } catch {
+    throw new Error(`algorithm files changed since algorithmSourceCommit ${commit}`);
+  }
+  console.log('OK   fingerprint matches; algorithm files unchanged since', commit.slice(0, 12));
+} else {
+  console.log(
+    'OK   fingerprint matches live algorithm; ancestry skip (shallow clone, no',
+    commit.slice(0, 12) + ')',
+  );
+}
+JS
 fi
 grep -Fq 'refusing release from dirty working tree' scripts/release.sh || bad "release.sh dirty-tree gate"
 grep -Fq 'full research reproduction requires a clean working tree' scripts/reproduce-research.sh || bad "reproduce-research dirty-tree gate"

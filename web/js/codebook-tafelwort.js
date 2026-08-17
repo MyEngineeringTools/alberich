@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Tafelwort: CRC-32-Kenngruppe über den Slim-Inhalt einer Monatstafel.
  *
  * Nicht JSON.stringify — nur die Felder, die die Maschine braucht.

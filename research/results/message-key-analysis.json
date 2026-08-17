@@ -1,23 +1,39 @@
 {
-  "generatedAt": "2026-08-16T10:09:42.497Z",
+  "protocol": "Modern V3",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmFingerprint": "5e5647a3bd2b33a2",
+  "stepRule": "double-step",
+  "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
+  "generatorProfile": "Modern V3 Standard",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "script": "research/message-key-analysis.mjs",
+  "command": "research/message-key-analysis.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "current": true,
+  "status": "CURRENT",
+  "researchRng": "mulberry32 deterministic research PRNG — never used for production keys",
+  "productionRng": "Web Crypto CSPRNG",
   "messageKeyLetters": 4,
   "combinatorial": {
     "space": 456976,
     "bits": 18.8018
   },
+  "birthday": {
+    "approxMessagesFor50pct": 796,
+    "note": "Header collisions follow the 26^4 message-key space, not the MID space."
+  },
   "whatFourLettersControl": [
-    "Thin-Position (in V2: Thin steht danach still)",
-    "Left-Position",
-    "Middle-Position",
-    "Right-Position"
+    "Thin start",
+    "Left start",
+    "Middle start",
+    "Right start"
   ],
-  "recommendation": "Vier Buchstaben bleiben mechanisch korrekt, solange vier Rotorlagen der Startzustand sind. Eine zufällige Message-ID gehört nicht in die Walzen, sondern in die Prüfgruppe.",
   "observations": {
     "samePlainDifferentMkDifferentCipher": true,
-    "samePlainSameMkSameCipher": true,
+    "samePlainSameMkSameMidSameCipher": true,
+    "sameMkDifferentMidDifferentPruef": true,
     "headerDiffersWithMk": true,
     "recoveredMessageKey": true
   },
-  "bruteForceNote": "Bei bekanntem Tagesschlüssel ist der Spruchschlüssel 26^4. Der Header ist die Verschlüsselung des SK unter der Grundstellung — Known-Header-Crib der Länge 4. Das ist historisch üblich und kein Ersatz für Authentizität.",
-  "multiMessage": "Viele Nachrichten desselben Tages teilen Rotorwahl, Ringe, Stecker, Endwalze. Der SK wechselt. V2 hat keinen Message-Identifier und keinen MAC."
+  "bruteForceNote": "Given the day key, the message key is a 26^4 search. The header is the encrypted start. MID does not expand the rotor space. HMAC is an offline candidate oracle for the day key, not for guessing SK once the day key is known — SK is recovered by decrypting the header."
 }

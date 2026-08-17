@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Known-Plaintext / Crib-Labor. Misst Kandidaten und keys/s.
  * Keine reinen Theorieaussagen.
  */
 
 import { CipherEngine } from '../web/js/cipher-engine.js';
 import { modernEncryptPayload, utf8ToBase26 } from '../web/js/modern-crypto.js';
-import { SYNTHETIC_V2, configureSyntheticV2, writeJson, alphabet } from './lib.mjs';
+import { SYNTHETIC_V2, configureSyntheticV2, writeJson, alphabet, META_LEGACY_V2 } from './lib.mjs';
 import { wantsSmoke as __wantsSmoke } from './lib.mjs';
 if (__wantsSmoke()) { console.log('smoke ok known-plaintext'); process.exit(0); }
 
@@ -120,5 +124,5 @@ const out = {
   ],
 };
 
-writeJson('known-plaintext.json', out);
+writeJson('legacy/v2/known-plaintext.json', { ...META_LEGACY_V2, status: 'NOT CURRENT MODERN V3', script: 'research/known-plaintext.mjs', ...out });
 console.log(JSON.stringify(scenarios, null, 2));

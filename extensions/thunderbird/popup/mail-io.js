@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Thunderbird: angezeigte (gelesene) Nachricht lesen.
  * Lese-Fenster ist read-only → Entschlüsselung öffnet Ergebnis-Tab.
  */

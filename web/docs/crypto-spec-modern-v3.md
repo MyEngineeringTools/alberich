@@ -73,9 +73,9 @@ In V3 gilt `thin.ring`. In Traditional/V2 bleibt `thin.ring = 0`.
 
 26!-Permutation, Fisher–Yates mit `cryptoRandomInt`.
 Involutionen werden beim Würfeln verworfen (bis zu 64 Versuche).
-Scheitern alle Versuche, gilt ein fester 3-Zyklus auf der Identität
-(`ABC` → `BCA`): `BCADEFGHIJKLMNOPQRSTUVWXYZ`. Das ist unabhängig vom
-RNG niemals involutorisch.
+Scheitern alle Versuche, bricht die Erzeugung hart ab
+(`Unable to generate secure non-involutory end-wheel permutation`).
+Es gibt keinen festen Ersatz-String und kein stilles Downgrade.
 Fixpunkte sind erlaubt und werden gezählt, nicht verboten.
 Format: `endwalzeWiring` = 26 eindeutige A–Z.
 

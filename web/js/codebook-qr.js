@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * QR-Import für Alberich-Schlüsseltafeln.
  * Envelope: ALBERICH-CBQR1|gzip|<base64>  (Export aus Codebook-Tool)
  */
@@ -98,7 +100,19 @@ export function decodeCompressedQrPayload(payload) {
  * @returns {Promise<string>}
  */
 export async function decodeQrTextFromBlob(blob) {
+  const size = Number(blob?.size ?? 0);
+  if (size > LIMITS.MAX_QR_IMAGE_BYTES) {
+    throw new Error('qr.err.imageTooLarge');
+  }
   const bitmap = await createImageBitmap(blob);
+  if (
+    bitmap.width > LIMITS.MAX_QR_IMAGE_EDGE
+    || bitmap.height > LIMITS.MAX_QR_IMAGE_EDGE
+    || bitmap.width * bitmap.height > LIMITS.MAX_QR_IMAGE_PIXELS
+  ) {
+    bitmap.close?.();
+    throw new Error('qr.err.imageTooLarge');
+  }
   try {
     const text = await decodeQrTextFromImageSource(bitmap);
     if (!text) throw new Error('qr.err.noCode');

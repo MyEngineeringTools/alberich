@@ -30,5 +30,5 @@ The word “QR Code” is a registered trademark of DENSO WAVE INCORPORATED.
 - Note: this copy is the upstream browser build; a license header was added
   locally because the build ships without one.
 
-Matomo analytics, if enabled, is loaded from a separate host and is not part
-of the Alberich application files served from this directory.
+The cryptographic workspace loads no analytics, telemetry, or tracking
+scripts. The vendor files above are the only third-party code in `web/`.

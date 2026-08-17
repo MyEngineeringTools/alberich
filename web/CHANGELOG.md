@@ -6,6 +6,8 @@ Format: Version **X.Y (Revision N)**
 
 - Live-V3 wieder mit Double-Step wie Revision 47 (Kaskade nur Research)
 - Sprüche von 47/48 mit Double-Step wieder entschlüsselbar
+- Endwalze: nach 64 involutorischen CSPRNG-Ziehungen hartes Fail-Closed, kein fester Ersatz
+- Workspace ohne Analytics/Telemetry; Extensions über `dist/` bzw. Release-ZIP laden
 
 Folgt **1.0 (Revision 48)**.
 

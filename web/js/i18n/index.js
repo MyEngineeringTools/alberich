@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Schlanke i18n-Schicht für Alberich Web (DE / EN).
  * Auto-Locale aus Browser + manuelle Wahl + localStorage.
  */

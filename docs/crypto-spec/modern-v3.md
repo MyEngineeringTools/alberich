@@ -2,6 +2,8 @@
 
 Stand: 17. August 2026. Normativ sind diese Datei plus die Selbsttests
 und die Python-Referenz `reference/alberich_reference.py`.
+Research muss dieselbe Maschine messen:
+[research-baseline.md](research-baseline.md).
 
 Modern V3 ist ein **experimentelles Rotor-Kryptosystem**. Es ist kein
 AEAD-Ersatz für AES und trägt **keinen Sicherheitsbeweis**.
@@ -81,11 +83,11 @@ In V3 gilt `thin.ring`. In Traditional/V2 bleibt `thin.ring = 0`.
 
 26!-Permutation, Fisher–Yates mit `cryptoRandomInt`.
 Involutionen werden beim Würfeln verworfen (bis zu 64 Versuche).
-Scheitern alle Versuche, gilt ein fester 3-Zyklus auf der Identität
-(`ABC` → `BCA`): `BCADEFGHIJKLMNOPQRSTUVWXYZ`. Das ist unabhängig vom
-RNG niemals involutorisch.
-Fixpunkte sind erlaubt und werden gezählt, nicht verboten.
-Format: `endwalzeWiring` = 26 eindeutige A–Z.
+Scheitern alle Versuche, bricht die Erzeugung hart ab
+(`Unable to generate secure non-involutory end-wheel permutation`).
+Es gibt keinen festen Ersatz-String, keinen `Math.random`-Fallback und
+kein stilles Downgrade. Fixpunkte sind erlaubt und werden gezählt, nicht
+verboten. Format: `endwalzeWiring` = 26 eindeutige A–Z.
 
 Bruno/Caesar/Dora bleiben für Traditional und Legacy-V2.
 

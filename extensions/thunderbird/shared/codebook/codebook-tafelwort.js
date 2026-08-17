@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Tafelwort: CRC-32-Kenngruppe über den Slim-Inhalt einer Monatstafel.
  * Parität Web `codebook-tafelwort.js` / Android CodebookTafelwort.
  */

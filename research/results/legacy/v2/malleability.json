@@ -1,0 +1,111 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/malleability.mjs",
+  "generatedAt": "2026-08-16T10:10:25.263Z",
+  "plaintext": "Alberich-Malleability-Probe-42-XXXXYYYYZZZZ",
+  "base26Length": 86,
+  "header": "JESX",
+  "bodyLength": 86,
+  "totalMutations": 2150,
+  "accepted": 1219,
+  "rejected": 931,
+  "acceptedRate": 0.567,
+  "validUtf8AmongAccepted": 1219,
+  "plaintextChangedAmongAccepted": 1219,
+  "sampleChangePositions": [
+    {
+      "bodyIndex": 0,
+      "to": "D"
+    },
+    {
+      "bodyIndex": 0,
+      "to": "O"
+    },
+    {
+      "bodyIndex": 0,
+      "to": "X"
+    },
+    {
+      "bodyIndex": 0,
+      "to": "A"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "U"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "V"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "W"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "X"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "Y"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "Z"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "A"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "B"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "C"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "D"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "E"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "F"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "G"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "H"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "I"
+    },
+    {
+      "bodyIndex": 1,
+      "to": "J"
+    }
+  ],
+  "comparisonToKnownFinding": {
+    "bodyLetters": 86,
+    "mutations": 2150,
+    "knownAccepted": 1240,
+    "knownTotal": 2200,
+    "knownRate": 0.5636363636363636,
+    "thisRunAccepted": 1219,
+    "thisRunTotal": 2150,
+    "matchesBallpark": true
+  },
+  "finding": "Der Round-Trip-Check ist kein MAC und kein Authentizit\u00e4tsnachweis. Ein gro\u00dfer Anteil einzelner Body-Buchstabenmutationen wird akzeptiert und liefert anderen Klartext."
+}

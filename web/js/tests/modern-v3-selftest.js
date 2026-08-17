@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Modern V3 + Traditional-Regression.
  * Ausführen: node js/tests/modern-v3-selftest.js
  */
@@ -20,6 +22,8 @@ import {
   canonicalDayKey,
   deriveAuthKey,
   detectModernProtocol,
+  ENDWALZE_GENERATE_FAILED,
+  ENDWALZE_GENERATION_MAX_ATTEMPTS,
   generateEndwalzeWiring,
   generateLueckenfueller,
   isV3Telegram,
@@ -146,16 +150,41 @@ assert(validateLueckenfueller(DAY.notches).ok, 'triple ok');
 assert(validateEndwalzeWiring(DAY.endwalzeWiring).ok, 'default perm ok');
 assert(!isInvolutoryWiring(DAY.endwalzeWiring), 'default not involutory');
 {
-  const invol = 'BADCFEHGJILKNMPORQTSVUXWZY';
-  // pair swap A-B, C-D, ... may be involutory; use identity
   assert(!validateEndwalzeWiring('ABCDEFGHIJKLMNOPQRSTUVWXYZ').ok, 'identity involution rejected');
   const w = generateEndwalzeWiring(() => 0);
   assert(isPermutationWiring(w) && !isInvolutoryWiring(w), 'generated perm not involutory');
-  const forced = generateEndwalzeWiring((max) => max - 1);
-  assert(forced === 'BCADEFGHIJKLMNOPQRSTUVWXYZ', 'max-1 RNG reaches 3-cycle fallback');
-  assert(isPermutationWiring(forced), 'fallback is a 26-letter permutation');
-  assert(!isInvolutoryWiring(forced), 'fallback is not involutory');
-  assert(validateEndwalzeWiring(forced).ok === true, 'fallback accepted by validateEndwalzeWiring');
+
+  // always j = i → identity (involution) → retry then fail closed
+  let involCalls = 0;
+  try {
+    generateEndwalzeWiring((max) => {
+      involCalls += 1;
+      return max - 1;
+    });
+    assert(false, 'all-involution RNG must throw');
+  } catch (err) {
+    assert(err instanceof Error, 'fail-closed throws Error');
+    assert(err.message === ENDWALZE_GENERATE_FAILED, 'fail-closed message');
+  }
+  assert(involCalls === ENDWALZE_GENERATION_MAX_ATTEMPTS * 25, 'Fisher–Yates consumed max attempts');
+
+  let attempts = 0;
+  const afterRetry = generateEndwalzeWiring((max) => {
+    attempts += 1;
+    if (attempts <= 25 * 3) return max - 1;
+    return 0;
+  });
+  assert(isPermutationWiring(afterRetry) && !isInvolutoryWiring(afterRetry), 'involutions are retried');
+  assert(afterRetry !== 'BCADEFGHIJKLMNOPQRSTUVWXYZ', 'no deterministic fallback wiring');
+}
+
+{
+  const de = await import('../i18n/de.js');
+  const en = await import('../i18n/en.js');
+  assert(typeof de.default['modern.endwalzeGenerateFailed'] === 'string', 'DE UI error string');
+  assert(typeof en.default['modern.endwalzeGenerateFailed'] === 'string', 'EN UI error string');
+  assert(/schlüsselmaterial/i.test(de.default['modern.endwalzeGenerateFailed']), 'DE fail-closed UI');
+  assert(en.default['modern.endwalzeGenerateFailed'].includes('No key material'), 'EN fail-closed UI');
 }
 
 // --- Base-26 V2 ---

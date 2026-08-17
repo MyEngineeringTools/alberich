@@ -1,15 +1,29 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * QR aus Bild oder Videobild lesen (BarcodeDetector, sonst jsQR).
  */
 
 import jsQR from './vendor/jsQR.js';
+import { LIMITS } from './crypto/limits.js';
 
 /**
  * @param {Blob|File} blob
  * @returns {Promise<string>}
  */
 export async function decodeQrTextFromBlob(blob) {
+  if (Number(blob?.size ?? 0) > LIMITS.MAX_QR_IMAGE_BYTES) {
+    throw new Error('qr.err.imageTooLarge');
+  }
   const bitmap = await createImageBitmap(blob);
+  if (
+    bitmap.width > LIMITS.MAX_QR_IMAGE_EDGE
+    || bitmap.height > LIMITS.MAX_QR_IMAGE_EDGE
+    || bitmap.width * bitmap.height > LIMITS.MAX_QR_IMAGE_PIXELS
+  ) {
+    bitmap.close?.();
+    throw new Error('qr.err.imageTooLarge');
+  }
   try {
     const text = await decodeQrTextFromImageSource(bitmap);
     if (!text) throw new Error('qr.err.noCode');

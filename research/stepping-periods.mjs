@@ -1,18 +1,33 @@
 #!/usr/bin/env node
 /**
- * Walzenperioden der aktuellen step()-Maschine und optional Modern V3.
- * Empirisch, nicht „teilerfremd zu 26 ⇒ gut“.
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Period measurements, labelled by protocol and step rule.
+ *
+ *   --smoke  one cheap sample of each rule
+ *   --full   write current + legacy result files
  */
-
 import { CipherEngine } from '../web/js/cipher-engine.js';
 import {
   LUECKENFUELLER_NOTCH_COUNTS,
   baseNotchPattern,
   rotateNotchPattern,
 } from '../web/js/modern-crypto.js';
-import { writeJson, packPositions } from './lib.mjs';
+import { generateLueckenfueller, nextV3Positions, nextV3PositionsCascade } from '../web/js/modern-v3.js';
+import {
+  mulberry32,
+  seededInt,
+  writeJson,
+  packPositions,
+  stampLiveV3,
+  stampCascadeFuture,
+  stampLegacyV2,
+} from './lib.mjs';
 
 const COUNTS = LUECKENFUELLER_NOTCH_COUNTS;
+const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const SPACE = 26 ** 4;
 
 function applyNotches(engine, left, middle, right) {
   engine.rotors.left.notch = left;
@@ -27,11 +42,7 @@ function resetPos(engine, t = 0, l = 0, m = 0, r = 0) {
   engine.rotors.right.pos = r;
 }
 
-/**
- * Periode + Transient vom Startzustand.
- * State = (thin,left,middle,right) in 26^4.
- */
-function measureFrom(engine, maxSteps = 26 ** 4 + 26) {
+function measureFrom(engine, maxSteps = SPACE + 26) {
   const start = packPositions(engine);
   const seen = new Map();
   seen.set(start, 0);
@@ -52,15 +63,43 @@ function measureFrom(engine, maxSteps = 26 ** 4 + 26) {
   return { firstRepeatAt: null, transient: null, period: null, returnedToStart: false };
 }
 
-function currentImplPeriods() {
+function pack(p) {
+  return ((p.thin * 26 + p.left) * 26 + p.middle) * 26 + p.right;
+}
+
+function nextOf(fn, pos, notches) {
+  const flags = {
+    left: notches.left.includes(AZ[pos.left]),
+    middle: notches.middle.includes(AZ[pos.middle]),
+    right: notches.right.includes(AZ[pos.right]),
+  };
+  return fn(pos, flags);
+}
+
+function walkFn(fn, notches, start = { thin: 0, left: 0, middle: 0, right: 0 }) {
+  const seen = new Map();
+  let pos = { ...start };
+  for (let i = 0; i <= SPACE + 4; i++) {
+    const id = pack(pos);
+    if (seen.has(id)) {
+      return { transient: seen.get(id), period: i - seen.get(id), firstRepeatAt: i };
+    }
+    seen.set(id, i);
+    pos = nextOf(fn, pos, notches);
+  }
+  return { transient: null, period: null, firstRepeatAt: null };
+}
+
+/** Legacy three-wheel modern step: Thin parked, Left notch unused. NOT live V3. */
+function legacyThreeWheelPeriods() {
   const engine = new CipherEngine();
   engine.setCryptoMode('modern');
+  engine.setModernProtocol('v2');
   engine.setRotors('I', 'II', 'III', 'Beta', 'A', 'A', 'A', 'A', 'A', 'A', 'A');
 
   const periodSet = new Map();
   const samples = [];
 
-  // Left notches unused — still vary counts for documentation.
   for (const cM of COUNTS) {
     for (const cR of COUNTS) {
       const baseM = baseNotchPattern(cM);
@@ -94,7 +133,11 @@ function currentImplPeriods() {
     .sort((a, b) => a.period - b.period);
 
   return {
-    note: 'Aktuelle step(): Right immer, Middle bei Right-Kerbe, Left+Middle bei Middle-Kerbe. Left-Kerbe ungenutzt. Thin steht.',
+    protocol: 'V2 / V3 legacy step rule',
+    stepRule: 'Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands',
+    current: false,
+    status: 'NOT CURRENT',
+    note: 'These periods describe the old three-wheel modern step. They do not describe live V3 double-step and they do not describe the cascade future option.',
     configs: 3 * 3 * 26 * 26,
     distinctPeriods: periods.map((p) => p.period),
     histogram: periods,
@@ -102,94 +145,156 @@ function currentImplPeriods() {
   };
 }
 
-async function v3PeriodsIfPresent() {
-  try {
-    const v3 = await import('../web/js/modern-v3.js');
-    if (typeof v3.measureV3Stepping !== 'function') {
-      const engine = new CipherEngine();
-      engine.setCryptoMode('modern');
-      if (typeof engine.setModernProtocol === 'function') {
-        engine.setModernProtocol('v3');
-      }
-      engine.setRotors('I', 'II', 'III', 'Beta', 'A', 'A', 'A', 'A', 'A', 'A', 'A');
-      const counts = [];
-      const hist = new Map();
-      for (const cL of COUNTS) {
-        for (const cM of COUNTS) {
-          for (const cR of COUNTS) {
-            applyNotches(
-              engine,
-              baseNotchPattern(cL),
-              baseNotchPattern(cM),
-              baseNotchPattern(cR),
-            );
-            resetPos(engine);
-            const m = measureFrom(engine);
-            counts.push(m.period);
-            hist.set(m.period, (hist.get(m.period) || 0) + 1);
-          }
-        }
-      }
-      const sorted = [...counts].filter((x) => x != null).sort((a, b) => a - b);
-      const mid = Math.floor(sorted.length / 2);
-      return {
-        available: true,
-        theoreticalStateSpace: 26 ** 4,
-        min: sorted[0],
-        max: sorted[sorted.length - 1],
-        median: sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2,
-        histogram: [...hist.entries()]
-          .map(([period, count]) => ({ period, count }))
-          .sort((a, b) => a.period - b.period),
-        fractionOfStateSpaceMin: sorted[0] / 26 ** 4,
-        fractionOfStateSpaceMax: sorted[sorted.length - 1] / 26 ** 4,
-        note: 'Nur gleichmäßige Basis-Muster {5,7,9}, Start AAAA. Zufällige Teilmengen separat in V3-Tests.',
-      };
-    }
-    return { available: true, ...(await v3.measureV3Stepping()) };
-  } catch {
-    return { available: false, note: 'modern-v3.js noch nicht geladen — nur Ist-Messung.' };
-  }
+function summarize(periods) {
+  const s = [...periods].filter((n) => n != null).sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  const hist = new Map();
+  for (const p of s) hist.set(p, (hist.get(p) || 0) + 1);
+  return {
+    n: s.length,
+    min: s[0] ?? null,
+    max: s[s.length - 1] ?? null,
+    median: s.length ? (s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2) : null,
+    histogram: [...hist.entries()]
+      .map(([period, count]) => ({ period, count }))
+      .sort((a, b) => a.period - b.period),
+  };
 }
 
-function verifyExpected(got, expected) {
-  const set = new Set(got);
+function liveAndCascadePeriods(full) {
+  const rng = mulberry32(0x7a11);
+  const live = [];
+  const cascade = [];
+  const placements = full ? 3 : 1;
+
+  for (const left of COUNTS) {
+    for (const middle of COUNTS) {
+      for (const right of COUNTS) {
+        for (let p = 0; p < placements; p++) {
+          const notches = generateLueckenfueller((max) => seededInt(rng, max));
+          live.push({
+            counts: { left, middle, right },
+            placement: p,
+            ...walkFn(nextV3Positions, notches),
+          });
+          cascade.push({
+            counts: { left, middle, right },
+            placement: p,
+            ...walkFn(nextV3PositionsCascade, notches),
+          });
+        }
+      }
+    }
+  }
+
   return {
-    allExpectedPresent: expected.every((p) => set.has(p)),
-    extraPeriods: got.filter((p) => !expected.includes(p)),
-    missingExpected: expected.filter((p) => !set.has(p)),
+    liveDoubleStep: {
+      protocol: 'Modern V3',
+      stepRule: 'double-step',
+      stepRuleDetail:
+        'Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left',
+      current: true,
+      status: 'CURRENT',
+      theoreticalStateSpace: SPACE,
+      ...summarize(live.map((x) => x.period)),
+      samples: live,
+      note: 'Live V3 (Rev 47+). Double-step is not bijective; periods are typically much smaller than 26^4.',
+    },
+    cascadeFuture: {
+      protocol: 'V3 cascade (future option)',
+      stepRule: 'pure carry / Lückenfüller cascade',
+      current: false,
+      status: 'NOT LIVE',
+      theoreticalStateSpace: SPACE,
+      ...summarize(cascade.map((x) => x.period)),
+      samples: cascade,
+      note: 'Research only. Invertible; with notch counts {5,7,9} sampled orbits have period 26^4. See docs/crypto-spec/cascade-future.md.',
+    },
   };
 }
 
 if (process.argv.includes('--smoke')) {
   const engine = new CipherEngine();
   engine.setCryptoMode('modern');
+  engine.setModernProtocol('v2');
   engine.setRotors('I', 'II', 'III', 'Beta', 'A', 'A', 'A', 'A', 'A', 'A', 'A');
   applyNotches(engine, baseNotchPattern(5), baseNotchPattern(7), baseNotchPattern(9));
   resetPos(engine);
-  const sample = measureFrom(engine, 20_000);
-  const v3 = await import('../web/js/modern-v3.js');
-  if (typeof v3.generateEndwalzeWiring !== 'function') {
-    throw new Error('modern-v3 import failed');
+  const legacy = measureFrom(engine, 20_000);
+
+  const notches = generateLueckenfueller(() => 0);
+  const live = walkFn(nextV3Positions, notches);
+  const cascade = walkFn(nextV3PositionsCascade, notches);
+  if (legacy.period == null || live.period == null || cascade.period == null) {
+    throw new Error('smoke period measurement failed');
   }
-  console.log(`smoke ok period=${sample.period} v3=${typeof v3.canonicalDayKey}`);
+  console.log(
+    `smoke ok legacy=${legacy.period} liveDoubleStep=${live.period} cascade=${cascade.period}`,
+  );
   process.exit(0);
 }
 
-const current = currentImplPeriods();
-const v3 = await v3PeriodsIfPresent();
-const expectedCurrentBallpark = [2028, 4732, 11492, 12844, 14196];
-const verifiedExpected = verifyExpected(current.distinctPeriods, expectedCurrentBallpark);
+const exhaustive = process.argv.includes('--exhaustive');
+const full = process.argv.includes('--full') || exhaustive || !process.argv.includes('--smoke');
+const legacy = exhaustive ? legacyThreeWheelPeriods() : null;
+const { liveDoubleStep, cascadeFuture } = liveAndCascadePeriods(full);
 
-const out = {
-  generatedAt: new Date().toISOString(),
-  expectedCurrentBallpark,
-  current,
-  verifiedExpected,
-  modernV3: v3,
+const expectedLegacyBallpark = [2028, 4732, 11492, 12844, 14196];
+const verifiedLegacy = legacy
+  ? {
+      allExpectedPresent: expectedLegacyBallpark.every((p) => legacy.distinctPeriods.includes(p)),
+      extraPeriods: legacy.distinctPeriods.filter((p) => !expectedLegacyBallpark.includes(p)),
+      missingExpected: expectedLegacyBallpark.filter((p) => !legacy.distinctPeriods.includes(p)),
+    }
+  : { skipped: true, reason: 'legacy three-wheel walks run only with --exhaustive' };
+
+const current = {
+  ...stampLiveV3({ script: 'research/stepping-periods.mjs' }),
+  space: SPACE,
+  expectedPeriod: SPACE,
+  observedPeriod: liveDoubleStep.median,
+  bijective: false,
+  transient: 'present (double-step is not injective)',
+  coverage: liveDoubleStep.max === SPACE ? 1 : liveDoubleStep.max / SPACE,
+  liveDoubleStep,
+  note: 'Live Modern V3 is double-step. Typical periods are much smaller than 26^4. Cascade numbers are not current.',
 };
 
-writeJson('stepping-periods.json', out);
-console.log('Current distinct periods:', current.distinctPeriods);
-console.log('Verify:', out.verifiedExpected);
-console.log('V3:', v3.available ? `min=${v3.min} max=${v3.max} median=${v3.median}` : v3.note);
+const cascadeFile = {
+  ...stampCascadeFuture({ script: 'research/stepping-periods.mjs' }),
+  space: SPACE,
+  expectedPeriod: SPACE,
+  observedPeriod: cascadeFuture.median,
+  bijective: cascadeFuture.min === SPACE && cascadeFuture.max === SPACE,
+  transient: 0,
+  coverage: cascadeFuture.min === SPACE ? 1 : cascadeFuture.max / SPACE,
+  cascadeFuture,
+};
+
+if (legacy) {
+  writeJson('legacy/v2/stepping-periods.json', {
+    ...stampLegacyV2({ script: 'research/stepping-periods.mjs' }),
+    status: 'NOT CURRENT MODERN V3',
+    expectedLegacyBallpark,
+    measurement: legacy,
+    verifiedExpected: verifiedLegacy,
+  });
+}
+writeJson('future/cascade-stepping.json', cascadeFile);
+writeJson('v3-stepping-current.json', current);
+writeJson('stepping-periods.json', current);
+
+if (legacy) {
+  console.log('Legacy distinct periods:', legacy.distinctPeriods);
+  console.log('Legacy verify:', verifiedLegacy);
+} else {
+  console.log('Legacy three-wheel walks skipped (use --exhaustive)');
+}
+console.log(
+  'Live V3 double-step:',
+  `min=${liveDoubleStep.min} median=${liveDoubleStep.median} max=${liveDoubleStep.max}`,
+);
+console.log(
+  'Cascade (not live):',
+  `min=${cascadeFuture.min} median=${cascadeFuture.median} max=${cascadeFuture.max}`,
+);

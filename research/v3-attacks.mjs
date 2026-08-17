@@ -23,7 +23,9 @@ import {
   mulberry32,
   seededInt,
   wantsSmoke,
+  wantsFull,
   writeJson,
+  stampLiveV3,
 } from './lib.mjs';
 
 const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -73,27 +75,63 @@ async function hmacOracleRejectsWrongGround(cipher) {
   return !dec.ok && dec.error === 'modern.macFailed';
 }
 
-async function birthdayHeaders(n) {
-  const seen = new Map();
-  let collisions = 0;
+function birthdayProb(n, space) {
+  if (n < 2) return 0;
+  return 1 - Math.exp((-n * (n - 1)) / (2 * space));
+}
+
+async function multiMessageStudy(sizes, seed = 0xc011) {
+  const rng = mulberry32(seed);
+  const maxN = Math.max(...sizes);
+  const headers = new Map();
+  const mids = new Set();
+  const starts = new Set();
+  let headerCollisions = 0;
+  let midCollisions = 0;
+  let startCollisions = 0;
+  const snapshots = [];
   const engine = new CipherEngine();
-  const rng = mulberry32(0xc011);
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < maxN; i++) {
     const mk = Array.from({ length: 4 }, () => AZ[seededInt(rng, 26)]).join('');
+    const mid = Array.from({ length: 8 }, () => AZ[seededInt(rng, 26)]).join('');
     const enc = await modernV3EncryptPayload({
       engine,
       configure: (key) => configureSyntheticV3(engine, key),
       groundKey: SYNTHETIC_V3.groundKey,
       plainText: 'x',
       messageKey: mk,
-      messageId: `ID${String(i).padStart(6, 'A')}`.slice(0, 8).replace(/[^A-Z]/g, 'A'),
+      messageId: mid,
       dayConfig: SYNTHETIC_V3,
     });
     if (!enc.ok) throw new Error(enc.error);
-    if (seen.has(enc.header)) collisions += 1;
-    else seen.set(enc.header, mk);
+    if (headers.has(enc.header)) headerCollisions += 1;
+    else headers.set(enc.header, mk);
+    if (mids.has(mid)) midCollisions += 1;
+    else mids.add(mid);
+    if (starts.has(mk)) startCollisions += 1;
+    else starts.add(mk);
+    if (sizes.includes(i + 1)) {
+      snapshots.push({
+        messages: i + 1,
+        distinctHeaders: headers.size,
+        headerCollisions,
+        distinctMids: mids.size,
+        midCollisions,
+        distinctStarts: starts.size,
+        startCollisions,
+        theoryHeaderCollision: Number(birthdayProb(i + 1, 26 ** 4).toFixed(6)),
+        theoryMidCollision: Number(birthdayProb(i + 1, 26 ** 8).toFixed(12)),
+      });
+    }
   }
-  return { messages: n, distinctHeaders: seen.size, headerCollisions: collisions };
+  return {
+    seed: `mulberry32(0x${seed.toString(16)})`,
+    spaceMessageKey: 26 ** 4,
+    spaceMid: 26 ** 8,
+    snapshots,
+    attackNote:
+      'Same day key, many messages: SK birthday is 26^4. Repeated starts reuse the rotor walk. MID collisions are negligible. HMAC still binds each telegram.',
+  };
 }
 
 async function cribFilter(crib, cipherBodyLen) {
@@ -121,8 +159,9 @@ async function cribFilter(crib, cipherBodyLen) {
     cipherBodyLen,
     tested,
     survivors,
-    keysPerSec: tested / (ms / 1000),
-    wallMs: ms,
+    keysPerSec: null,
+    wallMs: null,
+    timingOmitted: 'volatile Node timing is not a reproducibility input',
   };
 }
 
@@ -148,12 +187,26 @@ for (const text of smoke ? ['AAAAAAAA'] : ['AAAAAAAAAAAA', 'ABABABABABAB', 'ABCD
 const wiringPairs = [...SYNTHETIC_V3.endwalzeWiring].map((y, i) => [AZ[i], y]).slice(0, smoke ? 4 : 10);
 const csp = invertEndwalzePartial(wiringPairs);
 
-const multi = await birthdayHeaders(smoke ? 20 : 200);
+const sizes = smoke ? [10, 20] : wantsFull() ? [10, 50, 100, 250, 500, 1000, 10000] : [10, 50, 100, 250];
+const multi = await multiMessageStudy(sizes);
 
 const out = {
-  generatedAt: new Date().toISOString(),
-  protocol: 'Modern V3',
+  ...stampLiveV3({ script: 'research/v3-attacks.mjs' }),
   hmacIsCandidateOracle: true,
+  candidateOracle: {
+    status: 'PASS',
+    procedure: 'candidate day key → canonicalDayKey → HKDF → HMAC → compare PRUEF',
+    note: 'This is not an HMAC break. It must be counted in key-recovery cost: a wrong candidate is rejected cheaply and a right one is confirmed.',
+    macFirstOnWrongGround: macFirst,
+  },
+  classification: {
+    knownPlaintext: 'PARTIAL',
+    chosenPlaintext: 'PARTIAL',
+    endwalzeCsp: 'PARTIAL',
+    plugboardRecovery: 'NOT TESTED',
+    multiMessage: 'PARTIAL',
+    formalSecurityProof: 'NONE',
+  },
   macFirstOnWrongGround: macFirst,
   knownPlaintext: cribRows,
   chosenPlaintext: chosen,
@@ -170,6 +223,6 @@ const out = {
 if (!smoke) writeJson('v3-attacks.json', out);
 console.log(
   smoke
-    ? `smoke ok macFirst=${macFirst} survivors=${cribRows[0].survivors} collisions=${multi.headerCollisions}`
+    ? `smoke ok macFirst=${macFirst} survivors=${cribRows[0].survivors} msgs=${multi.snapshots.at(-1)?.messages}`
     : JSON.stringify(out, null, 2),
 );

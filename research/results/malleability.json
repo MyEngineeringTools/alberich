@@ -1,106 +1,99 @@
 {
-  "generatedAt": "2026-08-16T10:10:25.263Z",
-  "plaintext": "Alberich-Malleability-Probe-42-XXXXYYYYZZZZ",
-  "base26Length": 86,
-  "header": "JESX",
-  "bodyLength": 86,
-  "totalMutations": 2150,
-  "accepted": 1219,
-  "rejected": 931,
-  "acceptedRate": 0.567,
-  "validUtf8AmongAccepted": 1219,
-  "plaintextChangedAmongAccepted": 1219,
-  "sampleChangePositions": [
+  "protocol": "Modern V3",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmFingerprint": "5e5647a3bd2b33a2",
+  "stepRule": "double-step",
+  "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
+  "generatorProfile": "Modern V3 Standard",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "script": "research/malleability.mjs",
+  "command": "research/malleability.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "current": true,
+  "status": "CURRENT",
+  "researchRng": "mulberry32 deterministic research PRNG — never used for production keys",
+  "productionRng": "Web Crypto CSPRNG",
+  "plaintext": "Alberich-V3-Malleability",
+  "telegramLen": 77,
+  "trials": 433,
+  "accepted": 0,
+  "leakedPlaintext": 0,
+  "byLabel": {
+    "version": {
+      "n": 100,
+      "accepted": 0
+    },
+    "header": {
+      "n": 100,
+      "accepted": 0
+    },
+    "mid": {
+      "n": 76,
+      "accepted": 0
+    },
+    "body": {
+      "n": 76,
+      "accepted": 0
+    },
+    "pruef": {
+      "n": 76,
+      "accepted": 0
+    },
+    "delete": {
+      "n": 1,
+      "accepted": 0
+    },
+    "insert": {
+      "n": 1,
+      "accepted": 0
+    },
+    "swap": {
+      "n": 1,
+      "accepted": 0
+    },
+    "epoch": {
+      "n": 1,
+      "accepted": 0
+    },
+    "network": {
+      "n": 1,
+      "accepted": 0
+    }
+  },
+  "sampleRejections": [
     {
-      "bodyIndex": 0,
-      "to": "D"
+      "label": "version[0]->B",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 0,
-      "to": "O"
+      "label": "version[0]->C",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 0,
-      "to": "X"
+      "label": "version[0]->D",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 0,
-      "to": "A"
+      "label": "version[0]->E",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 1,
-      "to": "U"
+      "label": "version[0]->F",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 1,
-      "to": "V"
+      "label": "version[0]->G",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 1,
-      "to": "W"
+      "label": "version[0]->H",
+      "error": "modern.notV3"
     },
     {
-      "bodyIndex": 1,
-      "to": "X"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "Y"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "Z"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "A"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "B"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "C"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "D"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "E"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "F"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "G"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "H"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "I"
-    },
-    {
-      "bodyIndex": 1,
-      "to": "J"
+      "label": "version[0]->I",
+      "error": "modern.notV3"
     }
   ],
-  "comparisonToKnownFinding": {
-    "bodyLetters": 86,
-    "mutations": 2150,
-    "knownAccepted": 1240,
-    "knownTotal": 2200,
-    "knownRate": 0.5636363636363636,
-    "thisRunAccepted": 1219,
-    "thisRunTotal": 2150,
-    "matchesBallpark": true
-  },
-  "finding": "Der Round-Trip-Check ist kein MAC und kein Authentizitätsnachweis. Ein großer Anteil einzelner Body-Buchstabenmutationen wird akzeptiert und liefert anderen Klartext."
+  "finding": "No manipulated authenticated telegram released plaintext. MAC-first holds on the tested mutations.",
+  "p0": false
 }

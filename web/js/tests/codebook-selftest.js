@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Selbsttest Tafel-Tag / Not-Aus / Generator (Parity Android).
  * Ausführen: node js/tests/codebook-selftest.js
  */

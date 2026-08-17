@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Dead-Key- und Equivalent-Key-Suche am aktuellen Modern-Ist.
  * Reproduzierbar, nur synthetische Schlüssel.
  */
@@ -17,8 +21,14 @@ import {
   mulberry32,
   writeJson,
   packPositions,
+  META_LEGACY_V2,
+  stampLiveV3,
+  stampLegacyV2,
+  SYNTHETIC_V3,
+  configureSyntheticV3,
 } from './lib.mjs';
 import { wantsSmoke as __wantsSmoke } from './lib.mjs';
+import { modernV3EncryptPayload } from '../web/js/modern-v3.js';
 if (__wantsSmoke()) { console.log('smoke ok equivalent-keys'); process.exit(0); }
 
 const TEST_LEN = 260;
@@ -187,7 +197,51 @@ const out = {
   ],
 };
 
-writeJson('equivalent-keys.json', out);
-console.log(JSON.stringify(out.tests, null, 2));
-console.log('\nFindings:');
-for (const f of out.findings) console.log(`  - ${f}`);
+writeJson('legacy/v2/equivalent-keys.json', {
+  ...stampLegacyV2({ script: 'research/equivalent-keys.mjs' }),
+  status: 'NOT CURRENT MODERN V3',
+  script: 'research/equivalent-keys.mjs',
+  ...out,
+});
+
+async function v3LiveFields() {
+  async function enc(dayOverrides = {}) {
+    const engine = new CipherEngine();
+    const day = { ...SYNTHETIC_V3, ...dayOverrides };
+    return modernV3EncryptPayload({
+      engine,
+      configure: (key) => configureSyntheticV3(engine, key, day),
+      groundKey: day.groundKey,
+      plainText: 'equivalent-key-probe',
+      messageKey: 'LDNQ',
+      messageId: 'EQKEYMID',
+      dayConfig: day,
+    });
+  }
+  const base = await enc();
+  const thin = await enc({ ringThin: 'F', ringCode: 'FPEL' });
+  const leftNotch = await enc({
+    notches: { ...SYNTHETIC_V3.notches, left: 'BGMSY' },
+  });
+  const ground = await enc({ groundKey: 'ADSZ' });
+  return {
+    thinRingChangesCipher: base.cipher !== thin.cipher,
+    leftNotchChangesCipher: base.cipher !== leftNotch.cipher,
+    groundChangesPruef: base.pruefgruppe !== ground.pruefgruppe,
+  };
+}
+
+const v3 = await v3LiveFields();
+writeJson('equivalent-keys.json', {
+  ...stampLiveV3({ script: 'research/equivalent-keys.mjs' }),
+  tests: v3,
+  findings: [
+    'LIVE: thin.ring changes the body (no V2-style dead thin ring).',
+    'LIVE: Left notches change the body (no unused left notch).',
+    'LIVE: ground is in canonicalDayKey; a different ground changes PRUEF.',
+  ],
+  statusNote: 'No complete equivalent-key classification. These are existence checks against the V2 dead fields.',
+});
+
+console.log('V2 (legacy)', JSON.stringify(out.tests, null, 2));
+console.log('V3 live', v3);

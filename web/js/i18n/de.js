@@ -1,4 +1,6 @@
-/** @type {Record<string, string>} */
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only @type {Record<string, string>} */
 export default {
   'meta.title': 'Alberich – Enigma M4 Simulator online | kostenlos',
   'meta.description':
@@ -85,6 +87,8 @@ export default {
   'modern.notchesMissing': 'Lückenfüller fehlen auf der V3-Tafel.',
   'modern.endwalzeInvalid': 'Endwalze ist keine vollständige A–Z-Permutation.',
   'modern.endwalzeInvolutory': 'Endwalze darf in V3 nicht involutorisch sein.',
+  'modern.endwalzeGenerateFailed':
+    'Sichere nicht-involutorische Endwalze konnte nicht erzeugt werden. Kein Schlüsselmaterial übernommen.',
   'modern.base26InvalidLength': 'Base-26-V2: ungültige Länge.',
   'modern.base26Range': 'Base-26-V2: Wert passt nicht zur Länge.',
   'modern.base26Utf8': 'Base-26-V2: kein gültiges UTF-8.',
@@ -382,8 +386,14 @@ export default {
   'toast.codebookActive': 'Schlüsseltafel aktiv',
   'toast.manualSource': 'Manuelle / zufällige Eingabe',
   'toast.fileTooLarge': 'Datei zu groß',
-  'toast.fileTooLarge': 'Datei zu groß',
   'toast.fileReadFailed': 'Datei konnte nicht gelesen werden',
+  'limits.plaintext': 'Klartext überschreitet das technische Maximum. Nichts verschlüsselt.',
+  'limits.cipher': 'Geheimtext überschreitet das technische Maximum. Nichts entschlüsselt.',
+  'limits.base26': 'Base-26-Länge überschreitet das Maximum.',
+  'limits.codebookJson': 'Schlüsseltafel-JSON ist zu groß.',
+  'limits.recommended': 'Empfohlene Modern-V3-Länge überschritten (kryptographischer Hinweis, kein hartes Limit).',
+  'modern.networkContextTooLong': 'Netzkontext länger als 16 Zeichen — keine stillschweigende Kürzung.',
+  'qr.err.imageTooLarge': 'QR-Bild zu groß.',
   'toast.qrImageFailed': 'QR-Bild konnte nicht gelesen werden',
   'toast.codebookImported': '{source}: {network} · {month} · Tag {day} · {word}',
   'toast.codebookGenerateFailed': 'Schlüsseltafel konnte nicht erzeugt werden',

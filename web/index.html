@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
 <html lang="de">
 <head>
   <meta charset="UTF-8">
@@ -10,7 +12,7 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0f172a">
   <meta name="color-scheme" content="dark">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ATpFP1YyeWakm6FTTlefTQ8D7+glQtYx9oscKbGZnBA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer">
   <meta http-equiv="Permissions-Policy" content="camera=(self), microphone=(), geolocation=(), payment=(), usb=()">
@@ -114,7 +116,7 @@
         </div>
 
         <div class="mode-bar mode-bar-main">
-          <div class="section-title" style="margin:0;" data-i18n="mode.main">Hauptmodus</div>
+          <div class="section-title section-title-flush" data-i18n="mode.main">Hauptmodus</div>
           <div class="mode-toggle" role="group" data-i18n-aria="mode.mainAria" aria-label="Hauptmodus">
             <button type="button" class="mode-btn" id="btnMainTraditional" data-main-mode="traditional" data-i18n="mode.traditional">Traditionell</button>
             <button type="button" class="mode-btn mode-btn-modern active" id="btnMainModern" data-main-mode="modern" data-i18n="mode.modern">Modern</button>
@@ -133,7 +135,7 @@
         </details>
 
         <div class="mode-bar mode-bar-procedure procedure-locked" id="traditionalProcedureBar">
-          <div class="section-title" style="margin:0;" data-i18n="mode.procedure">Verfahren</div>
+          <div class="section-title section-title-flush" data-i18n="mode.procedure">Verfahren</div>
           <div class="mode-toggle" role="group" data-i18n-aria="mode.procedureAria" aria-label="Schlüsselverfahren">
             <button type="button" class="mode-btn" id="btnModeSimple" data-mode="simple" data-i18n="mode.simple" disabled aria-disabled="true">Einfach</button>
             <button type="button" class="mode-btn active" id="btnModeMessage" data-mode="message" data-i18n="mode.message" disabled aria-disabled="true">Spruchschlüssel</button>
@@ -194,7 +196,7 @@
 
       <div class="message-key-bar direction-bar" id="directionBar" hidden>
         <div class="traffic-bar">
-          <div class="section-title" style="margin:0;" data-i18n="message.trafficType">Eingabe-Art</div>
+          <div class="section-title section-title-flush" data-i18n="message.trafficType">Eingabe-Art</div>
           <div class="mode-toggle" role="group" data-i18n-aria="message.trafficTypeAria" aria-label="Klartext oder Geheimtext">
             <button type="button" class="mode-btn active" id="btnRolePlain" data-role="plain" data-i18n="role.plain">Klartext</button>
             <button type="button" class="mode-btn" id="btnRoleCipher" data-role="cipher" data-i18n="role.cipher">Geheimtext</button>
@@ -359,7 +361,7 @@
       <p class="muted" id="setupModalIntro">Spruchschlüssel = Startlage der Walzen. Änderungen gelten sofort.</p>
 
       <div class="setup-source-bar">
-        <div class="section-title" style="margin:0;" data-i18n="setup.source">Schlüsselquelle</div>
+        <div class="section-title section-title-flush" data-i18n="setup.source">Schlüsselquelle</div>
         <div class="mode-toggle" role="group" data-i18n-aria="setup.sourceAria" aria-label="Schlüsselquelle">
           <button type="button" class="mode-btn" id="btnSourceCodebook" data-source="codebook" data-i18n="setup.sourceCodebook">Schlüsseltafel</button>
           <button type="button" class="mode-btn active" id="btnSourceManual" data-source="manual" data-i18n="setup.sourceManual">Zufällig / Manuell</button>
@@ -448,7 +450,7 @@
         </p>
       </div>
 
-      <div class="form-grid" id="manualSetupGrid" style="margin-top: 12px;">
+      <div class="form-grid" id="manualSetupGrid">
         <div class="codebook-endwalze-policy" id="manualEndwalzePolicyBlock">
           <span class="codebook-endwalze-label" data-i18n="codebook.endwalzePolicy">Endwalze</span>
           <div class="mode-toggle mode-toggle-compact" id="manualEndwalzePolicy" role="group" data-i18n-aria="codebook.endwalzePolicyAria" aria-label="Endwalzen-Auswahl">
@@ -491,7 +493,7 @@
           <div>
             <label for="keyCodeInput" id="keyCodeInputLabel">Spruchschlüssel (4)</label>
             <input id="keyCodeInput" maxlength="4" value="CDSZ">
-            <p class="muted" id="keyCodeInputHint" style="margin:6px 0 0;font-size:0.78rem;">
+            <p class="muted hint-tight" id="keyCodeInputHint">
               Startlage der Walzen (pro Nachricht).
             </p>
           </div>
@@ -503,7 +505,7 @@
             <option value="Gamma" data-i18n="setup.rotorThinGamma">Walze γ</option>
           </select>
         </div>
-        <p class="muted" style="margin:0;" data-i18n="setup.mainRotorsHint">Hauptwalzen (I–VIII): Jede Walze darf nur einmal in der Walzenlage vorkommen.</p>
+        <p class="muted muted-flush" data-i18n="setup.mainRotorsHint">Hauptwalzen (I–VIII): Jede Walze darf nur einmal in der Walzenlage vorkommen.</p>
         <p class="duplicate-hint" id="duplicateRotorHint" hidden></p>
         <div>
           <label for="rotorLeft" data-i18n="setup.rotorLeft">Linke Walze</label>
@@ -529,7 +531,7 @@
           <p class="muted" data-i18n="setup.plugboardHint">Buchstabenpaare getrennt durch Leerzeichen, z. B. AB CD EF</p>
         </div>
         <div>
-          <p class="section-title" style="margin-bottom:8px;" data-i18n="setup.exportTitle">Schlüsseleinstellung exportieren</p>
+          <p class="section-title" data-i18n="setup.exportTitle">Schlüsseleinstellung exportieren</p>
           <pre class="key-export" id="keyExport"></pre>
           <button class="text-btn" id="btnCopyKey" type="button" data-i18n="setup.copyKey">Schlüssel kopieren</button>
         </div>
@@ -725,19 +727,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script type="module">
-    import { MAIN_ROTOR_IDS } from './js/cipher-data.js';
-
-    ['rotorLeft', 'rotorMiddle', 'rotorRight'].forEach((id) => {
-      const select = document.getElementById(id);
-      MAIN_ROTOR_IDS.forEach((rotorId) => {
-        const option = document.createElement('option');
-        option.value = rotorId;
-        option.textContent = rotorId;
-        select.appendChild(option);
-      });
-    });
-  </script>
+  <script type="module" src="js/rotor-selects.js?v=49"></script>
   <script type="module" src="js/app.js?v=49"></script>
 </body>
 </html>

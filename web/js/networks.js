@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Mehrere Schlüsseltafel-Netze (bis MAX_NETWORKS) in der Web-App.
  * Jedes Netz hat Name + optional eine Monatstafel (alberich-codebook).
  */

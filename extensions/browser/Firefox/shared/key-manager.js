@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Monatstafel + gewählter Tag → Tagesschlüssel-Konfiguration.
  * Storage-Backend ist austauschbar (chrome.storage / memory für Tests).
  */

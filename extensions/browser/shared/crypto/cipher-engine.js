@@ -1,3 +1,7 @@
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 import {
   ROTORS,
   REFLECTOR_BRUNO,
@@ -28,8 +32,8 @@ export class CipherEngine {
     this.cryptoMode = 'traditional';
     /**
      * Modern-Protokoll. Traditional ignoriert das Feld.
-     * v2 = bisheriger 3-Walzen-Schritt (linke Kerbe tot).
-     * v3 = vierstufige Kaskade, Thin läuft mit.
+     * v2 = bisheriger 3-Walzen-Schritt (linke Kerbe tot, Thin fest).
+     * v3 = live double-step, four rotors (Rev 47+). Not the cascade.
      * @type {'v2' | 'v3'}
      */
     this.modernProtocol = 'v2';

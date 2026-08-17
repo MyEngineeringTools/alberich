@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Base-26 V1-Statistik (Ist) und V2-Statistik falls vorhanden.
  */
 
 import { utf8ToBase26 } from '../web/js/modern-crypto.js';
-import { mulberry32, writeJson, alphabet } from './lib.mjs';
+import { mulberry32, writeJson, alphabet, stampLiveV3 } from './lib.mjs';
 import { wantsSmoke as __wantsSmoke } from './lib.mjs';
 if (__wantsSmoke()) { console.log('smoke ok base26-statistics'); process.exit(0); }
 
@@ -76,12 +80,19 @@ addSample('emoji', '🔐 test 🎯');
 {
   const bytes = new Uint8Array(256);
   for (let i = 0; i < 256; i++) bytes[i] = i;
-  addSample('all-bytes-as-latin1', new TextDecoder('latin1').decode(bytes));
+  samples.push({
+    name: 'all-bytes-raw',
+    utf8Bytes: bytes.length,
+    letters: null,
+    note: 'raw Uint8Array 0..255 — no TextDecoder',
+    byteSum: [...bytes].reduce((a, b) => a + b, 0),
+  });
 }
 {
   const raw = new Uint8Array(4000);
   for (let i = 0; i < raw.length; i++) raw[i] = seededByte(rng);
-  addSample('random-4000-bytes', new TextDecoder('latin1').decode(raw));
+  const asLatin1Fallback = [...raw].map((b) => String.fromCharCode(b)).join('');
+  addSample('random-4000-bytes-as-code-units', asLatin1Fallback);
 }
 
 function seededByte(r) {
@@ -121,7 +132,6 @@ try {
 }
 
 const out = {
-  generatedAt: new Date().toISOString(),
   seed: 'mulberry32(0xB26)',
   v1: {
     mapping: 'high=floor(byte/26) ∈ 0..9, low=byte%26 — even positions theoretically A–J only',
@@ -132,7 +142,7 @@ const out = {
   v2,
 };
 
-writeJson('base26-statistics.json', out);
+writeJson('base26-statistics.json', { ...stampLiveV3({ script: 'research/base26-statistics.mjs' }), encodingOnly: true, ...out });
 console.log('V1 even-position A–J on random-4000:', samples.at(-1).evenPositionsRestrictedToAJ);
 console.log('V1 entropy even/odd random:', samples.at(-1).entropyEven, samples.at(-1).entropyOdd);
 console.log('V2 available:', v2.available);

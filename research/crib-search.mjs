@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Crib-Suche: bekannten Klartext-Buchstabenstrom im Körper verschieben.
  */
 
 import { CipherEngine } from '../web/js/cipher-engine.js';
 import { modernEncryptPayload, utf8ToBase26 } from '../web/js/modern-crypto.js';
-import { SYNTHETIC_V2, configureSyntheticV2, writeJson } from './lib.mjs';
+import { SYNTHETIC_V2, configureSyntheticV2, writeJson, META_LEGACY_V2 } from './lib.mjs';
 import { wantsSmoke as __wantsSmoke } from './lib.mjs';
 if (__wantsSmoke()) { console.log('smoke ok crib-search'); process.exit(0); }
 
@@ -51,5 +55,5 @@ const out = {
   note: 'Bei bekanntem Tagesschlüssel und SK ist die Crib-Lage ein linearer Scan. Ohne Tagesschlüssel ist das kein praktischer Bruch.',
 };
 
-writeJson('crib-search.json', out);
+writeJson('legacy/v2/crib-search.json', { ...META_LEGACY_V2, status: 'NOT CURRENT MODERN V3', script: 'research/crib-search.mjs', ...out });
 console.log(out);

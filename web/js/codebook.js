@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Import von Alberich-Schlüsseltafeln (JSON aus dem Codebook-Tool).
  * Format: format === "alberich-codebook", formatVersion 1, 2 oder 3.
  */
@@ -14,6 +16,7 @@ import {
 import { parseEndwalzePolicy } from './endwalze-policy.js';
 import { applyKeyCode, applyRingCode } from './text-processing.js';
 import { validateEndwalzeWiring, validateLueckenfueller } from './modern-v3.js';
+import { LIMITS } from './limits.js';
 
 export const ALBERICH_CODEBOOK_FORMAT = 'alberich-codebook';
 /** Höchste akzeptierte Version (3 = Modern V3 / freie Permutation). */
@@ -63,6 +66,9 @@ const THIN_SET = new Set(THIN_ROTOR_IDS);
  * @returns {{ ok: true, sheet: CodebookSheet } | { ok: false, error: string }}
  */
 export function parseCodebookJson(raw) {
+  if (typeof raw === 'string' && new TextEncoder().encode(raw).length > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
+    return { ok: false, error: 'limits.codebookJson' };
+  }
   let data;
   try {
     data = typeof raw === 'string' ? JSON.parse(raw) : raw;

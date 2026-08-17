@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+# SPDX-License-Identifier: AGPL-3.0-only
 """Independent Alberich reference (Traditional + Modern V3).
 
 Written from the specification, not transcribed from the JavaScript.

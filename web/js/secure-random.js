@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Kryptographisch sicherer Zufall (Web Crypto API).
  * Gleichverteilt per Rejection Sampling — wie im Codebook-Generator.
  */

@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Kompakte Tafel-Anzeige für Companion / Thunderbird:
  * Tafelwort + optionale Monatsabweichung (eine Zeile, ein Button).
  */

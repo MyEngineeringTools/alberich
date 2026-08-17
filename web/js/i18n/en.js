@@ -1,4 +1,6 @@
-/** @type {Record<string, string>} */
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only @type {Record<string, string>} */
 export default {
   'meta.title': 'Alberich – Enigma M4 simulator online | free',
   'meta.description':
@@ -85,6 +87,8 @@ export default {
   'modern.notchesMissing': 'Filler notches missing on the V3 sheet.',
   'modern.endwalzeInvalid': 'End rotor is not a complete A–Z permutation.',
   'modern.endwalzeInvolutory': 'End rotor must not be involutory in V3.',
+  'modern.endwalzeGenerateFailed':
+    'Unable to generate a secure non-involutory end rotor. No key material was applied.',
   'modern.base26InvalidLength': 'Base-26 V2: invalid length.',
   'modern.base26Range': 'Base-26 V2: value does not fit the length.',
   'modern.base26Utf8': 'Base-26 V2: not valid UTF-8.',
@@ -383,6 +387,13 @@ export default {
   'toast.manualSource': 'Manual / random input',
   'toast.fileTooLarge': 'File too large',
   'toast.fileReadFailed': 'Could not read file',
+  'limits.plaintext': 'Plaintext exceeds the technical maximum. Nothing was encrypted.',
+  'limits.cipher': 'Ciphertext exceeds the technical maximum. Nothing was decrypted.',
+  'limits.base26': 'Base-26 length exceeds the maximum.',
+  'limits.codebookJson': 'Code-sheet JSON is too large.',
+  'limits.recommended': 'Recommended Modern V3 length exceeded (advisory, not a hard fail).',
+  'modern.networkContextTooLong': 'Network context longer than 16 characters — no silent truncation.',
+  'qr.err.imageTooLarge': 'QR image is too large.',
   'toast.qrImageFailed': 'Could not read QR image',
   'toast.codebookImported': '{source}: {network} · {month} · day {day} · {word}',
   'toast.codebookGenerateFailed': 'Could not create the code sheet',

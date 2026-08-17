@@ -10,7 +10,7 @@ sheets, courier QR.
   Android `1.0 (Revision 29)` / code 29. Not a separate GitHub count.
 - Platforms here: static **web** app, **browser companion** (Chrome / Edge /
   Firefox), and **Thunderbird** MailExtension
-- Not in this tree: Android sources, Matomo, store listings
+- Not in this tree: Android sources, store listings
 
 SPDX-License-Identifier: `AGPL-3.0-only`
 
@@ -28,7 +28,8 @@ SPDX-License-Identifier: `AGPL-3.0-only`
 - Month sheets, networks, sheet word (Tafelwort)
 - Courier: letters and QR only on the online device
 - German and English UI, no account, no build step
-- The cryptographic workspace performs no analytics or telemetry
+- The cryptographic workspace performs no analytics or telemetry.
+  No tracking. No external analytics scripts.
 
 ## Requirements
 
@@ -47,10 +48,46 @@ cd web
 
 http://localhost:8765
 
-Browser companion: load unpacked from `extensions/browser/Chrome`, `Edge`, or
-`Firefox/manifest.json`. After panel edits run `extensions/browser/sync-from-chrome.sh`.
+### Browser companion
 
-Thunderbird: load temporarily from `extensions/thunderbird/manifest.json`.
+The Git source tree keeps a shared `extensions/browser/shared/` folder.
+Chrome and Edge **symlink** to it. A GitHub ZIP of the repository is **not**
+a loadable extension on Windows — those symlinks do not survive a download.
+
+**Developers with a git clone**
+
+Source of truth is `extensions/browser/shared/`. After panel edits run
+`extensions/browser/sync-from-chrome.sh`.
+
+**Local testing (any OS)**
+
+```bash
+bash scripts/package-extensions.sh
+```
+
+Then load unpacked from:
+
+```text
+dist/extensions/chrome/
+dist/extensions/edge/
+dist/extensions/firefox/
+```
+
+Those folders contain real files, not symlinks.
+
+**Normal users**
+
+Use the GitHub Release ZIP, for example:
+
+```text
+alberich-chrome-VERSION.zip
+alberich-edge-VERSION.zip
+alberich-firefox-VERSION.zip
+```
+
+Thunderbird: developers load temporarily from
+`extensions/thunderbird/manifest.json`. Users take the Thunderbird file
+from the same GitHub Release.
 
 ```bash
 bash scripts/test.sh
@@ -98,6 +135,7 @@ ist erlaubt, solange diese Bedingungen eingehalten werden.
 
 See [LICENSE](LICENSE) for the full text and [COPYRIGHT](COPYRIGHT) for the
 holder. Bundled libraries keep their own terms ([THIRD_PARTY.md](THIRD_PARTY.md)).
+The name and gold-A mark are reserved ([docs/BRANDING.md](docs/BRANDING.md)).
 
 The name **Alberich** and the gold-A-in-gear mark are **not** licensed under
 the AGPL. Forks should pick their own name unless we agree otherwise.

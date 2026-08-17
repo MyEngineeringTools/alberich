@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+# SPDX-License-Identifier: AGPL-3.0-only
 # Chrome als UI-Quelle → Edge (1:1) + Firefox (Panel + shared-Kopie)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"

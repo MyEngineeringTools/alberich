@@ -13,6 +13,11 @@ Counts and positions are **daily key material**, visible on the sheet.
 - Import: no silent normalisation
 - Invalid count, duplicates, or unsorted letters → reject
 
+The generator picks the count uniformly, then a uniform subset of that
+size. Therefore a 5-letter set is more likely than a 9-letter set.
+Support, Shannon entropy and min-entropy are computed in
+`research/keyspace.mjs` and must not be replaced by \(\log_2(26^4)\).
+
 ## V2 — derivation (Weg B)
 
 Legacy Modern (formatVersion 1–2) derives notches from rings and plugs.

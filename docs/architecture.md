@@ -1,8 +1,10 @@
 # Architecture
 
 Alberich Web is a static front-end. There is no application server and no
-account. Opening `web/` in a local file server is the same machine as
-https://alberich.pro/, minus optional self-hosted analytics on the live host.
+account. Opening `web/` in a local file server is the same cryptographic
+workspace as https://alberich.pro/.
+
+No analytics. No telemetry. No tracking. No external analytics scripts.
 
 ```
 browser
@@ -30,7 +32,8 @@ in Revision 47. A pure notch cascade is documented as a
 `modern-crypto.js` still holds older V2 helpers for tests; they are not a
 live product path.
 
-The cryptographic workspace performs no analytics or telemetry.
+The cryptographic workspace performs no analytics or telemetry. There is
+no optional analytics exception for the live host.
 
 ## Keys
 
@@ -73,6 +76,34 @@ in the working tree; `scripts/package-extensions.sh` copies files into
 
 `extensions/thunderbird/` is the MailExtension. Same engines, own UI.
 
+## Content Security Policy
+
+`web/index.html` ships:
+
+```
+script-src 'self' 'sha256-…'   # hash covers the JSON-LD block only
+style-src  'self' 'unsafe-inline'
+```
+
+First-party JavaScript is in external modules (`js/app.js`,
+`js/rotor-selects.js`). There is no inline executable script.
+
+`style-src` still allows `'unsafe-inline'` because:
+
+1. `js/vendor/qrcode-generator.js` emits `<table style="…">` / `<td style="…">`
+   for courier and codebook QR images. Changing that vendor bundle would
+   risk breaking QR/camera/offline share.
+2. The workspace toggles a few layout nodes via `element.style.display`.
+
+Do not drop `style-src 'unsafe-inline'` without replacing both. If the
+JSON-LD block in `index.html` changes, recompute its SHA-256 and update
+the `script-src` hash (`scripts/test-repository.sh` checks this).
+`web/start.sh` reads that same meta tag so the local file server cannot
+silently re-introduce `'unsafe-inline'` for scripts. `web/.htaccess`
+must carry the same `script-src` hash (no `'unsafe-inline'` for
+scripts). `scripts/test-repository.sh` compares the three.
+
 ## What is not here
 
-Android and Matomo stay outside this repository.
+Android sources stay outside this repository. There is no analytics
+component in this tree.

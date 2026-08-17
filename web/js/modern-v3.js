@@ -1,8 +1,10 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Modern V3 — spezifiziertes experimentelles Rotorprotokoll.
  *
  * Traditional und Modern V2 bleiben unberührt. V3 ist ein eigener Pfad:
- * ALB3-Telegramm, vierstufige Kaskade, freie Endwalzen-Permutation,
+ * ALBV-Telegramm, vierstufiger Double-Step (live), freie Endwalzen-Permutation,
  * unabhängige Lückenfüller auf der Tafel, Base-26 V2, Prüfgruppe (HMAC).
  *
  * Keine AES-Äquivalenz, kein Sicherheitsbeweis.
@@ -20,6 +22,7 @@ import {
   posToLetter,
 } from './modern-crypto.js';
 import { cryptoRandomInt, randomFourLetters } from './secure-random.js';
+import { LIMITS } from './limits.js';
 
 /** Sichtbarer Telegrammstempel — nur A–Z, sonst frisst extractLetters die Ziffer. */
 export const MODERN_V3_STAMP = 'ALBV';
@@ -117,19 +120,12 @@ export function validateLueckenfueller(value) {
 // Endwalze — echte 26!-Permutation
 // ---------------------------------------------------------------------------
 
-/** Identity with a fixed 3-cycle ABC → BCA. Never an involution, independent of RNG. */
-function nonInvolutoryFallbackWiring() {
-  const letters = [...AZ];
-  const first = letters[0];
-  letters[0] = letters[1];
-  letters[1] = letters[2];
-  letters[2] = first;
-  return letters.join('');
-}
+export const ENDWALZE_GENERATION_MAX_ATTEMPTS = 64;
+export const ENDWALZE_GENERATE_FAILED = 'Unable to generate secure non-involutory end-wheel permutation';
 
 export function generateEndwalzeWiring(nextInt = cryptoRandomInt) {
   const rnd = nextIntFn(nextInt);
-  for (let attempt = 0; attempt < 64; attempt++) {
+  for (let attempt = 0; attempt < ENDWALZE_GENERATION_MAX_ATTEMPTS; attempt++) {
     const letters = [...AZ];
     for (let i = letters.length - 1; i > 0; i--) {
       const j = rnd(i + 1);
@@ -138,7 +134,7 @@ export function generateEndwalzeWiring(nextInt = cryptoRandomInt) {
     const wiring = letters.join('');
     if (!isInvolutoryWiring(wiring)) return wiring;
   }
-  return nonInvolutoryFallbackWiring();
+  throw new Error(ENDWALZE_GENERATE_FAILED);
 }
 
 export function validateEndwalzeWiring(raw, opts = {}) {
@@ -211,19 +207,33 @@ export function base26ToInt(letters) {
 }
 
 export function utf8ToBase26v2(text) {
-  const bytes = new TextEncoder().encode(String(text ?? ''));
+  const raw = String(text ?? '');
+  if (raw.length > LIMITS.MAX_PLAINTEXT_CHARS) {
+    throw new Error('limits.plaintext');
+  }
+  const bytes = new TextEncoder().encode(raw);
+  if (bytes.length > LIMITS.MAX_PLAINTEXT_CHARS) {
+    throw new Error('limits.plaintext');
+  }
   if (bytes.length === 0) return '';
+  const digits = minDigitsForByteLen(bytes.length);
+  if (digits > LIMITS.MAX_BASE26_LETTERS) {
+    throw new Error('limits.base26');
+  }
   let n = 0n;
   for (let i = 0; i < bytes.length; i++) {
     n = (n << 8n) | BigInt(bytes[i]);
   }
-  return intToBase26(n, minDigitsForByteLen(bytes.length));
+  return intToBase26(n, digits);
 }
 
 export function base26v2ToUtf8(letters) {
   const clean = String(letters ?? '')
     .toUpperCase()
     .replace(/[^A-Z]/g, '');
+  if (clean.length > LIMITS.MAX_BASE26_LETTERS) {
+    return { ok: false, error: 'limits.base26' };
+  }
   if (clean.length === 0) return { ok: true, text: '' };
   const L = byteLenFromDigits(clean.length);
   if (L == null) return { ok: false, error: 'modern.base26InvalidLength' };
@@ -248,12 +258,22 @@ export function base26v2ToUtf8(letters) {
 // Kanonisches Schlüsselmaterial + Prüfgruppe
 // ---------------------------------------------------------------------------
 
-export function normalizeNetworkContext(value) {
-  const s = String(value ?? '')
+export function validateNetworkContext(value) {
+  const cleaned = String(value ?? '')
     .toUpperCase()
-    .replace(/[^A-Z0-9]/g, '')
-    .slice(0, 16);
-  return s || DEFAULT_NETWORK_CONTEXT;
+    .replace(/[^A-Z0-9]/g, '');
+  if (cleaned.length > LIMITS.MAX_NETWORK_CONTEXT) {
+    return { ok: false, error: 'modern.networkContextTooLong' };
+  }
+  return { ok: true, value: cleaned || DEFAULT_NETWORK_CONTEXT };
+}
+
+export function normalizeNetworkContext(value) {
+  const checked = validateNetworkContext(value);
+  if (!checked.ok) {
+    throw new Error(checked.error);
+  }
+  return checked.value;
 }
 
 export function normalizeEpoch(value) {
@@ -435,6 +455,9 @@ export function parseV3Telegram(letters) {
   const clean = String(letters ?? '')
     .toUpperCase()
     .replace(/[^A-Z]/g, '');
+  if (clean.length > LIMITS.MAX_CIPHER_LETTERS) {
+    return { ok: false, error: 'limits.cipher' };
+  }
   const min = MODERN_V3_STAMP.length + HEADER_LETTERS + MESSAGE_ID_LETTERS + PRUEF_LETTERS;
   if (clean.length < min) {
     return { ok: false, error: 'modern.v3TooShort' };
@@ -530,8 +553,22 @@ export async function modernV3EncryptPayload(opts) {
   if (!wiring.ok) return { ok: false, error: wiring.error };
   const notches = validateLueckenfueller(dayConfig?.notches || dayConfig?.lueckenfueller);
   if (!notches.ok) return { ok: false, error: notches.error };
+  const net = validateNetworkContext(dayConfig?.networkContext);
+  if (!net.ok) return net;
 
-  const bodyLetters = utf8ToBase26v2(plainText);
+  const plain = String(plainText ?? '');
+  if (plain.length > LIMITS.MAX_PLAINTEXT_CHARS) {
+    return { ok: false, error: 'limits.plaintext' };
+  }
+  let bodyLetters;
+  try {
+    bodyLetters = utf8ToBase26v2(plain);
+  } catch (err) {
+    return { ok: false, error: err?.message || 'limits.plaintext' };
+  }
+  if (bodyLetters.length > LIMITS.MAX_BASE26_LETTERS) {
+    return { ok: false, error: 'limits.base26' };
+  }
   if (!configure(groundKey)) return { ok: false, error: 'modern.configureFailed' };
   const header = engine.encryptMessage(messageKey);
   if (header.length !== HEADER_LETTERS) return { ok: false, error: 'modern.headerFailed' };
@@ -541,7 +578,7 @@ export async function modernV3EncryptPayload(opts) {
   const messageId = /^[A-Z]{8}$/.test(opts.messageId || '')
     ? opts.messageId
     : randomMessageId();
-  const networkContext = normalizeNetworkContext(dayConfig.networkContext);
+  const networkContext = net.value;
   const epoch = normalizeEpoch(dayConfig.epoch);
   const authKey = await deriveAuthKey(
     canonicalDayKey({
@@ -594,8 +631,10 @@ export async function modernV3DecryptPayload(opts) {
   if (!wiring.ok) return { ok: false, error: wiring.error };
   const notches = validateLueckenfueller(dayConfig?.notches || dayConfig?.lueckenfueller);
   if (!notches.ok) return { ok: false, error: notches.error };
+  const net = validateNetworkContext(dayConfig?.networkContext);
+  if (!net.ok) return net;
 
-  const networkContext = normalizeNetworkContext(dayConfig.networkContext);
+  const networkContext = net.value;
   const epoch = normalizeEpoch(dayConfig.epoch);
   const authKey = await deriveAuthKey(
     canonicalDayKey({

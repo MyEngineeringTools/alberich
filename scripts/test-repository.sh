@@ -26,13 +26,19 @@ ok "VERSIONS consistent with README/manifests"
 
 # --- telemetry ---
 if grep -RIn --exclude-dir=vendor --exclude-dir=.git --exclude-dir=dist \
-    -E 'matomo|google-analytics|googletagmanager|analytics.js' \
+    -E 'matomo|google-analytics|googletagmanager|analytics\.js|self-hosted analytics' \
     --exclude='robots.txt' --exclude='test-repository.sh' \
     web extensions docs README.md SECURITY.md >/dev/null; then
   bad "telemetry marker found"
 else
   ok "zero telemetry scan"
 fi
+for f in README.md SECURITY.md docs/architecture.md; do
+  grep -Fq "no analytics or telemetry" "$f" \
+    || grep -Fq "No analytics" "$f" \
+    || bad "$f missing zero-telemetry statement"
+done
+ok "zero-telemetry docs agree"
 
 # --- first-party JSON ---
 while IFS= read -r -d '' f; do
@@ -63,6 +69,133 @@ fi
 grep -Fq 'GNU AFFERO GENERAL PUBLIC LICENSE' LICENSE || bad "LICENSE"
 grep -Fq 'AGPL-3.0-only' THIRD_PARTY.md || bad "THIRD_PARTY still denies OSS"
 ok "license notices"
+
+# --- SPDX: first-party has AGPL; vendor must not claim Alberich copyright ---
+while IFS= read -r -d '' f; do
+  grep -q 'SPDX-License-Identifier: AGPL-3.0-only' "$f" || bad "missing SPDX $f"
+done < <(find web/js extensions research reference scripts web/start.sh web/index.html web/styles.css \
+    \( -name '*.js' -o -name '*.mjs' -o -name '*.py' -o -name '*.sh' -o -name '*.css' -o -name '*.html' \) \
+    -not -path '*/vendor/*' -print0)
+ok "first-party SPDX present"
+
+if grep -RIn --exclude-dir=.git 'SPDX-License-Identifier: AGPL-3.0-only' \
+    web/js/vendor extensions/browser/shared/vendor extensions/thunderbird/shared/vendor \
+    extensions/browser/Firefox/shared/vendor >/dev/null 2>&1; then
+  bad "vendor file marked as AGPL-3.0-only"
+else
+  ok "vendor licences left alone"
+fi
+
+# --- CSP ---
+csp="$(tr '\n' ' ' < web/index.html | sed -n 's/.*Content-Security-Policy" content="\([^"]*\)".*/\1/p')"
+echo "$csp" | grep -q "script-src 'self'" || bad "CSP missing script-src 'self'"
+echo "$csp" | grep -q "script-src 'self' 'unsafe-inline'" && bad "CSP script-src still has unsafe-inline"
+echo "$csp" | grep -q "style-src 'self' 'unsafe-inline'" || bad "CSP dropped style-src unsafe-inline without replacing vendor QR styles"
+python3 - <<'PY' || bad "JSON-LD CSP hash mismatch"
+import hashlib, re, base64
+from pathlib import Path
+html = Path("web/index.html").read_text()
+m = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+if not m:
+    raise SystemExit("no JSON-LD block")
+digest = base64.b64encode(hashlib.sha256(m.group(1).encode()).digest()).decode()
+token = f"'sha256-{digest}'"
+if token not in html:
+    raise SystemExit(f"expected {token} in CSP")
+print("OK   JSON-LD hash", digest)
+PY
+grep -Fq "unsafe-inline" docs/architecture.md || bad "architecture.md must document remaining style-src unsafe-inline"
+grep -Fq 'Content-Security-Policy' web/start.sh || bad "start.sh must apply the index.html CSP"
+if grep -q "script-src 'self' 'unsafe-inline'" web/start.sh; then
+  bad "start.sh still hardcodes script-src unsafe-inline"
+fi
+if grep -q "script-src 'self' 'unsafe-inline'" web/.htaccess; then
+  bad ".htaccess still has script-src unsafe-inline"
+fi
+python3 - <<'PY' || bad "CSP sources disagree"
+import re
+from pathlib import Path
+html = Path("web/index.html").read_text()
+ht = Path("web/.htaccess").read_text()
+m = re.search(r'Content-Security-Policy" content="([^"]+)"', html)
+h = re.search(r'Content-Security-Policy "([^"]+)"', ht)
+if not m or not h:
+    raise SystemExit("missing CSP")
+if "unsafe-inline" in m.group(1).split("style-src")[0] and "script-src" in m.group(1):
+    script = m.group(1).split("style-src")[0]
+    if "'unsafe-inline'" in script:
+        raise SystemExit("html script-src still unsafe-inline")
+if "'sha256-" not in h.group(1) or "'unsafe-inline'" in h.group(1).split("style-src")[0]:
+    raise SystemExit("htaccess script-src weaker than html")
+print("OK   index.html and .htaccess script-src both hashed")
+PY
+ok "CSP hardened and documented"
+
+# --- algorithm provenance ---
+if [[ -f research/results/fingerprint.json ]]; then
+  python3 - <<'PY' || bad "research provenance"
+import json, subprocess
+from pathlib import Path
+fp = json.loads(Path("research/results/fingerprint.json").read_text())
+commit = fp.get("sourceCommit")
+if not commit or commit == "unpublished":
+    raise SystemExit("fingerprint missing sourceCommit")
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+files = [
+    "VERSIONS",
+    "web/js/cipher-data.js",
+    "web/js/cipher-engine.js",
+    "web/js/codebook-generate.js",
+    "web/js/codebook.js",
+    "web/js/limits.js",
+    "web/js/modern-crypto.js",
+    "web/js/modern-v3.js",
+    "web/js/secure-random.js",
+]
+diff = subprocess.run(["git", "diff", "--quiet", commit, "HEAD", "--", *files])
+if diff.returncode != 0:
+    raise SystemExit(f"algorithm files changed since sourceCommit {commit}")
+print("OK   algorithm files unchanged since", commit[:12], "HEAD", head[:12])
+PY
+fi
+grep -Fq 'refusing release from dirty working tree' scripts/release.sh || bad "release.sh dirty-tree gate"
+grep -Fq 'full research reproduction requires a clean working tree' scripts/reproduce-research.sh || bad "reproduce-research dirty-tree gate"
+ok "release/research provenance gates"
+
+if [[ -x scripts/verify-vendor.sh ]]; then
+  bash scripts/verify-vendor.sh || bad "vendor checksums"
+fi
+
+# --- research labelling ---
+if [[ -f research/results/stepping-periods.json ]]; then
+  grep -Fq '"stepRule": "double-step"' research/results/stepping-periods.json \
+    || bad "current stepping-periods.json is not labelled live double-step"
+  grep -Fq '"current": true' research/results/stepping-periods.json \
+    || bad "current stepping-periods.json missing current:true"
+  if grep -Fq '"expectedCurrentBallpark"' research/results/stepping-periods.json; then
+    bad "legacy ballpark left in current stepping-periods.json"
+  fi
+fi
+if [[ -d research/results/legacy ]]; then
+  while IFS= read -r -d '' f; do
+    grep -Fq 'NOT CURRENT' "$f" || bad "legacy result unlabelled $f"
+  done < <(find research/results/legacy -name '*.json' -print0)
+fi
+if [[ -d research/results/future ]]; then
+  while IFS= read -r -d '' f; do
+    grep -Fq 'NOT CURRENT' "$f" || bad "future result unlabelled $f"
+  done < <(find research/results/future -name '*.json' -print0)
+fi
+while IFS= read -r -d '' f; do
+  grep -Fq '"current": true' "$f" || bad "current result unlabelled $f"
+done < <(find research/results -maxdepth 1 -name '*.json' -print0)
+ok "research results labelled"
+
+# --- extension install path ---
+grep -Fq 'scripts/package-extensions.sh' README.md || bad "README missing package-extensions.sh"
+grep -Fq 'dist/extensions/chrome/' README.md || bad "README missing dist/extensions/chrome/"
+grep -Fq 'alberich-chrome-' README.md || bad "README missing release ZIP names"
+ok "extension packaging documented"
 
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail repository check(s) failed"

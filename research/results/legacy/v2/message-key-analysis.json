@@ -1,0 +1,28 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/message-key-analysis.mjs",
+  "generatedAt": "2026-08-16T10:09:42.497Z",
+  "messageKeyLetters": 4,
+  "combinatorial": {
+    "space": 456976,
+    "bits": 18.8018
+  },
+  "whatFourLettersControl": [
+    "Thin-Position (in V2: Thin steht danach still)",
+    "Left-Position",
+    "Middle-Position",
+    "Right-Position"
+  ],
+  "recommendation": "Vier Buchstaben bleiben mechanisch korrekt, solange vier Rotorlagen der Startzustand sind. Eine zuf\u00e4llige Message-ID geh\u00f6rt nicht in die Walzen, sondern in die Pr\u00fcfgruppe.",
+  "observations": {
+    "samePlainDifferentMkDifferentCipher": true,
+    "samePlainSameMkSameCipher": true,
+    "headerDiffersWithMk": true,
+    "recoveredMessageKey": true
+  },
+  "bruteForceNote": "Bei bekanntem Tagesschl\u00fcssel ist der Spruchschl\u00fcssel 26^4. Der Header ist die Verschl\u00fcsselung des SK unter der Grundstellung \u2014 Known-Header-Crib der L\u00e4nge 4. Das ist historisch \u00fcblich und kein Ersatz f\u00fcr Authentizit\u00e4t.",
+  "multiMessage": "Viele Nachrichten desselben Tages teilen Rotorwahl, Ringe, Stecker, Endwalze. Der SK wechselt. V2 hat keinen Message-Identifier und keinen MAC."
+}

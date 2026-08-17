@@ -1,0 +1,167 @@
+{
+  "protocol": "Modern V2 / three-wheel",
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left unused; Thin stands",
+  "current": false,
+  "status": "NOT CURRENT MODERN V3",
+  "script": "research/stepping-periods.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "expectedLegacyBallpark": [
+    2028,
+    4732,
+    11492,
+    12844,
+    14196
+  ],
+  "measurement": {
+    "protocol": "V2 / V3 legacy step rule",
+    "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+    "current": false,
+    "status": "NOT CURRENT",
+    "note": "These periods describe the old three-wheel modern step. They do not describe live V3 double-step and they do not describe the cascade future option.",
+    "configs": 6084,
+    "distinctPeriods": [
+      2028,
+      4732,
+      11492,
+      12844,
+      14196
+    ],
+    "histogram": [
+      {
+        "period": 2028,
+        "count": 676
+      },
+      {
+        "period": 4732,
+        "count": 676
+      },
+      {
+        "period": 11492,
+        "count": 2028
+      },
+      {
+        "period": 12844,
+        "count": 2028
+      },
+      {
+        "period": 14196,
+        "count": 676
+      }
+    ],
+    "sampleAAA": [
+      {
+        "counts": {
+          "middle": 5,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 14198,
+          "transient": 2,
+          "period": 14196,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 5,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 2030,
+          "transient": 2,
+          "period": 2028,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 5,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 4734,
+          "transient": 2,
+          "period": 4732,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      }
+    ]
+  },
+  "verifiedExpected": {
+    "allExpectedPresent": true,
+    "extraPeriods": [],
+    "missingExpected": []
+  }
+}

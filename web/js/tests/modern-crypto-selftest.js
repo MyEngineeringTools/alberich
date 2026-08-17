@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Selbsttest: Modern-Kern komplett (Endwalze, Lückenfüller, Base-26, Auto-SK)
  * + Traditionell-Regression.
  * Ausführen: node js/tests/modern-crypto-selftest.js

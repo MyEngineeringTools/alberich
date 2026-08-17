@@ -1,0 +1,44 @@
+version = 1
+
+# JSON cannot carry comments. These annotations cover first-party data
+# and docs that have no comment syntax, plus generated research output.
+
+[[annotations]]
+path = [
+  "examples/**",
+  "web/examples/**",
+  "research/results/**",
+  "reference/**.json",
+  "docs/**",
+  "web/docs/**",
+  "web/CHANGELOG.md",
+  "VERSIONS",
+  "CHANGELOG.md",
+  "README.md",
+  "SECURITY.md",
+  "CONTRIBUTING.md",
+  "THIRD_PARTY.md",
+  "COPYRIGHT",
+  "web/THIRD_PARTY.md",
+  "extensions/**/README.md",
+  "extensions/**/manifest.json",
+  "extensions/**/_locales/**",
+]
+SPDX-FileCopyrightText = "2026 Christian Peter Kaiser"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = [
+  "web/js/vendor/**",
+  "extensions/**/vendor/**",
+]
+SPDX-FileCopyrightText = "see the LICENSE file next to each vendor bundle"
+SPDX-License-Identifier = "LicenseRef-ThirdParty-see-THIRD_PARTY"
+
+[[annotations]]
+path = [
+  "web/assets/**",
+  "docs/screenshots/**",
+]
+SPDX-FileCopyrightText = "2026 Christian Peter Kaiser"
+SPDX-License-Identifier = "LicenseRef-Alberich-Branding"

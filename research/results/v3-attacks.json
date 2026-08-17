@@ -1,0 +1,172 @@
+{
+  "protocol": "Modern V3",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmFingerprint": "5e5647a3bd2b33a2",
+  "stepRule": "double-step",
+  "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
+  "generatorProfile": "Modern V3 Standard",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "script": "research/v3-attacks.mjs",
+  "command": "research/v3-attacks.mjs --full",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "current": true,
+  "status": "CURRENT",
+  "researchRng": "mulberry32 deterministic research PRNG — never used for production keys",
+  "productionRng": "Web Crypto CSPRNG",
+  "hmacIsCandidateOracle": true,
+  "candidateOracle": {
+    "status": "PASS",
+    "procedure": "candidate day key → canonicalDayKey → HKDF → HMAC → compare PRUEF",
+    "note": "This is not an HMAC break. It must be counted in key-recovery cost: a wrong candidate is rejected cheaply and a right one is confirmed.",
+    "macFirstOnWrongGround": true
+  },
+  "classification": {
+    "knownPlaintext": "PARTIAL",
+    "chosenPlaintext": "PARTIAL",
+    "endwalzeCsp": "PARTIAL",
+    "plugboardRecovery": "NOT TESTED",
+    "multiMessage": "PARTIAL",
+    "formalSecurityProof": "NONE"
+  },
+  "macFirstOnWrongGround": true,
+  "knownPlaintext": [
+    {
+      "cribLen": 8,
+      "cipherBodyLen": 14,
+      "tested": 8,
+      "survivors": 0,
+      "keysPerSec": null,
+      "wallMs": null,
+      "timingOmitted": "volatile Node timing is not a reproducibility input"
+    },
+    {
+      "cribLen": 16,
+      "cipherBodyLen": 28,
+      "tested": 8,
+      "survivors": 0,
+      "keysPerSec": null,
+      "wallMs": null,
+      "timingOmitted": "volatile Node timing is not a reproducibility input"
+    },
+    {
+      "cribLen": 32,
+      "cipherBodyLen": 55,
+      "tested": 8,
+      "survivors": 0,
+      "keysPerSec": null,
+      "wallMs": null,
+      "timingOmitted": "volatile Node timing is not a reproducibility input"
+    }
+  ],
+  "chosenPlaintext": [
+    {
+      "text": "AAAAAAAAAAAA",
+      "cipherLen": 57,
+      "header": "KCBD"
+    },
+    {
+      "text": "ABABABABABAB",
+      "cipherLen": 57,
+      "header": "KCBD"
+    },
+    {
+      "text": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "cipherLen": 81,
+      "header": "KCBD"
+    }
+  ],
+  "endwalzeCsp": {
+    "known": 10,
+    "remaining": "20922789888000",
+    "remainingBits": 44.25014046988262
+  },
+  "multiMessage": {
+    "seed": "mulberry32(0xc011)",
+    "spaceMessageKey": 456976,
+    "spaceMid": 208827064576,
+    "snapshots": [
+      {
+        "messages": 10,
+        "distinctHeaders": 10,
+        "headerCollisions": 0,
+        "distinctMids": 10,
+        "midCollisions": 0,
+        "distinctStarts": 10,
+        "startCollisions": 0,
+        "theoryHeaderCollision": 0.000098,
+        "theoryMidCollision": 2.15e-10
+      },
+      {
+        "messages": 50,
+        "distinctHeaders": 50,
+        "headerCollisions": 0,
+        "distinctMids": 50,
+        "midCollisions": 0,
+        "distinctStarts": 50,
+        "startCollisions": 0,
+        "theoryHeaderCollision": 0.002677,
+        "theoryMidCollision": 5.866e-9
+      },
+      {
+        "messages": 100,
+        "distinctHeaders": 100,
+        "headerCollisions": 0,
+        "distinctMids": 100,
+        "midCollisions": 0,
+        "distinctStarts": 100,
+        "startCollisions": 0,
+        "theoryHeaderCollision": 0.010774,
+        "theoryMidCollision": 2.3704e-8
+      },
+      {
+        "messages": 250,
+        "distinctHeaders": 250,
+        "headerCollisions": 0,
+        "distinctMids": 250,
+        "midCollisions": 0,
+        "distinctStarts": 250,
+        "startCollisions": 0,
+        "theoryHeaderCollision": 0.065843,
+        "theoryMidCollision": 1.49047e-7
+      },
+      {
+        "messages": 500,
+        "distinctHeaders": 500,
+        "headerCollisions": 0,
+        "distinctMids": 500,
+        "midCollisions": 0,
+        "distinctStarts": 500,
+        "startCollisions": 0,
+        "theoryHeaderCollision": 0.2389,
+        "theoryMidCollision": 5.97384e-7
+      },
+      {
+        "messages": 1000,
+        "distinctHeaders": 997,
+        "headerCollisions": 3,
+        "distinctMids": 1000,
+        "midCollisions": 0,
+        "distinctStarts": 997,
+        "startCollisions": 3,
+        "theoryHeaderCollision": 0.664809,
+        "theoryMidCollision": 0.000002391928
+      },
+      {
+        "messages": 10000,
+        "distinctHeaders": 9895,
+        "headerCollisions": 105,
+        "distinctMids": 10000,
+        "midCollisions": 0,
+        "distinctStarts": 9895,
+        "startCollisions": 105,
+        "theoryHeaderCollision": 1,
+        "theoryMidCollision": 0.000239379967
+      }
+    ],
+    "attackNote": "Same day key, many messages: SK birthday is 26^4. Repeated starts reuse the rotor walk. MID collisions are negligible. HMAC still binds each telegram."
+  },
+  "spruchschluesselSpace": 456976,
+  "birthdayNote": "4-letter message keys collide after a few hundred messages on one day key. Message-ID is not a substitute rotor. Do not treat 26^4 as security bits.",
+  "formalSecurityProof": "none",
+  "bestDemonstratedAttack": "HMAC is a perfect offline oracle once a candidate day key is proposed. No practical recovery of the full day key is implemented."
+}

@@ -1,3 +1,7 @@
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 // Historische Enigma-Satzzeichen (Kriegsmarine-Praxis; Komma als Y).
 // Wehrmacht nutzte für Komma teilweise ZZ statt Y.
 const PUNCTUATION_CODENAMES = {

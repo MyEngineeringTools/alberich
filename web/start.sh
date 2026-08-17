@@ -5,15 +5,15 @@ cd "$(dirname "$0")"
 echo "Alberich Web – http://localhost:8765  (zero telemetry, local only)"
 echo "Beenden mit Strg+C"
 exec python3 - <<'PY'
+import re
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
-CSP = (
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
-    "font-src 'self'; connect-src 'none'; media-src 'self' blob:; "
-    "worker-src 'self' blob:; object-src 'none'; base-uri 'none'; "
-    "frame-ancestors 'none'; form-action 'none'"
-)
+html = Path("index.html").read_text(encoding="utf-8")
+match = re.search(r'Content-Security-Policy" content="([^"]+)"', html)
+if not match:
+    raise SystemExit("index.html is missing a Content-Security-Policy meta tag")
+CSP = match.group(1)
 
 class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):

@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Modern-Modus: Engine aus Tagesschlüssel konfigurieren + Encrypt/Decrypt-Payloads.
  * DOM-frei, nutzbar aus Popup und Service Worker.
  */

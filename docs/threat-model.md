@@ -24,8 +24,9 @@ Spruchschlüssel in einem Header-Decrypt (4 Buchstaben). Cribs filtern
 Kandidaten. Meet-in-the-Middle gegen Stecker/Endwalze bei bekanntem
 Rotorweg.
 **Assumptions:** Angreifer kennt Teile des Klartexts.
-**Mitigation:** Messungen in `known-plaintext.mjs` / `partial-key-search.mjs`.
-Grenzen dokumentieren, nicht kaschieren.
+**Mitigation:** Live measurements in `v3-attacks.mjs` (PARTIAL). V2 crib
+scripts stay under `research/results/legacy/v2/`. Grenzen dokumentieren,
+nicht kaschieren.
 
 ## Chosen plaintext
 
@@ -45,7 +46,8 @@ Prüfgruppe bindet Header+Body+MID+Epoche.
 Historische Multi-Message-Angriffe bleiben das relevante Modell.
 **Assumptions:** Mehrere ALBV-Telegramme eines Tages.
 **Mitigation:** Tägliche Tafel. Kein Langzeitschlüssel über Monate
-ohne neue Tafel.
+ohne neue Tafel. SK-Birthday ist \(26^4\); MID ersetzt keine Walze.
+Zahlen: `research/results/v3-attacks.json`.
 
 ## Gestohlener Geheimtext
 
@@ -128,6 +130,17 @@ im Produktkern.
 **Not protected?** Alles Sichtbare und Gespeicherte.
 **Assumptions:** Schulterblick, beschlagnahmtes Handy, Mülleimer-Tafel.
 **Mitigation:** Kurier-Disziplin, Tafel vernichten.
+
+## HMAC as a candidate oracle
+
+**Goal:** Test a guessed day key against a captured telegram.
+**Protected?** The Prüfgruppe does not leak the day key.
+**Not protected?** Anyone who can propose a full candidate can accept or
+reject it offline: derive `canonicalDayKey`, HKDF, HMAC, compare PRUEF.
+That is expected MAC behaviour and must be included in recovery-cost
+models. It is not an HMAC break.
+**Assumptions:** At least one authentic ALBV telegram is known.
+**Mitigation:** Do not treat HMAC verification as extra confidentiality.
 
 ## Kurier (eigene Schicht)
 

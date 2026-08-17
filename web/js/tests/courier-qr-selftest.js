@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Selbsttest Kurier-QR (Parity Android).
  * Ausführen: node js/tests/courier-qr-selftest.js
  */

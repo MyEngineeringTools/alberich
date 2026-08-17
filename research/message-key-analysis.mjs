@@ -1,71 +1,76 @@
 #!/usr/bin/env node
 /**
- * Auto-Spruchschlüssel: 26^4 ≈ 18,8 Bit steuern vier Walzenlagen.
- * Zusätzliche Buchstaben nur sinnvoll, wenn sie Maschinenparameter steuern.
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Live V3 message key is still 4 letters = 26^4 rotor starts. MID is not a rotor.
  */
-
 import { CipherEngine } from '../web/js/cipher-engine.js';
-import { modernEncryptPayload, modernDecryptPayload } from '../web/js/modern-crypto.js';
-import { SYNTHETIC_V2, configureSyntheticV2, writeJson } from './lib.mjs';
-import { wantsSmoke as __wantsSmoke } from './lib.mjs';
-if (__wantsSmoke()) { console.log('smoke ok message-key-analysis'); process.exit(0); }
+import { modernV3EncryptPayload, modernV3DecryptPayload } from '../web/js/modern-v3.js';
+import {
+  SYNTHETIC_V3,
+  configureSyntheticV3,
+  writeJson,
+  wantsSmoke,
+  stampLiveV3,
+} from './lib.mjs';
 
 const SPACE = 26 ** 4;
 
-function enc(plain, mk) {
+async function enc(plain, mk, mid = 'TESTMSGX') {
   const engine = new CipherEngine();
-  return modernEncryptPayload({
+  return modernV3EncryptPayload({
     engine,
-    configure: (key) => configureSyntheticV2(engine, key),
-    groundKey: SYNTHETIC_V2.ground,
+    configure: (key) => configureSyntheticV3(engine, key),
+    groundKey: SYNTHETIC_V3.groundKey,
     plainText: plain,
     messageKey: mk,
+    messageId: mid,
+    dayConfig: SYNTHETIC_V3,
   });
 }
 
-const a = enc('same plaintext', 'AAAA');
-const b = enc('same plaintext', 'AAAB');
-const c = enc('same plaintext', 'AAAA');
-
-let recoveredOk = false;
-{
-  const engine = new CipherEngine();
-  const dec = modernDecryptPayload({
-    engine,
-    configure: (key) => configureSyntheticV2(engine, key),
-    groundKey: SYNTHETIC_V2.ground,
-    cipherLetters: a.cipher,
-  });
-  recoveredOk = dec.ok && dec.messageKey === 'AAAA';
+if (wantsSmoke()) {
+  const a = await enc('same', 'AAAA');
+  const b = await enc('same', 'AAAB');
+  if (a.cipher === b.cipher) throw new Error('different MK produced identical telegram');
+  console.log('smoke ok message-key-analysis');
+  process.exit(0);
 }
+
+const a = await enc('same plaintext', 'AAAA');
+const b = await enc('same plaintext', 'AAAB');
+const c = await enc('same plaintext', 'AAAA', 'TESTMSGX');
+const d = await enc('same plaintext', 'AAAA', 'OTHERMID');
+
+const engine = new CipherEngine();
+const dec = await modernV3DecryptPayload({
+  engine,
+  configure: (key) => configureSyntheticV3(engine, key),
+  groundKey: SYNTHETIC_V3.groundKey,
+  cipherLetters: a.cipher,
+  dayConfig: SYNTHETIC_V3,
+});
 
 const out = {
-  generatedAt: new Date().toISOString(),
+  ...stampLiveV3({ script: 'research/message-key-analysis.mjs' }),
   messageKeyLetters: 4,
-  combinatorial: {
-    space: SPACE,
-    bits: Number(Math.log2(SPACE).toFixed(4)),
+  combinatorial: { space: SPACE, bits: Number(Math.log2(SPACE).toFixed(4)) },
+  birthday: {
+    approxMessagesFor50pct: Math.round(1.177 * Math.sqrt(SPACE)),
+    note: 'Header collisions follow the 26^4 message-key space, not the MID space.',
   },
-  whatFourLettersControl: [
-    'Thin-Position (in V2: Thin steht danach still)',
-    'Left-Position',
-    'Middle-Position',
-    'Right-Position',
-  ],
-  recommendation:
-    'Vier Buchstaben bleiben mechanisch korrekt, solange vier Rotorlagen der Startzustand sind. Eine zufällige Message-ID gehört nicht in die Walzen, sondern in die Prüfgruppe.',
+  whatFourLettersControl: ['Thin start', 'Left start', 'Middle start', 'Right start'],
   observations: {
     samePlainDifferentMkDifferentCipher: a.cipher !== b.cipher,
-    samePlainSameMkSameCipher: a.cipher === c.cipher,
+    samePlainSameMkSameMidSameCipher: a.cipher === c.cipher,
+    sameMkDifferentMidDifferentPruef: a.pruefgruppe !== d.pruefgruppe,
     headerDiffersWithMk: a.header !== b.header,
-    recoveredMessageKey: recoveredOk,
+    recoveredMessageKey: dec.ok && dec.messageKey === 'AAAA',
   },
   bruteForceNote:
-    'Bei bekanntem Tagesschlüssel ist der Spruchschlüssel 26^4. Der Header ist die Verschlüsselung des SK unter der Grundstellung — Known-Header-Crib der Länge 4. Das ist historisch üblich und kein Ersatz für Authentizität.',
-  multiMessage:
-    'Viele Nachrichten desselben Tages teilen Rotorwahl, Ringe, Stecker, Endwalze. Der SK wechselt. V2 hat keinen Message-Identifier und keinen MAC.',
+    'Given the day key, the message key is a 26^4 search. The header is the encrypted start. MID does not expand the rotor space. HMAC is an offline candidate oracle for the day key, not for guessing SK once the day key is known — SK is recovered by decrypting the header.',
 };
 
 writeJson('message-key-analysis.json', out);
 console.log(JSON.stringify(out.observations, null, 2));
-console.log(out.recommendation);

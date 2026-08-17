@@ -11,6 +11,7 @@ Traditional mode is a historical simulator. It is involutory. Do not use it
 to hide anything you care about.
 
 The cryptographic workspace performs no analytics or telemetry.
+No tracking. No external analytics scripts.
 
 ## What we do promise
 
@@ -30,6 +31,15 @@ The cryptographic workspace performs no analytics or telemetry.
 
 Confidentiality stays a rotor cipher. The Prüfgruppe detects silent
 mutation of a telegram; it does not replace the day sheet as the secret.
+A candidate day key can be checked offline against PRUEF — that is a
+verification oracle for key recovery, not extra confidentiality.
+
+Live stepping is the four-rotor **double-step** in `stepModernV3()`.
+Research numbers that describe a pure notch cascade or the old
+three-wheel walk are not this protocol.
+
+Support-size bits (including the ~248-bit Standard-Profile product) are
+not a security claim. See `research/results/EVALUATION.md`.
 The V3 auth key is bound to the full day key, including the four-letter
 ground. Changing only the ground changes the Prüfgruppe. A telegram
 from a build without `ground:` in `canonicalDayKey` will fail the MAC
@@ -53,5 +63,12 @@ sheet and a short repro is enough.
 
 ## Coordinated disclosure
 
-We prefer coordinated disclosure. If we do not respond within 14 days, you
-may publish after that window.
+We prefer coordinated disclosure.
+
+- We aim to **acknowledge** a report within 14 days.
+- Severity is assessed together; a disclosure date is agreed, not
+  automatic.
+- Critical issues are patched first.
+- There is no SLA that a fix ships in 14 days, and no automatic
+  permission to publish after that window if we have acknowledged the
+  report and are working a coordinated date.

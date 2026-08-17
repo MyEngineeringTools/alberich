@@ -15,8 +15,13 @@ Decrypt uses the same step, then:
 
 On a formatVersion-3 sheet the wiring is stored as `endwalzeWiring`: 26
 unique A–Z letters. It is rolled with Fisher–Yates (`cryptoRandomInt`).
-Involutions are discarded. Fixed points are allowed and counted, not
-forbidden.
+Involutions are discarded (up to 64 attempts). If every attempt is still
+involutory the generator **fails closed** — no deterministic substitute
+wiring is applied. Fixed points are allowed and counted, not forbidden.
+
+The support is \(26! - I(26)\), where \(I(26)\) is the number of
+involutions on 26 letters. The bit gap to \(26!\) is negligible and not
+zero. Exact values: `research/results/keyspace.json`.
 
 Bruno, Caesar, and Dora are not used as the Modern V3 end rotor.
 

@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Export einer importierten Monatstafel (JSON + komprimierter QR).
  * Kompatibel mit Codebook-Tool und Web/Android-Import.
  */

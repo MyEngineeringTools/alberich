@@ -1,0 +1,56 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/known-plaintext.mjs",
+  "generatedAt": "2026-08-16T10:10:27.520Z",
+  "scenarios": {
+    "F_crib_8": {
+      "tested": 4000,
+      "hits": 1,
+      "ms": 176.43,
+      "keysPerSec": 22672.1,
+      "note": "Tagesschl\u00fcssel bekannt, Spruchschl\u00fcssel unbekannt, Crib-Filter auf dem K\u00f6rper."
+    },
+    "F_crib_16": {
+      "tested": 4000,
+      "hits": 1,
+      "ms": 297.73,
+      "keysPerSec": 13435,
+      "note": "Tagesschl\u00fcssel bekannt, Spruchschl\u00fcssel unbekannt, Crib-Filter auf dem K\u00f6rper."
+    },
+    "F_crib_32": {
+      "tested": 4000,
+      "hits": 1,
+      "ms": 565.08,
+      "keysPerSec": 7078.7,
+      "note": "Tagesschl\u00fcssel bekannt, Spruchschl\u00fcssel unbekannt, Crib-Filter auf dem K\u00f6rper."
+    },
+    "F_crib_64": {
+      "tested": 4000,
+      "hits": 1,
+      "ms": 1110.05,
+      "keysPerSec": 3603.4,
+      "note": "Tagesschl\u00fcssel bekannt, Spruchschl\u00fcssel unbekannt, Crib-Filter auf dem K\u00f6rper."
+    },
+    "C_two_rings_unknown": {
+      "tested": 676,
+      "hits": 1,
+      "ms": 73.42,
+      "keysPerSec": 9207.7,
+      "survivorsExpected": 1,
+      "note": "Zwei Ringbuchstaben unbekannt, Rest inkl. SK bekannt. 26^2 voll durchsucht."
+    },
+    "A_rotors_known_header_recover": {
+      "recovered": "LDNQ",
+      "correct": true,
+      "ms": 0.388,
+      "note": "Wenn der Tagesschl\u00fcssel bekannt ist, ist der Spruchschl\u00fcssel ein 4-Buchstaben-Decrypt. Kein Suchraum."
+    }
+  },
+  "limits": [
+    "Vollsuche Plugboard 10 Paare oder 26! Endwalze ist hier nicht ausf\u00fchrbar.",
+    "Gemessen wird die tats\u00e4chlich implementierte Suche, nicht eine behauptete Bit-Sicherheit."
+  ]
+}

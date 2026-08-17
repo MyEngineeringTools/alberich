@@ -1,0 +1,18 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/benchmark.mjs",
+  "generatedAt": "2026-08-16T10:09:42.781Z",
+  "letters": {
+    "n": 10000,
+    "ms": 58.71,
+    "lettersPerSec": 170341
+  },
+  "payloads": {
+    "rounds": 200,
+    "ms": 119.79,
+    "roundsPerSec": 1669.6
+  }
+}

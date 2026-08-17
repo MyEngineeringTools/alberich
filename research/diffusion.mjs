@@ -1,158 +1,121 @@
 #!/usr/bin/env node
 /**
- * Offene Diffusionsmessung. Eine Rotorchiffre ist kein Blockcipher.
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Live Modern V3 diffusion. Not a block-cipher avalanche claim.
  */
-
 import { CipherEngine } from '../web/js/cipher-engine.js';
+import { modernV3EncryptPayload } from '../web/js/modern-v3.js';
 import {
-  modernEncryptPayload,
-  deriveLueckenfuellerNotches,
-  resolveEndwalzeWiring,
-} from '../web/js/modern-crypto.js';
-import { SYNTHETIC_V2, configureSyntheticV2, writeJson } from './lib.mjs';
-import { wantsSmoke as __wantsSmoke } from './lib.mjs';
-if (__wantsSmoke()) { console.log('smoke ok diffusion'); process.exit(0); }
+  SYNTHETIC_V3,
+  configureSyntheticV3,
+  writeJson,
+  wantsSmoke,
+  stampLiveV3,
+  hammingLetters,
+} from './lib.mjs';
 
-const PLAIN = 'AAAAAAAABBBBBBBBCCCCCCCC';
+const PLAIN = 'AAAAAAAABBBBBBBBCCCCCCCCHELLOALBERICH';
 
-function encryptV2(plain, overrides = {}) {
-  const cfg = { ...SYNTHETIC_V2, ...overrides };
+async function encryptV3(plain, overrides = {}) {
+  const day = { ...SYNTHETIC_V3, ...overrides.day };
   const engine = new CipherEngine();
-  const enc = modernEncryptPayload({
+  const enc = await modernV3EncryptPayload({
     engine,
-    configure: (key) => configureSyntheticV2(engine, key, cfg),
-    groundKey: cfg.ground,
+    configure: (key) => configureSyntheticV3(engine, key, day),
+    groundKey: overrides.groundKey || day.groundKey,
     plainText: plain,
     messageKey: overrides.messageKey || 'LDNQ',
+    messageId: overrides.messageId || 'TESTMSGX',
+    dayConfig: day,
   });
   if (!enc.ok) throw new Error(enc.error);
   return enc;
 }
 
-function changedPositions(a, b) {
-  const n = Math.max(a.length, b.length);
-  const idx = [];
-  for (let i = 0; i < n; i++) {
-    if (a[i] !== b[i]) idx.push(i);
+function notchTweak(set) {
+  const letters = [...set];
+  const first = letters[0];
+  for (let i = 0; i < 26; i++) {
+    const ch = String.fromCharCode(65 + i);
+    if (!set.includes(ch)) {
+      letters[0] = ch;
+      return letters.sort().join('');
+    }
   }
-  return {
-    count: idx.length,
-    first: idx[0] ?? null,
-    last: idx[idx.length - 1] ?? null,
-    positions: idx,
-    prefixEqual: idx[0] ?? a.length,
-    suffixEqualFromEnd: a.length - 1 - (idx[idx.length - 1] ?? -1),
-  };
+  return set.replace(first, first === 'A' ? 'B' : 'A');
 }
 
-const base = encryptV2(PLAIN);
+if (wantsSmoke()) {
+  const a = await encryptV3(PLAIN);
+  const b = await encryptV3(`B${PLAIN.slice(1)}`);
+  const h = hammingLetters(a.body, b.body);
+  if (h.hamming < 1) throw new Error('plaintext mutation did not move the body');
+  console.log(`smoke ok diffusion hamming=${h.hamming}`);
+  process.exit(0);
+}
+
+const base = await encryptV3(PLAIN);
 const cases = [];
 
 {
-  const mutated = `B${PLAIN.slice(1)}`;
-  const other = encryptV2(mutated);
+  const other = await encryptV3(`B${PLAIN.slice(1)}`);
+  cases.push({ name: 'plaintext-first-symbol', field: 'plaintext', ...hammingLetters(base.body, other.body) });
+}
+{
+  const other = await encryptV3(`${PLAIN.slice(0, 8)}X${PLAIN.slice(9)}`);
+  cases.push({ name: 'plaintext-mid-symbol', field: 'plaintext', ...hammingLetters(base.body, other.body) });
+}
+{
+  const other = await encryptV3(PLAIN, { groundKey: 'ADSZ' });
   cases.push({
-    name: 'plaintext-first-letter',
-    ...changedPositions(base.cipher, other.cipher),
-    note: 'Nur der betroffene Body-Teil plus alles danach durch den weiterlaufenden Walzenstand. Kein Block-Avalanche.',
+    name: 'ground-first-letter',
+    field: 'ground',
+    headerChanged: base.header !== other.header,
+    pruefChanged: base.pruefgruppe !== other.pruefgruppe,
+    ...hammingLetters(base.body, other.body),
   });
 }
-
 {
-  const mutated = `${PLAIN.slice(0, 8)}X${PLAIN.slice(9)}`;
-  const other = encryptV2(mutated);
-  cases.push({
-    name: 'plaintext-mid-letter',
-    ...changedPositions(base.cipher, other.cipher),
-  });
+  const other = await encryptV3(PLAIN, { day: { ringRight: 'M', ringCode: 'EPEM' } });
+  cases.push({ name: 'ring-right-plus-one', field: 'rings', ...hammingLetters(base.body, other.body) });
 }
-
 {
-  const other = encryptV2(PLAIN, { messageKey: 'LDNR' });
-  cases.push({
-    name: 'message-key-last-letter',
-    ...changedPositions(base.cipher, other.cipher),
+  const other = await encryptV3(PLAIN, {
+    day: { plugboard: 'AF BF CM DQ HU JN LX PR SZ VW' },
   });
+  cases.push({ name: 'plug-AE-to-AF', field: 'plugboard', ...hammingLetters(base.body, other.body) });
 }
-
 {
-  const other = encryptV2(PLAIN, { rings: ['P', 'E', 'M'] });
-  cases.push({
-    name: 'ring-right-plus-one',
-    ...changedPositions(base.cipher, other.cipher),
-  });
+  const w = SYNTHETIC_V3.endwalzeWiring;
+  const swapped = `${w[1]}${w[0]}${w.slice(2)}`;
+  const other = await encryptV3(PLAIN, { day: { endwalzeWiring: swapped } });
+  cases.push({ name: 'endwalze-swap-first-two', field: 'endwalze', ...hammingLetters(base.body, other.body) });
 }
-
 {
-  const other = encryptV2(PLAIN, { plug: 'AF BF CM DQ HU JN LX PR SZ VW' });
-  cases.push({
-    name: 'plug-AE-to-AF',
-    ...changedPositions(base.cipher, other.cipher),
+  const n = SYNTHETIC_V3.notches;
+  const other = await encryptV3(PLAIN, {
+    day: { notches: { ...n, right: notchTweak(n.right) } },
   });
+  cases.push({ name: 'right-notch-set-tweak', field: 'notches', ...hammingLetters(base.body, other.body) });
 }
-
 {
-  const engine = new CipherEngine();
-  const wiringA = resolveEndwalzeWiring('C');
-  const wiringB = `${wiringA[1]}${wiringA[0]}${wiringA.slice(2)}`;
-  function encWith(wiring) {
-    const e = new CipherEngine();
-    const r = modernEncryptPayload({
-      engine: e,
-      configure: (key) => {
-        configureSyntheticV2(e, key);
-        e.setEndwalze(wiring);
-        return true;
-      },
-      groundKey: 'CDSZ',
-      plainText: PLAIN,
-      messageKey: 'LDNQ',
-    });
-    return r.cipher;
-  }
-  cases.push({
-    name: 'endwalze-swap-first-two',
-    ...changedPositions(encWith(wiringA), encWith(wiringB)),
-  });
-}
-
-{
-  const n0 = deriveLueckenfuellerNotches('P', 'E', 'L', SYNTHETIC_V2.plug);
-  const tweaked = {
-    ...n0.notches,
-    right: n0.notches.right.replace(n0.notches.right[0], n0.notches.right[0] === 'A' ? 'B' : 'A'),
-  };
-  function encNotch(notches) {
-    const e = new CipherEngine();
-    const r = modernEncryptPayload({
-      engine: e,
-      configure: (key) => {
-        configureSyntheticV2(e, key);
-        e.setLueckenfuellerNotches(notches);
-        return true;
-      },
-      groundKey: 'CDSZ',
-      plainText: PLAIN,
-      messageKey: 'LDNQ',
-    });
-    return r.cipher;
-  }
-  cases.push({
-    name: 'right-notch-letter-tweak',
-    ...changedPositions(encNotch(n0.notches), encNotch(tweaked)),
-  });
+  const other = await encryptV3(PLAIN, { messageKey: 'LDNR' });
+  cases.push({ name: 'message-key-last-letter', field: 'messageKey', ...hammingLetters(base.cipher, other.cipher) });
 }
 
 const out = {
-  generatedAt: new Date().toISOString(),
+  ...stampLiveV3({ script: 'research/diffusion.mjs' }),
   statement:
-    'Eine Änderung des Plaintexts beeinflusst aufgrund der zustandsunabhängigen Schrittfolge nicht automatisch den gesamten folgenden Ciphertext. Es gibt keinen Avalanche Effect im Sinne eines Blockciphers.',
+    'Stepping does not depend on the plaintext. A changed symbol does not avalanche like a block cipher. Hamming distances below are measurements, not a security rating.',
   steppingIsPlaintextIndependent: true,
+  plaintext: PLAIN,
   cases,
 };
 
 writeJson('diffusion.json', out);
 console.log(out.statement);
 for (const c of cases) {
-  console.log(`${c.name}: ${c.count} positions changed, first=${c.first}, last=${c.last}`);
+  console.log(`${c.name}: hamming=${c.hamming} first=${c.first} last=${c.last} rate=${c.affectedRate}`);
 }

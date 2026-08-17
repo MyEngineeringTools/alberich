@@ -1,138 +1,166 @@
 #!/usr/bin/env node
 /**
- * Effektiver Schlüsselraum — Nur-Dora (aktueller Modern-Ist) und V3 (falls geladen).
- * Exakte BigInt-Kombinatorik. Keine Security-Bits-Werbung.
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ *
+ * Modern V3 Standard Profile keyspace, split into support / Shannon /
+ * min-entropy / equivalent-key notes / best demonstrated attack.
+ * Never: "248-bit keyspace = 248-bit security".
  */
-
-import { factorial, binomial, bitsOf, writeJson, wantsSmoke } from './lib.mjs';
-
-if (wantsSmoke()) {
-  console.log('smoke ok keyspace');
-  process.exit(0);
-}
+import {
+  factorial,
+  bitsOf,
+  writeJson,
+  wantsSmoke,
+  stampLiveV3,
+  stampLegacyV2,
+  lueckenfuellerEntropy,
+  involutionCount,
+} from './lib.mjs';
 
 const FACT_26 = factorial(26);
+const I26 = involutionCount(26);
+const ENDWALZE_SUPPORT = FACT_26 - I26;
 
-/** k disjunkte ungeordnete Paare aus 26 Buchstaben, Rest ungepaart. */
 function pairings(k) {
   return FACT_26 / (2n ** BigInt(k) * factorial(k) * factorial(26 - 2 * k));
 }
 
-function report(name, value, note) {
+function row(name, value, note) {
   return {
     name,
-    count: value.toString(),
-    bits: Number(bitsOf(value).toFixed(6)),
+    count: typeof value === 'bigint' ? value.toString() : String(value),
+    bits: typeof value === 'bigint' ? Number(bitsOf(value).toFixed(6)) : Number(value),
     note,
   };
 }
 
+if (wantsSmoke()) {
+  const notches = lueckenfuellerEntropy();
+  const endBits = bitsOf(ENDWALZE_SUPPORT);
+  if (!(notches.supportAllBits > 65 && notches.supportAllBits < 66)) {
+    throw new Error(`notch support bits drifted: ${notches.supportAllBits}`);
+  }
+  if (!(notches.minEntropyAllBits > 52 && notches.minEntropyAllBits < 53)) {
+    throw new Error(`notch min-entropy drifted: ${notches.minEntropyAllBits}`);
+  }
+  if (!(notches.shannonAllBits > 61.6 && notches.shannonAllBits < 61.7)) {
+    throw new Error(`notch Shannon drifted: ${notches.shannonAllBits}`);
+  }
+  if (!(endBits > 88.38 && endBits < 88.382)) {
+    throw new Error(`endwalze bits drifted: ${endBits}`);
+  }
+  if (I26 >= FACT_26) throw new Error('involution count impossible');
+  console.log(
+    `smoke ok keyspace notchesSupport=${notches.supportAllBits} notchesH=${notches.shannonAllBits} notchesMin=${notches.minEntropyAllBits} end=${endBits.toFixed(6)}`,
+  );
+  process.exit(0);
+}
+
 const rotorChoice = 2n * (8n * 7n * 6n);
 const plug10 = pairings(10);
-const dora13 = pairings(13);
-const ringsStored = 26n ** 4n;
-const ringsEffectiveV2 = 26n ** 3n;
-const grundstellung = 26n ** 4n;
-const affineFixed = 1n;
-const lueckenfuellerIndependentV2 = 1n;
+const rings = 26n ** 4n;
+const ground = 26n ** 4n;
+const messageKey = 26n ** 4n;
+const mid = 26n ** 8n;
+const notches = lueckenfuellerEntropy();
+const notchSupport = BigInt(notches.supportAll);
 
-const nominalV2 = rotorChoice * plug10 * dora13 * ringsStored * grundstellung * affineFixed;
-const effectiveV2 =
-  rotorChoice * plug10 * dora13 * ringsEffectiveV2 * grundstellung * lueckenfuellerIndependentV2;
-
-const notchChoicesPerRotor = binomial(26, 5) + binomial(26, 7) + binomial(26, 9);
-const notchesV3 = notchChoicesPerRotor ** 3n;
-const endwalzeV3 = FACT_26;
-const ringsEffectiveV3 = 26n ** 4n;
-const nominalV3 = rotorChoice * plug10 * endwalzeV3 * ringsEffectiveV3 * grundstellung * notchesV3;
+const supportDay =
+  rotorChoice * plug10 * ENDWALZE_SUPPORT * rings * ground * notchSupport;
 
 const out = {
-  generatedAt: new Date().toISOString(),
+  ...stampLiveV3({ script: 'research/keyspace.mjs' }),
   disclaimer: {
-    nominal: 'Reine Kombinatorik, ohne Dead/Equivalent Keys.',
-    effective: 'Nach bekannten Dead Fields (Ist: ringThin tot, Lückenfüller abgeleitet).',
-    observedAttack: 'Nicht in dieser Datei — siehe Research-Skripte.',
+    support: 'A — number of representable Standard-Profile configurations.',
+    shannon: 'B — entropy of the actual generators (notch mixture; Endwalze rejection sampling).',
+    minEntropy: 'C — −log2 of the most likely generator output.',
+    equivalent: 'D — known dead/equivalent fields only. No complete classification.',
+    attack: 'E — from research/results/v3-attacks.json, not from bit counting.',
     securityProof: 'none',
     notClaimed: [
       'AES-128-Äquivalenz',
-      'AES-192-Äquivalenz',
+      '248-bit security',
       'NIST-Sicherheit',
-      'mathematisch bewiesene Sicherheit',
+      'support bits = attack complexity',
     ],
   },
-  identities: {
-    doubleFactorialOdd: {
-      formula: '25!! = 26! / (2^13 · 13!)',
-      value: dora13.toString(),
-      bits: Number(bitsOf(dora13).toFixed(6)),
+  layers: {
+    A_supportSize: {
+      components: [
+        row('rotorSelection', rotorChoice, '2 Thin × P(8,3)'),
+        row('rings', rings, 'four live ring letters including Thin'),
+        row('ground', ground, 'four ground letters, bound into canonicalDayKey'),
+        row('plugboard10', plug10, '10 disjoint unordered pairs'),
+        row('endwalzeNonInvolutory', ENDWALZE_SUPPORT, '26! − I(26)'),
+        row('lueckenfuellerSupport', notchSupport, 'three independent rotors; see mixture below'),
+      ],
+      dayKey: row('dayKeySupport', supportDay, 'product of the components above; not security bits'),
+      perMessage: [
+        row('messageKey', messageKey, '4-letter rotor start; birthday ~ √(26^4)'),
+        row('messageId', mid, '8 letters, not a rotor, visible in the telegram'),
+      ],
     },
-    plugboard10: {
-      formula: '26! / (2^10 · 10! · 6!)',
-      value: plug10.toString(),
-      bits: Number(bitsOf(plug10).toFixed(6)),
+    B_shannonEntropy: {
+      endwalzeBits: Number(bitsOf(ENDWALZE_SUPPORT).toFixed(6)),
+      endwalzeNote: 'Rejection sampling of involutions is uniform on the allowed set.',
+      lueckenfueller: {
+        perRotor: notches.shannonOneBits,
+        threeRotors: notches.shannonAllBits,
+      },
+      note: 'Rotor choice, rings, ground and the plugboard are treated as uniform on their support.',
     },
-    fact26: {
-      formula: '26!',
-      value: FACT_26.toString(),
-      bits: Number(bitsOf(FACT_26).toFixed(6)),
+    C_minEntropy: {
+      lueckenfueller: {
+        perRotor: notches.minEntropyOneBits,
+        threeRotors: notches.minEntropyAllBits,
+        mostProbableCount: notches.mostProbableCount,
+      },
+      endwalzeBits: Number(bitsOf(ENDWALZE_SUPPORT).toFixed(6)),
+    },
+    D_equivalentKeyAdjusted: {
+      status: 'PARTIAL',
+      liveV3: {
+        thinRingLive: true,
+        leftNotchesLive: true,
+        groundInMac: true,
+        knownDeadFields: [],
+      },
+      legacyV2: {
+        ...stampLegacyV2({ script: 'research/keyspace.mjs' }),
+        thinRingDead: true,
+        leftNotchUnused: true,
+        derivedNotches: true,
+      },
+    },
+    E_bestDemonstratedAttack: {
+      status: 'PARTIAL',
+      pointer: 'research/results/v3-attacks.json',
+      note: 'HMAC is a perfect offline candidate oracle. No practical full day-key recovery is implemented.',
     },
   },
-  currentModernDoraOnly: {
-    components: [
-      report('rotorChoice', rotorChoice, '2 Thin × P(8,3)'),
-      report('plugboard10', plug10, '10 disjunkte Paare; nicht 26!'),
-      report('dora13', dora13, '13 freie Paare = 25!!. Affine Komposition addiert 0 Bit.'),
-      report('ringsStored', ringsStored, 'ringCode hat 4 Buchstaben inkl. ringThin'),
-      report('ringsEffective', ringsEffectiveV2, 'thin.ring wird in setRotors auf 0 gesetzt (Dead Key)'),
-      report('grundstellung', grundstellung, 'vier Walzenpositionen'),
-      report('lueckenfuellerIndependent', lueckenfuellerIndependentV2, 'Kerben deterministisch aus Ringen+Steckern'),
-      report('affineMix', affineFixed, 'ENDWALZE_DORA_MIX ist fest'),
-    ],
-    nominalKeyspace: report('nominalV2', nominalV2, 'inkl. tot gespeichertem ringThin'),
-    effectiveKeyspace: report('effectiveV2', effectiveV2, 'ringThin entfernt, Lückenfüller nicht extra'),
-    findings: [
-      'ringThin wird erzeugt und in ringCode gespeichert, aber CipherEngine.setRotors setzt thin.ring = 0.',
-      'Linke Lückenfüller-Kerbe wird berechnet, CipherEngine.step() liest nur middle und right.',
-      'Lückenfüller nicht als unabhängigen Schlüsselraum zählen.',
-      'Freie Dora ist eine Involution, danach fest mit ENDWALZE_DORA_MIX komponiert — keine 26!-Endwalze.',
-    ],
+  endwalze: {
+    factorial26: FACT_26.toString(),
+    factorial26Bits: Number(bitsOf(FACT_26).toFixed(6)),
+    involutionsI26: I26.toString(),
+    involutionsBits: Number(bitsOf(I26).toFixed(6)),
+    nonInvolutory: ENDWALZE_SUPPORT.toString(),
+    nonInvolutoryBits: Number(bitsOf(ENDWALZE_SUPPORT).toFixed(6)),
+    gapBits: Number((bitsOf(FACT_26) - bitsOf(ENDWALZE_SUPPORT)).toFixed(12)),
+    note: 'The deviation from 26! is practically negligible in bits and scientifically not zero.',
   },
-  modernV3Design: {
-    components: [
-      report('rotorChoice', rotorChoice, 'unverändert 2 Thin × P(8,3)'),
-      report('plugboard10', plug10, 'unverändert'),
-      report('endwalzeFullPerm', endwalzeV3, 'echte 26!-Permutation; Involutionen werden beim Würfeln verworfen (Anteil vernachlässigbar)'),
-      report('ringsEffective', ringsEffectiveV3, 'Thin-Ringstellung ist lebendig'),
-      report('grundstellung', grundstellung, 'vier Positionen; Thin läuft mit'),
-      report(
-        'lueckenfuellerIndependent',
-        notchesV3,
-        'je Walze L/M/R eine Kombination aus C(26,5)+C(26,7)+C(26,9); Thin hat keine Kerben (treibt nichts)',
-      ),
-    ],
-    notchChoicesPerRotor: notchChoicesPerRotor.toString(),
-    nominalKeyspace: report('nominalV3', nominalV3, 'nach V3-Design; Equivalent Keys separat messen'),
-    note: 'V3-Zahlen sind Design-Kombinatorik, keine beobachtete Angriffskomplexität.',
-  },
+  lueckenfueller: notches,
+  formalSecurityProof: 'none',
 };
 
 writeJson('keyspace.json', out);
 
-const fmt = (row) => `  ${row.name.padEnd(28)} ${row.bits.toFixed(2).padStart(8)} bit   ${row.count}`;
-
-console.log('=== Alberich keyspace (exact BigInt) ===\n');
-console.log('Current Modern, Nur-Dora:');
-for (const row of out.currentModernDoraOnly.components) console.log(fmt(row));
-console.log(fmt(out.currentModernDoraOnly.nominalKeyspace));
-console.log(fmt(out.currentModernDoraOnly.effectiveKeyspace));
-console.log('\nFindings:');
-for (const f of out.currentModernDoraOnly.findings) console.log(`  - ${f}`);
-console.log('\nModern V3 design (combinatorics only):');
-for (const row of out.modernV3Design.components) console.log(fmt(row));
-console.log(fmt(out.modernV3Design.nominalKeyspace));
-console.log('\nSecurity proof: none');
-console.log(`wrote ${RESULTS_DIR_REL()}`);
-
-function RESULTS_DIR_REL() {
-  return 'research/results/keyspace.json';
-}
+const fmt = (r) => `  ${r.name.padEnd(28)} ${r.bits.toFixed(2).padStart(8)} bit`;
+console.log('=== Modern V3 Standard keyspace ===');
+console.log('A support');
+for (const r of out.layers.A_supportSize.components) console.log(fmt(r));
+console.log(fmt(out.layers.A_supportSize.dayKey));
+console.log('B notch Shannon', notches.shannonAllBits, 'C notch min-entropy', notches.minEntropyAllBits);
+console.log('Endwalze 26!-I(26)', out.endwalze.nonInvolutoryBits, 'gap bits', out.endwalze.gapBits);
+console.log('Formal proof: none');
+console.log('wrote research/results/keyspace.json');

@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Anzeige- und Textform der Monatstafel (Parity codebook.alberich.pro).
  * Arbeitet auf dem Alberich-CodebookSheet (days[]), nicht auf der internen entries-Form.
  */

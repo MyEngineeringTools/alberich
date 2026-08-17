@@ -20,6 +20,17 @@
 - [ ] Offline check: unzip web zip, `./start.sh`, disable network, generate a sheet
 - [ ] Git tag
 - [ ] GitHub Release with SHA256SUMS
+- [ ] `scripts/release.sh` refused a dirty tree
+- [ ] `dist/release/BUILD_INFO.json` commit equals `git rev-parse HEAD`
+- [ ] `sha256sum -c SHA256SUMS`
+
+After the repository is public:
+
+- [ ] Enable private vulnerability reporting
+- [ ] Check secret scanning and push protection
+- [ ] Protect `main` (require CI, no force-push)
+- [ ] Require DCO on external PRs
+- [ ] Confirm SECURITY.md disclosure mailbox
 
 Offline / courier:
 

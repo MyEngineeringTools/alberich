@@ -9,6 +9,26 @@ Folgt **1.0 (Revision 48)**. Live V3 stepping is again the Revision 47
 double-step. The cascade-only step shipped in 48 made authentic 47
 telegrams fail as invalid UTF-8 after a valid MAC.
 
+Public-release hygiene on this same revision line (no protocol change):
+
+- Release and full research refuse a dirty working tree. ZIPs carry
+  `BUILD_INFO.json` (commit, algorithm fingerprint).
+- Input limits are enforced (plaintext, cipher, Base-26, codebook JSON,
+  QR image size/pixels, network context). Recommended V3 length is 4096
+  characters; the technical maximum stays 200000.
+
+- Research results labelled by protocol and step rule; legacy three-wheel
+  numbers live under `research/results/legacy/` as `NOT CURRENT`.
+- `state-graph.mjs` has `--smoke` / `--full`; cascade invertibility is
+  documented as a future option only.
+- First-party sources carry SPDX headers; vendor licences are untouched.
+- Zero-telemetry wording is consistent. Browser companions are packaged
+  from `scripts/package-extensions.sh` / GitHub Release ZIPs.
+- Endwalze generation fails closed after 64 involutory CSPRNG draws.
+  There is no deterministic substitute wiring.
+- `script-src` no longer needs `'unsafe-inline'` (JSON-LD is hashed).
+  `style-src 'unsafe-inline'` remains for vendor QR HTML.
+
 - Web app under `web/` — version `1.0 (Revision 49)`.
 - Browser extension under `extensions/browser/` — version `1.0.24`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.

@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Partial-Key und Meet-in-the-Middle-Sondierung der Struktur
  * Plugboard → Rotors → Endwalze → Plugboard
  */
@@ -10,7 +14,7 @@ import {
   resolveEndwalzeWiring,
   modernEncryptPayload,
 } from '../web/js/modern-crypto.js';
-import { SYNTHETIC_V2, configureSyntheticV2, writeJson } from './lib.mjs';
+import { SYNTHETIC_V2, configureSyntheticV2, writeJson, META_LEGACY_V2 } from './lib.mjs';
 import { wantsSmoke as __wantsSmoke } from './lib.mjs';
 if (__wantsSmoke()) { console.log('smoke ok partial-key-search'); process.exit(0); }
 
@@ -76,6 +80,6 @@ const out = {
     'Der nominelle kombinierte Schlüsselraum ist nicht die Angriffskomplexität. Header, Stecker-Konjugation und bekannter Rotorweg zerlegen ihn. Das wird nicht versteckt.',
 };
 
-writeJson('partial-key-search.json', out);
+writeJson('legacy/v2/partial-key-search.json', { ...META_LEGACY_V2, status: 'NOT CURRENT MODERN V3', script: 'research/partial-key-search.mjs', ...out });
 console.log(out.reducedClaim);
 for (const f of findings) console.log(`- ${f.name}: ${f.result.slice(0, 160)}…`);

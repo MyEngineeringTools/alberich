@@ -13,6 +13,12 @@ node js/tests/modern-v3-selftest.js
 node js/tests/codebook-selftest.js
 node js/tests/courier-qr-selftest.js
 node js/tests/secure-random-selftest.mjs
+node js/tests/limits-selftest.js
+
+echo
+echo "— algorithm fingerprint —"
+cd "$ROOT"
+node research/fingerprint-selftest.mjs
 
 echo
 echo "— browser companion —"

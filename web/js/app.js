@@ -1,3 +1,7 @@
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 import { CipherEngine } from './cipher-engine.js';
 import {
   REFLECTOR_ID_BRUNO,
@@ -58,6 +62,7 @@ import {
   lettersFromInput,
   parseCourierPayload,
 } from './courier-qr.js';
+import { LIMITS } from './limits.js';
 import {
   MAX_NETWORKS,
   DEFAULT_NETWORK_NAME,
@@ -123,6 +128,9 @@ import {
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
 const VERSION = '1.0 (Revision 49)';
+/** Replaced by scripts/release.sh in the packaged web zip. */
+const BUILD_COMMIT = 'unpublished';
+const PROTOCOL_LABEL = 'Modern V3';
 const replayCache = new ReplayCache(512);
 /** Last V3 telegram this session produced — re-decrypt is a self-test, not a replay. */
 let lastOutgoingCipher = '';
@@ -616,9 +624,13 @@ function bindSetupControls() {
       return;
     }
     markManualKeySource();
-    applyManualEndwalzeWiring(generateEndwalzeWiring(), { force: true });
-    renderSetupForm();
-    showToast(t('toast.randomSettings'));
+    try {
+      applyManualEndwalzeWiring(generateEndwalzeWiring(), { force: true });
+      renderSetupForm();
+      showToast(t('toast.randomSettings'));
+    } catch {
+      showToast(t('modern.endwalzeGenerateFailed'));
+    }
   });
 
   document.getElementById('reflectorD').addEventListener('input', (e) => {
@@ -680,6 +692,11 @@ function onCodebookFileSelected(event) {
   const input = event.target;
   const file = input.files?.[0];
   if (!file) return;
+  if (file.size > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
+    showToast(t('limits.codebookJson'));
+    input.value = '';
+    return;
+  }
 
   const reader = new FileReader();
   reader.onload = () => {
@@ -704,6 +721,11 @@ async function onCodebookQrFileSelected(event) {
   const input = event.target;
   const file = input.files?.[0];
   if (!file) return;
+  if (file.size > LIMITS.MAX_QR_IMAGE_BYTES) {
+    showToast(t('qr.err.imageTooLarge'));
+    input.value = '';
+    return;
+  }
 
   try {
     const qrText = await decodeQrTextFromBlob(file);
@@ -774,8 +796,13 @@ function onGenerateCodebook() {
       endwalzePolicy: codebookEndwalzePolicy,
     });
     applyImportedCodebookSheet(sheet, t('codebook.sourceGenerated'));
-  } catch {
-    showToast(t('toast.codebookGenerateFailed'));
+  } catch (err) {
+    const msg = String(err && err.message ? err.message : err);
+    showToast(
+      msg.includes('Unable to generate secure')
+        ? t('modern.endwalzeGenerateFailed')
+        : t('toast.codebookGenerateFailed'),
+    );
   }
 }
 
@@ -2742,8 +2769,17 @@ function randomizeSettings() {
   const reflector = pickReflectorIdForPolicy(policy, pick) || REFLECTOR_ID_BRUNO;
   const doraFree = usesFreeDoraWiring(policy);
   const rotorThin = pick(THIN_ROTOR_IDS);
-  const endwalzeWiring = v3Random ? generateEndwalzeWiring() : '';
-  const lueckenfueller = v3Random ? generateLueckenfueller() : null;
+  let endwalzeWiring = '';
+  let lueckenfueller = null;
+  if (v3Random) {
+    try {
+      endwalzeWiring = generateEndwalzeWiring();
+      lueckenfueller = generateLueckenfueller();
+    } catch {
+      showToast(t('modern.endwalzeGenerateFailed'));
+      return;
+    }
+  }
 
   const ringThin = randomLetter();
   const ringLeft = randomLetter();
@@ -4042,5 +4078,11 @@ function renderAll() {
   else renderCodebookUi();
   document.getElementById('doraSection').hidden = state.reflectorId !== REFLECTOR_ID_DORA;
   const versionLabel = document.getElementById('versionLabel');
-  if (versionLabel) versionLabel.textContent = t('info.version', { version: VERSION });
+  if (versionLabel) {
+    versionLabel.textContent = t('info.version', {
+      version: VERSION,
+      protocol: PROTOCOL_LABEL,
+      commit: BUILD_COMMIT,
+    });
+  }
 }

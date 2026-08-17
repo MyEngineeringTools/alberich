@@ -1,40 +1,27 @@
 {
-  "generatedAt": "2026-08-16T10:09:42.326Z",
-  "seed": "mulberry32(0xA11CE)",
+  "protocol": "Modern V3",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmFingerprint": "5e5647a3bd2b33a2",
+  "stepRule": "double-step",
+  "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
+  "generatorProfile": "Modern V3 Standard",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "script": "research/equivalent-keys.mjs",
+  "command": "research/equivalent-keys.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "current": true,
+  "status": "CURRENT",
+  "researchRng": "mulberry32 deterministic research PRNG — never used for production keys",
+  "productionRng": "Web Crypto CSPRNG",
   "tests": {
-    "ringThin": {
-      "forcedDifferentRingChangesStream": true,
-      "setRotorsAlwaysZeroesThinRing": true,
-      "storedRingThinNeverApplied": true
-    },
-    "leftNotch": {
-      "leftNotchChangeSameStream": true,
-      "middleNotchChangeDifferentStream": true
-    },
-    "derivedNotchCollisions": {
-      "collisionsFound": 0,
-      "examples": [],
-      "note": "Gleiche Kerben aus verschiedenen Ringstellungen bei festem Stecker — Lückenfüller ist kein unabhängiger Schlüssel."
-    },
-    "ringPosition": {
-      "sameOffsetDifferentNotchTiming": true,
-      "note": "Gleiches Wiring-Offset (pos-ring) ist bei Kerben-am-Pos nicht äquivalent."
-    },
-    "endwalze": {
-      "sameDoraPairsSameWiring": true,
-      "doraNotBruno": true,
-      "doraIsComposedNotFreePerm": true
-    },
-    "keystream": {
-      "sameKeySameStream": true,
-      "differentGroundDifferentStream": true
-    }
+    "thinRingChangesCipher": true,
+    "leftNotchChangesCipher": true,
+    "groundChangesPruef": true
   },
   "findings": [
-    "DEAD: ringThin — setRotors setzt thin.ring immer auf 0.",
-    "DEAD: left Lückenfüller-Kerbe — step() prüft nur middle und right.",
-    "Equivalent/derived: verschiedene Ringstellungen können dieselben Kerben erzeugen.",
-    "Ring/Pos-Offset allein erzeugt keinen Equivalent Key, weil Kerben an pos hängen.",
-    "Endwalze Dora: Paarung + feste affine Mischung, nicht 26!."
-  ]
+    "LIVE: thin.ring changes the body (no V2-style dead thin ring).",
+    "LIVE: Left notches change the body (no unused left notch).",
+    "LIVE: ground is in canonicalDayKey; a different ground changes PRUEF."
+  ],
+  "statusNote": "No complete equivalent-key classification. These are existence checks against the V2 dead fields."
 }

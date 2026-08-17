@@ -1,0 +1,16 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/crib-search.mjs",
+  "generatedAt": "2026-08-16T10:09:42.574Z",
+  "cribLetters": 26,
+  "trueOffset": 8,
+  "hits": [
+    8
+  ],
+  "offsetsTested": 17,
+  "ms": 5.65,
+  "note": "Bei bekanntem Tagesschl\u00fcssel und SK ist die Crib-Lage ein linearer Scan. Ohne Tagesschl\u00fcssel ist das kein praktischer Bruch."
+}

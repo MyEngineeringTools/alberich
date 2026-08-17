@@ -1,150 +1,168 @@
 {
-  "generatedAt": "2026-08-16T10:09:42.299Z",
+  "protocol": "Modern V3",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmFingerprint": "5e5647a3bd2b33a2",
+  "stepRule": "double-step",
+  "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
+  "generatorProfile": "Modern V3 Standard",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "script": "research/keyspace.mjs",
+  "command": "research/keyspace.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "current": true,
+  "status": "CURRENT",
+  "researchRng": "mulberry32 deterministic research PRNG — never used for production keys",
+  "productionRng": "Web Crypto CSPRNG",
   "disclaimer": {
-    "nominal": "Reine Kombinatorik, ohne Dead/Equivalent Keys.",
-    "effective": "Nach bekannten Dead Fields (Ist: ringThin tot, Lückenfüller abgeleitet).",
-    "observedAttack": "Nicht in dieser Datei — siehe Research-Skripte.",
+    "support": "A — number of representable Standard-Profile configurations.",
+    "shannon": "B — entropy of the actual generators (notch mixture; Endwalze rejection sampling).",
+    "minEntropy": "C — −log2 of the most likely generator output.",
+    "equivalent": "D — known dead/equivalent fields only. No complete classification.",
+    "attack": "E — from research/results/v3-attacks.json, not from bit counting.",
     "securityProof": "none",
     "notClaimed": [
       "AES-128-Äquivalenz",
-      "AES-192-Äquivalenz",
+      "248-bit security",
       "NIST-Sicherheit",
-      "mathematisch bewiesene Sicherheit"
+      "support bits = attack complexity"
     ]
   },
-  "identities": {
-    "doubleFactorialOdd": {
-      "formula": "25!! = 26! / (2^13 · 13!)",
-      "value": "7905853580625",
-      "bits": 42.846058
+  "layers": {
+    "A_supportSize": {
+      "components": [
+        {
+          "name": "rotorSelection",
+          "count": "672",
+          "bits": 9.392317,
+          "note": "2 Thin × P(8,3)"
+        },
+        {
+          "name": "rings",
+          "count": "456976",
+          "bits": 18.801759,
+          "note": "four live ring letters including Thin"
+        },
+        {
+          "name": "ground",
+          "count": "456976",
+          "bits": 18.801759,
+          "note": "four ground letters, bound into canonicalDayKey"
+        },
+        {
+          "name": "plugboard10",
+          "count": "150738274937250",
+          "bits": 47.099039,
+          "note": "10 disjoint unordered pairs"
+        },
+        {
+          "name": "endwalzeNonInvolutory",
+          "count": "403291461126072650375799424",
+          "bits": 88.381953,
+          "note": "26! − I(26)"
+        },
+        {
+          "name": "lueckenfuellerSupport",
+          "count": "56983511157655797000",
+          "bits": 65.627178,
+          "note": "three independent rotors; see mixture below"
+        }
+      ],
+      "dayKey": {
+        "name": "dayKeySupport",
+        "count": "486124858979044338200664663967171233831879675556166044619934796087296000000",
+        "bits": 248.104006,
+        "note": "product of the components above; not security bits"
+      },
+      "perMessage": [
+        {
+          "name": "messageKey",
+          "count": "456976",
+          "bits": 18.801759,
+          "note": "4-letter rotor start; birthday ~ √(26^4)"
+        },
+        {
+          "name": "messageId",
+          "count": "208827064576",
+          "bits": 37.603518,
+          "note": "8 letters, not a rotor, visible in the telegram"
+        }
+      ]
     },
-    "plugboard10": {
-      "formula": "26! / (2^10 · 10! · 6!)",
-      "value": "150738274937250",
-      "bits": 47.099039
+    "B_shannonEntropy": {
+      "endwalzeBits": 88.381953,
+      "endwalzeNote": "Rejection sampling of involutions is uniform on the allowed set.",
+      "lueckenfueller": {
+        "perRotor": 20.554252,
+        "threeRotors": 61.662755
+      },
+      "note": "Rotor choice, rings, ground and the plugboard are treated as uniform on their support."
     },
-    "fact26": {
-      "formula": "26!",
-      "value": "403291461126605635584000000",
-      "bits": 88.381953
+    "C_minEntropy": {
+      "lueckenfueller": {
+        "perRotor": 17.590324,
+        "threeRotors": 52.770972,
+        "mostProbableCount": 5
+      },
+      "endwalzeBits": 88.381953
+    },
+    "D_equivalentKeyAdjusted": {
+      "status": "PARTIAL",
+      "liveV3": {
+        "thinRingLive": true,
+        "leftNotchesLive": true,
+        "groundInMac": true,
+        "knownDeadFields": []
+      },
+      "legacyV2": {
+        "protocol": "Modern V2 / three-wheel",
+        "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left unused; Thin stands",
+        "current": false,
+        "status": "NOT CURRENT MODERN V3",
+        "script": "research/keyspace.mjs",
+        "generatedAt": "2026-08-17T16:51:17+02:00",
+        "thinRingDead": true,
+        "leftNotchUnused": true,
+        "derivedNotches": true
+      }
+    },
+    "E_bestDemonstratedAttack": {
+      "status": "PARTIAL",
+      "pointer": "research/results/v3-attacks.json",
+      "note": "HMAC is a perfect offline candidate oracle. No practical full day-key recovery is implemented."
     }
   },
-  "currentModernDoraOnly": {
-    "components": [
-      {
-        "name": "rotorChoice",
-        "count": "672",
-        "bits": 9.392317,
-        "note": "2 Thin × P(8,3)"
-      },
-      {
-        "name": "plugboard10",
-        "count": "150738274937250",
-        "bits": 47.099039,
-        "note": "10 disjunkte Paare; nicht 26!"
-      },
-      {
-        "name": "dora13",
-        "count": "7905853580625",
-        "bits": 42.846058,
-        "note": "13 freie Paare = 25!!. Affine Komposition addiert 0 Bit."
-      },
-      {
-        "name": "ringsStored",
-        "count": "456976",
-        "bits": 18.801759,
-        "note": "ringCode hat 4 Buchstaben inkl. ringThin"
-      },
-      {
-        "name": "ringsEffective",
-        "count": "17576",
-        "bits": 14.101319,
-        "note": "thin.ring wird in setRotors auf 0 gesetzt (Dead Key)"
-      },
-      {
-        "name": "grundstellung",
-        "count": "456976",
-        "bits": 18.801759,
-        "note": "vier Walzenpositionen"
-      },
-      {
-        "name": "lueckenfuellerIndependent",
-        "count": "1",
-        "bits": 0,
-        "note": "Kerben deterministisch aus Ringen+Steckern"
-      },
-      {
-        "name": "affineMix",
-        "count": "1",
-        "bits": 0,
-        "note": "ENDWALZE_DORA_MIX ist fest"
-      }
-    ],
-    "nominalKeyspace": {
-      "name": "nominalV2",
-      "count": "167235458217136363675102618406350080000000",
-      "bits": 136.940933,
-      "note": "inkl. tot gespeichertem ringThin"
-    },
-    "effectiveKeyspace": {
-      "name": "effectiveV2",
-      "count": "6432133008351398602888562246398080000000",
-      "bits": 132.240493,
-      "note": "ringThin entfernt, Lückenfüller nicht extra"
-    },
-    "findings": [
-      "ringThin wird erzeugt und in ringCode gespeichert, aber CipherEngine.setRotors setzt thin.ring = 0.",
-      "Linke Lückenfüller-Kerbe wird berechnet, CipherEngine.step() liest nur middle und right.",
-      "Lückenfüller nicht als unabhängigen Schlüsselraum zählen.",
-      "Freie Dora ist eine Involution, danach fest mit ENDWALZE_DORA_MIX komponiert — keine 26!-Endwalze."
-    ]
+  "endwalze": {
+    "factorial26": "403291461126605635584000000",
+    "factorial26Bits": 88.381953,
+    "involutionsI26": "532985208200576",
+    "involutionsBits": 48.921089,
+    "nonInvolutory": "403291461126072650375799424",
+    "nonInvolutoryBits": 88.381953,
+    "gapBits": 2e-12,
+    "note": "The deviation from 26! is practically negligible in bits and scientifically not zero."
   },
-  "modernV3Design": {
-    "components": [
-      {
-        "name": "rotorChoice",
-        "count": "672",
-        "bits": 9.392317,
-        "note": "unverändert 2 Thin × P(8,3)"
-      },
-      {
-        "name": "plugboard10",
-        "count": "150738274937250",
-        "bits": 47.099039,
-        "note": "unverändert"
-      },
-      {
-        "name": "endwalzeFullPerm",
-        "count": "403291461126605635584000000",
-        "bits": 88.381953,
-        "note": "echte 26!-Permutation; Involutionen werden beim Würfeln verworfen (Anteil vernachlässigbar)"
-      },
-      {
-        "name": "ringsEffective",
-        "count": "456976",
-        "bits": 18.801759,
-        "note": "Thin-Ringstellung ist lebendig"
-      },
-      {
-        "name": "grundstellung",
-        "count": "456976",
-        "bits": 18.801759,
-        "note": "vier Positionen; Thin läuft mit"
-      },
-      {
-        "name": "lueckenfuellerIndependent",
-        "count": "56983511157655797000",
-        "bits": 65.627178,
-        "note": "je Walze L/M/R eine Kombination aus C(26,5)+C(26,7)+C(26,9); Thin hat keine Kerben (treibt nichts)"
-      }
+  "lueckenfueller": {
+    "counts": [
+      5,
+      7,
+      9
     ],
-    "notchChoicesPerRotor": "3848130",
-    "nominalKeyspace": {
-      "name": "nominalV3",
-      "count": "486124858979686795044285822008313826971852912851593875670695936000000000000",
-      "bits": 248.104006,
-      "note": "nach V3-Design; Equivalent Keys separat messen"
+    "rotors": 3,
+    "combinationsPerCount": {
+      "5": "65780",
+      "7": "657800",
+      "9": "3124550"
     },
-    "note": "V3-Zahlen sind Design-Kombinatorik, keine beobachtete Angriffskomplexität."
-  }
+    "supportOne": "3848130",
+    "supportOneBits": 21.875726,
+    "supportAll": "56983511157655797000",
+    "supportAllBits": 65.627178,
+    "shannonOneBits": 20.554252,
+    "shannonAllBits": 61.662755,
+    "minEntropyOneBits": 17.590324,
+    "minEntropyAllBits": 52.770972,
+    "mostProbableCount": 5,
+    "formula": "P(set) = 1/|{5,7,9}| · 1/C(26,k). Support = [Σ C(26,k)]^3. Shannon and min-entropy follow the mixture."
+  },
+  "formalSecurityProof": "none"
 }

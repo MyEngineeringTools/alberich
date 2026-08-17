@@ -1,9 +1,16 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Gemeinsame Hilfen für das Modern-Research-Labor.
- * Nur synthetische Schlüssel. Feste Seeds. Keine echten Tafeln.
+ *
+ * Production keys use Web Crypto. Everything here that needs a stream of
+ * numbers uses mulberry32 so checked-in results replay. Never wire this
+ * generator into codebook or end-wheel production.
  */
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CipherEngine } from '../web/js/cipher-engine.js';
@@ -14,8 +21,140 @@ import {
 } from '../web/js/modern-crypto.js';
 
 export const RESEARCH_DIR = dirname(fileURLToPath(import.meta.url));
+export const REPO_ROOT = dirname(RESEARCH_DIR);
 export const RESULTS_DIR = `${RESEARCH_DIR}/results`;
 export const CORPUS_DIR = `${RESEARCH_DIR}/corpus`;
+
+/** Files that define the live Modern V3 machine. A change here invalidates results. */
+export const ALGORITHM_SOURCE_FILES = Object.freeze([
+  'VERSIONS',
+  'web/js/cipher-data.js',
+  'web/js/cipher-engine.js',
+  'web/js/codebook-generate.js',
+  'web/js/codebook.js',
+  'web/js/limits.js',
+  'web/js/modern-crypto.js',
+  'web/js/modern-v3.js',
+  'web/js/secure-random.js',
+]);
+
+export const LIVE_STEP_RULE = 'double-step';
+export const LIVE_STEP_RULE_DETAIL =
+  'Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left';
+
+export function webRevision() {
+  const text = readFileSync(`${REPO_ROOT}/VERSIONS`, 'utf8');
+  const m = text.match(/^web\.revision=(\d+)/m);
+  return m ? m[1] : 'unknown';
+}
+
+export function algorithmRevision() {
+  return `modern-v3-rev${webRevision()}-double-step`;
+}
+
+export function fingerprintFromContents(files) {
+  const h = createHash('sha256');
+  for (const rel of ALGORITHM_SOURCE_FILES) {
+    if (!(rel in files)) throw new Error(`missing algorithm source ${rel}`);
+    h.update(rel);
+    h.update('\0');
+    h.update(files[rel]);
+    h.update('\0');
+  }
+  return h.digest('hex').slice(0, 16);
+}
+
+export function readAlgorithmSources(root = REPO_ROOT) {
+  const files = {};
+  for (const rel of ALGORITHM_SOURCE_FILES) {
+    files[rel] = readFileSync(`${root}/${rel}`);
+  }
+  return files;
+}
+
+export function algorithmFingerprint(root = REPO_ROOT) {
+  return fingerprintFromContents(readAlgorithmSources(root));
+}
+
+export function gitHead() {
+  try {
+    return execFileSync('git', ['-C', REPO_ROOT, 'rev-parse', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    return 'unpublished';
+  }
+}
+
+export function gitCommitTime() {
+  try {
+    return execFileSync('git', ['-C', REPO_ROOT, 'log', '-1', '--format=%cI'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    return '1970-01-01T00:00:00.000Z';
+  }
+}
+
+/** Wall clock is not a reproducibility input. Prefer commit time or an env pin. */
+export function researchTimestamp() {
+  return process.env.ALBERICH_RESEARCH_TIME || gitCommitTime();
+}
+
+export function researchMode() {
+  if (process.argv.includes('--exhaustive')) return 'exhaustive';
+  if (process.argv.includes('--full')) return 'full';
+  if (process.argv.includes('--smoke')) return 'smoke';
+  return 'full';
+}
+
+export function stampLiveV3({ script, command } = {}) {
+  return {
+    protocol: 'Modern V3',
+    algorithmRevision: algorithmRevision(),
+    algorithmFingerprint: algorithmFingerprint(),
+    stepRule: LIVE_STEP_RULE,
+    stepRuleDetail: LIVE_STEP_RULE_DETAIL,
+    generatorProfile: 'Modern V3 Standard',
+    sourceCommit: gitHead(),
+    script,
+    command: command || process.argv.slice(1).map((p) => p.replace(`${REPO_ROOT}/`, '')).join(' '),
+    generatedAt: researchTimestamp(),
+    researchMode: researchMode(),
+    current: true,
+    status: 'CURRENT',
+    researchRng: 'mulberry32 deterministic research PRNG — never used for production keys',
+    productionRng: 'Web Crypto CSPRNG',
+  };
+}
+
+export function stampCascadeFuture({ script } = {}) {
+  return {
+    protocol: 'V3 cascade (future option)',
+    algorithmRevision: algorithmRevision(),
+    stepRule: 'cascade',
+    current: false,
+    status: 'NOT CURRENT MODERN V3',
+    note: 'nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.',
+    script,
+    generatedAt: researchTimestamp(),
+    sourceCommit: gitHead(),
+  };
+}
+
+export function stampLegacyV2({ script } = {}) {
+  return {
+    protocol: 'Modern V2 / three-wheel',
+    stepRule: 'Right always; Middle on Right notch; Left+Middle on Middle notch; Left unused; Thin stands',
+    current: false,
+    status: 'NOT CURRENT MODERN V3',
+    script,
+    generatedAt: researchTimestamp(),
+  };
+}
+
+export const META_LIVE_V3 = stampLiveV3({ script: 'research/lib.mjs' });
+export const META_LEGACY_V2 = stampLegacyV2({ script: 'research/lib.mjs' });
 
 /** Nicht-kryptographischer, reproduzierbarer Generator. */
 export function mulberry32(seed) {
@@ -51,7 +190,20 @@ export function binomial(n, k) {
   return r;
 }
 
-/** log2(n) als Zahl mit ~12 Nachkommastellen (BigInt). */
+/** Involutions on n letters: I(n) = I(n-1) + (n-1)·I(n-2). */
+export function involutionCount(n) {
+  if (n < 0) return 0n;
+  if (n <= 1) return 1n;
+  let prev2 = 1n;
+  let prev1 = 1n;
+  for (let i = 2; i <= n; i++) {
+    const next = prev1 + BigInt(i - 1) * prev2;
+    prev2 = prev1;
+    prev1 = next;
+  }
+  return prev1;
+}
+
 export function log2Big(n) {
   if (n <= 0n) return -Infinity;
   const hex = n.toString(16);
@@ -62,6 +214,36 @@ export function log2Big(n) {
 
 export function bitsOf(n) {
   return log2Big(n);
+}
+
+/**
+ * Live generator: pick k uniformly from {5,7,9}, then a uniform k-subset.
+ * Sets of different sizes are therefore not equiprobable.
+ */
+export function lueckenfuellerEntropy(counts = [5, 7, 9], rotors = 3) {
+  const combos = counts.map((k) => binomial(26, k));
+  const supportOne = combos.reduce((a, b) => a + b, 0n);
+  const log3 = Math.log2(counts.length);
+  const shannonOne =
+    log3 + counts.reduce((acc, k, i) => acc + log2Big(combos[i]), 0) / counts.length;
+  const minCombo = combos.reduce((a, b) => (a < b ? a : b));
+  const minOne = log3 + log2Big(minCombo);
+  return {
+    counts,
+    rotors,
+    combinationsPerCount: Object.fromEntries(counts.map((k, i) => [k, combos[i].toString()])),
+    supportOne: supportOne.toString(),
+    supportOneBits: Number(bitsOf(supportOne).toFixed(6)),
+    supportAll: (supportOne ** BigInt(rotors)).toString(),
+    supportAllBits: Number((rotors * bitsOf(supportOne)).toFixed(6)),
+    shannonOneBits: Number(shannonOne.toFixed(6)),
+    shannonAllBits: Number((rotors * shannonOne).toFixed(6)),
+    minEntropyOneBits: Number(minOne.toFixed(6)),
+    minEntropyAllBits: Number((rotors * minOne).toFixed(6)),
+    mostProbableCount: counts[combos.findIndex((c) => c === minCombo)],
+    formula:
+      'P(set) = 1/|{5,7,9}| · 1/C(26,k). Support = [Σ C(26,k)]^3. Shannon and min-entropy follow the mixture.',
+  };
 }
 
 export function writeJson(relPath, data) {
@@ -85,11 +267,6 @@ export const SYNTHETIC_V2 = Object.freeze({
   doraFree: false,
 });
 
-/**
- * @param {CipherEngine} engine
- * @param {string} keyCode4
- * @param {typeof SYNTHETIC_V2} [cfg]
- */
 export function configureSyntheticV2(engine, keyCode4, cfg = SYNTHETIC_V2) {
   const positions = [...keyCode4];
   engine.setCryptoMode('modern');
@@ -175,6 +352,10 @@ export function wantsSmoke() {
   return process.argv.includes('--smoke');
 }
 
+export function wantsFull() {
+  return process.argv.includes('--full');
+}
+
 export function wantsV3() {
   return process.argv.includes('--version') && process.argv.includes('v3')
     || process.argv.includes('--version=v3');
@@ -188,4 +369,27 @@ export function isValidUtf8RoundTrip(s) {
   }
 }
 
-export { CipherEngine, utf8ToBase26, deriveLueckenfuellerNotches };
+export function hammingLetters(a, b) {
+  const n = Math.max(a.length, b.length);
+  let d = 0;
+  const idx = [];
+  for (let i = 0; i < n; i++) {
+    if (a[i] !== b[i]) {
+      d += 1;
+      idx.push(i);
+    }
+  }
+  return {
+    hamming: d,
+    lengthA: a.length,
+    lengthB: b.length,
+    count: d,
+    first: idx[0] ?? null,
+    last: idx[idx.length - 1] ?? null,
+    positions: idx.length <= 64 ? idx : idx.slice(0, 32).concat(idx.slice(-8)),
+    prefixEqual: idx[0] ?? Math.min(a.length, b.length),
+    affectedRate: n ? Number((d / n).toFixed(4)) : 0,
+  };
+}
+
+export { CipherEngine, utf8ToBase26, deriveLueckenfuellerNotches, existsSync };

@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 import { writeFileSync } from 'node:fs';
 import { CipherEngine } from '../web/js/cipher-engine.js';
 import { modernV3EncryptPayload, utf8ToBase26v2 } from '../web/js/modern-v3.js';

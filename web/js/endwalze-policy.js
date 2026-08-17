@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Endwalzen-Auswahl für Monatstafeln und Zufall ohne Tafel.
  *
  * dora     — nur Dora, freie 13-Paar-Verdrahtung (BO nicht fest)

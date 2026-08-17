@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Eigenes Fenster für Codebook-Import.
  * Warum: Das Compose/Action-Popup schließt beim nativen Dateidialog —
  * die change-Events und storage.set laufen dann nicht zu Ende.

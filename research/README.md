@@ -1,32 +1,20 @@
 # Alberich Modern — Cryptanalysis-Labor
 
-Nur synthetische Schlüssel. Keine echten Monatstafeln.
+Only synthetic keys. No operational month sheets.
+
+Live algorithm: **Modern V3 double-step**. Baseline:
+[docs/crypto-spec/research-baseline.md](../docs/crypto-spec/research-baseline.md).
 
 ```bash
-cd research
-node keyspace.mjs
-node equivalent-keys.mjs
-node stepping-periods.mjs
-node base26-statistics.mjs
-node diffusion.mjs
-node malleability.mjs
-node ciphertext-statistics.mjs
-node known-plaintext.mjs
-node crib-search.mjs
-node partial-key-search.mjs
-node message-key-analysis.mjs
-node benchmark.mjs
+bash scripts/reproduce-research.sh --smoke
+bash scripts/reproduce-research.sh --full
 ```
 
-Ergebnisse: `research/results/*.json`.
-Bewertung: `research/results/EVALUATION.md`.
+Scripts: [SCRIPTS.md](SCRIPTS.md). Results: `results/`. Board: `results/EVALUATION.md`.
 
-Seeds sind nicht-kryptographisch (`mulberry32`) und in den JSON-Dateien
-notiert.
+The research PRNG is `mulberry32` with fixed seeds. Production key
+generation uses Web Crypto. Do not mix them.
 
-`state-graph.mjs` compares live double-step with the
-[cascade future option](../docs/crypto-spec/cascade-future.md). That
-option is not the shipped machine.
-
-Die produktive Spezifikation bleibt Traditional plus die sichtbare
-Walzenmechanik. Dieses Labor misst, es ersetzt die Maschine nicht.
+`state-graph.mjs` also measures the
+[cascade future option](../docs/crypto-spec/cascade-future.md). Those
+numbers are stored under `results/future/` and are not the shipped machine.

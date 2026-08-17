@@ -1,0 +1,928 @@
+{
+  "protocol": "V3 cascade (future option)",
+  "algorithmRevision": "modern-v3-rev49-double-step",
+  "stepRule": "cascade",
+  "current": false,
+  "status": "NOT CURRENT MODERN V3",
+  "note": "nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.",
+  "script": "research/stepping-periods.mjs",
+  "generatedAt": "2026-08-17T16:51:17+02:00",
+  "sourceCommit": "781d8929fc60a7231274aa5f2ea4424bcaafde91",
+  "space": 456976,
+  "expectedPeriod": 456976,
+  "observedPeriod": 456976,
+  "bijective": true,
+  "transient": 0,
+  "coverage": 1,
+  "cascadeFuture": {
+    "protocol": "V3 cascade (future option)",
+    "stepRule": "pure carry / Lückenfüller cascade",
+    "current": false,
+    "status": "NOT LIVE",
+    "theoreticalStateSpace": 456976,
+    "n": 81,
+    "min": 456976,
+    "max": 456976,
+    "median": 456976,
+    "histogram": [
+      {
+        "period": 456976,
+        "count": 81
+      }
+    ],
+    "samples": [
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 5,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 7,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 5,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 7,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 5
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 7
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 0,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 1,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      },
+      {
+        "counts": {
+          "left": 9,
+          "middle": 9,
+          "right": 9
+        },
+        "placement": 2,
+        "transient": 0,
+        "period": 456976,
+        "firstRepeatAt": 456976
+      }
+    ],
+    "note": "Research only. Invertible; with notch counts {5,7,9} sampled orbits have period 26^4. See docs/crypto-spec/cascade-future.md."
+  }
+}

@@ -47,6 +47,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 Do not put that header on `**/vendor/**` or other third-party files.
 
+JSON and other files without a comment syntax are covered by
+[REUSE.toml](REUSE.toml). `scripts/test-repository.sh` checks that
+first-party sources carry the AGPL identifier and that vendor files do
+not.
+
 ## What we will not merge
 
 - Operational month sheets or real daily keys

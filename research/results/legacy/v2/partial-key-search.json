@@ -1,0 +1,31 @@
+{
+  "protocol": "V3 legacy step rule",
+  "status": "NOT CURRENT MODERN V3",
+  "current": false,
+  "stepRule": "Right always; Middle on Right notch; Left+Middle on Middle notch; Left notch unused; Thin stands",
+  "script": "research/partial-key-search.mjs",
+  "generatedAt": "2026-08-16T10:09:42.534Z",
+  "findings": [
+    {
+      "name": "plugboard-conjugation",
+      "result": "Stecker ist eine Involution \u03c0. Modern-Encrypt ist \u03c0 \u2218 E \u2218 \u03c0, wobei E der Rotor+Endwalzenweg nach dem Schritt ist. Das ist eine Konjugation nur wenn E involutorisch w\u00e4re. E ist nicht involutorisch, daher \u03c0\u2218E\u2218\u03c0 \u2260 Konjugation einer Involution. Trotzdem: bekanntes \u03c0 reduziert den Suchraum auf E."
+    },
+    {
+      "name": "header-separated-from-body",
+      "result": "Der Spruchschl\u00fcssel-Header wird unter der Grundstellung verschl\u00fcsselt. Der K\u00f6rper startet danach bei der Spruchschl\u00fcssel-Lage. Ein Angreifer kann Header und Body getrennt behandeln. Der Header ist nur 4 Buchstaben."
+    },
+    {
+      "name": "endwalze-separable",
+      "endIsPermutation": true,
+      "inverseOfInverse": true,
+      "result": "Bei bekanntem Rotorweg (Walzen+Ringe+Lagen) ist die Endwalze die unbekannte 26er-Permutation zwischen Thin-Ausgang und Stecker-R\u00fcckweg. Mit genug Klartextpaaren nach Entfernen von Stecker und Rotoren ist sie direkt ablesbar. Das ist Meet-in-the-Middle gegen die nominelle Kombination Plug\u00d7Endwalze."
+    },
+    {
+      "name": "demonstrated-decomposition",
+      "headerLen": 4,
+      "bodyLen": 8,
+      "result": "Implementierte Zerlegung: (1) Header unter Grundstellung, (2) Body unter SK. Keine vollst\u00e4ndige MITM-Suche \u00fcber 26! in diesem Lauf \u2014 der Suchraum der Endwalze bleibt kombinatorisch gro\u00df, wird aber bei bekanntem Rotorweg zu einer Tabelle."
+    }
+  ],
+  "reducedClaim": "Der nominelle kombinierte Schl\u00fcsselraum ist nicht die Angriffskomplexit\u00e4t. Header, Stecker-Konjugation und bekannter Rotorweg zerlegen ihn. Das wird nicht versteckt."
+}

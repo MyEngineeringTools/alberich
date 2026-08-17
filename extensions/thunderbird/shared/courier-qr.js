@@ -1,4 +1,6 @@
 /**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
  * Kurier-QR: ein Spruch als einzelner Code (Parity Web / Android CourierQr).
  * Alphanumeric-Nutzlast ALBERICH-CTQR1- + A–Z, QR Version 20 / ECC M = 970 Zeichen.
  */

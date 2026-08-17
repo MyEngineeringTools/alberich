@@ -24,7 +24,9 @@ browser
 
 Modern decrypt inverts the Endwalze and walks the rotors backward. Stepping
 is the same as on encrypt. Live V3 uses the four-rotor double-step published
-in Revision 47. Traditional / V2 keep the historical three-wheel step.
+in Revision 47. A pure notch cascade is documented as a
+[future option](crypto-spec/cascade-future.md) and is not wired into
+`step()`. Traditional / V2 keep the historical three-wheel step.
 `modern-crypto.js` still holds older V2 helpers for tests; they are not a
 live product path.
 

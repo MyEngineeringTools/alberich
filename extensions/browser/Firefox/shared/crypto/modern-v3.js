@@ -471,7 +471,7 @@ export function nextV3Positions(pos, notchesAt) {
   };
 }
 
-/** Research-only: pure carry, no double-step. Not the live path. */
+/** Future option / research: pure carry, no double-step. Not used by step(). */
 export function nextV3PositionsCascade(pos, notchesAt) {
   const stepMiddle = !!notchesAt.right;
   const stepLeft = stepMiddle && !!notchesAt.middle;

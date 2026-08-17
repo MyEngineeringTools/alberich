@@ -24,5 +24,9 @@ Bewertung: `research/results/EVALUATION.md`.
 Seeds sind nicht-kryptographisch (`mulberry32`) und in den JSON-Dateien
 notiert.
 
+`state-graph.mjs` compares live double-step with the
+[cascade future option](../docs/crypto-spec/cascade-future.md). That
+option is not the shipped machine.
+
 Die produktive Spezifikation bleibt Traditional plus die sichtbare
 Walzenmechanik. Dieses Labor misst, es ersetzt die Maschine nicht.

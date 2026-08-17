@@ -7,6 +7,7 @@ that behaviour so another implementation can match.
 | Topic | File |
 |---|---|
 | Modern V3 (current) | [modern-v3.md](modern-v3.md) |
+| Cascade stepping (future option, not live) | [cascade-future.md](cascade-future.md) |
 | Threat model | [../threat-model.md](../threat-model.md) |
 | Endwalze | [endwalze.md](endwalze.md) |
 | Lückenfüller notches `{5,7,9}` | [lueckenfueller.md](lueckenfueller.md) |

@@ -63,9 +63,10 @@ ist der vierstufige Double-Step — derselbe, der online ging:
 - Left an einer Kerbe → Thin und Left (Doppel Schritt).
 - Thin hat keine Kerben. Thin treibt nichts.
 
-Die reine Lückenfüller-Kaskade (Carry ohne Double-Step) bleibt Research
-(`nextV3PositionsCascade`). Sie ist bijektiv, bricht aber Sprüche der
-veröffentlichten 47 und ist deshalb nicht der Live-Pfad.
+Die reine Lückenfüller-Kaskade (Carry ohne Double-Step) ist eine
+**Future Option**, nicht der Live-Pfad. Spezifikation:
+[cascade-future.md](cascade-future.md). Code: `nextV3PositionsCascade`.
+Sie ist bijektiv, bricht aber Sprüche der veröffentlichten 47.
 
 Eine volle Periode ist **kein Sicherheitsbeweis**.
 

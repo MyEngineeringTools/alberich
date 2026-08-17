@@ -6,6 +6,9 @@
 # and the independent Python reference.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib-git.sh
+source "$ROOT/scripts/lib-git.sh"
+enable_node18_webcrypto
 cd "$ROOT/web"
 
 # web/package.json sets "type": "module" so Node 18+ accepts import in *.js

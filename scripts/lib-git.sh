@@ -25,3 +25,12 @@ require_cmd() {
     exit 1
   }
 }
+
+# Node 18 has Web Crypto only behind this flag. Node 19+ exposes it globally.
+enable_node18_webcrypto() {
+  local major
+  major="$(node -p "process.versions.node.split('.')[0]" 2>/dev/null || echo 20)"
+  if [[ "$major" -lt 19 ]]; then
+    export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--experimental-global-webcrypto"
+  fi
+}

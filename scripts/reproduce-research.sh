@@ -11,6 +11,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 # shellcheck source=lib-git.sh
 source "$ROOT/scripts/lib-git.sh"
+enable_node18_webcrypto
 
 MODE="${1:---smoke}"
 echo "reproduce $MODE"

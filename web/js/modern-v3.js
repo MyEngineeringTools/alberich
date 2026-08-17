@@ -366,14 +366,17 @@ export function canonicalMacInput({ networkContext, epoch, messageId, header, bo
   ].join('\n');
 }
 
-function subtle() {
-  const c = globalThis.crypto;
-  if (!c?.subtle) throw new Error('Web Crypto subtle API required for Modern V3');
-  return c.subtle;
+async function subtle() {
+  if (globalThis.crypto?.subtle) return globalThis.crypto.subtle;
+  if (typeof process !== 'undefined' && process.versions?.node) {
+    const { webcrypto } = await import('node:crypto');
+    return webcrypto.subtle;
+  }
+  throw new Error('Web Crypto subtle API required for Modern V3');
 }
 
 export async function deriveAuthKey(canonicalKeyUtf8) {
-  const api = subtle();
+  const api = await subtle();
   const ikm = new TextEncoder().encode(canonicalKeyUtf8);
   const salt = new TextEncoder().encode(HKDF_SALT);
   const info = new TextEncoder().encode(HKDF_INFO);
@@ -387,7 +390,7 @@ export async function deriveAuthKey(canonicalKeyUtf8) {
 }
 
 export async function hmacSha256(keyBytes, msgBytes) {
-  const api = subtle();
+  const api = await subtle();
   const key = await api.importKey(
     'raw',
     keyBytes,

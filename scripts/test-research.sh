@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib-git.sh
+source "$ROOT/scripts/lib-git.sh"
+enable_node18_webcrypto
 cd "$ROOT"
 
 echo "— research smoke —"

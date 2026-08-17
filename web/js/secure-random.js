@@ -11,6 +11,13 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
  * Gleichverteilte Ganzzahl in [0, maxExclusive).
  * @param {number} maxExclusive
  */
+function webCrypto() {
+  if (globalThis.crypto?.getRandomValues) return globalThis.crypto;
+  throw new Error(
+    'Web Crypto getRandomValues required (Node 18: --experimental-global-webcrypto)',
+  );
+}
+
 export function cryptoRandomInt(maxExclusive) {
   const max = Math.floor(Number(maxExclusive));
   if (!Number.isFinite(max) || max <= 0) return 0;
@@ -20,7 +27,7 @@ export function cryptoRandomInt(maxExclusive) {
   const buf = new Uint32Array(1);
   let x;
   do {
-    crypto.getRandomValues(buf);
+    webCrypto().getRandomValues(buf);
     x = buf[0];
   } while (x >= limit);
   return x % max;

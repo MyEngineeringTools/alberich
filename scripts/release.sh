@@ -63,12 +63,18 @@ sed -i "s/const BUILD_COMMIT = 'unpublished';/const BUILD_COMMIT = '${SHORT}';/"
   "$tmp/alberich-web/js/app.js"
 cp "$OUT/BUILD_INFO.json" "$tmp/alberich-web/BUILD_INFO.json"
 stamp "$tmp/alberich-web"
-(cd "$tmp" && zip -Xqr "$OUT/alberich-web-${VER}.zip" alberich-web)
+(
+  cd "$tmp"
+  find alberich-web -type f | LC_ALL=C sort | zip -Xq "$OUT/alberich-web-${VER}.zip" -@
+)
 rm -rf "$tmp"
 
 for browser in chrome edge firefox; do
   stamp "$ROOT/dist/extensions/${browser}"
-  (cd "$ROOT/dist/extensions/${browser}" && zip -Xqr "$OUT/alberich-${browser}-${VER}.zip" .)
+  (
+    cd "$ROOT/dist/extensions/${browser}"
+    find . -type f | LC_ALL=C sort | zip -Xq "$OUT/alberich-${browser}-${VER}.zip" -@
+  )
 done
 
 (cd "$OUT" && sha256sum alberich-*.zip BUILD_INFO.json > SHA256SUMS)

@@ -1,14 +1,14 @@
 {
   "protocol": "Modern V3",
   "algorithmRevision": "modern-v3-rev49-double-step",
-  "algorithmFingerprint": "849a1a8b8bcec854",
+  "algorithmFingerprint": "63daac15d27ccc97",
   "stepRule": "double-step",
   "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
   "generatorProfile": "Modern V3 Standard",
-  "sourceCommit": "9de6bd4d6a90112993b331622fca934fdc3d495c",
+  "algorithmSourceCommit": "659ba6c8bda210fe7705cd2c0cc1bc3e29c5ce5f",
   "script": "research/stepping-periods.mjs",
   "command": "research/stepping-periods.mjs --full",
-  "generatedAt": "2026-08-17T18:27:35+02:00",
+  "generatedAt": "2026-08-17T18:57:08+02:00",
   "researchMode": "full",
   "current": true,
   "status": "CURRENT",
@@ -27,7 +27,7 @@
     "current": true,
     "status": "CURRENT",
     "theoreticalStateSpace": 456976,
-    "n": 81,
+    "n": 27,
     "min": 3042,
     "max": 298116,
     "median": 12168,
@@ -38,43 +38,23 @@
       },
       {
         "period": 3380,
-        "count": 4
-      },
-      {
-        "period": 4056,
         "count": 1
       },
       {
         "period": 4732,
-        "count": 3
+        "count": 1
       },
       {
         "period": 5070,
-        "count": 5
+        "count": 1
       },
       {
         "period": 5408,
-        "count": 3
-      },
-      {
-        "period": 6084,
         "count": 2
       },
       {
         "period": 6760,
-        "count": 6
-      },
-      {
-        "period": 7098,
-        "count": 1
-      },
-      {
-        "period": 8112,
-        "count": 6
-      },
-      {
-        "period": 8450,
-        "count": 1
+        "count": 3
       },
       {
         "period": 9464,
@@ -86,10 +66,6 @@
       },
       {
         "period": 11830,
-        "count": 4
-      },
-      {
-        "period": 12012,
         "count": 1
       },
       {
@@ -101,47 +77,11 @@
         "count": 1
       },
       {
-        "period": 14872,
-        "count": 1
-      },
-      {
-        "period": 15210,
-        "count": 1
-      },
-      {
         "period": 16562,
         "count": 1
       },
       {
         "period": 18590,
-        "count": 2
-      },
-      {
-        "period": 21294,
-        "count": 1
-      },
-      {
-        "period": 21970,
-        "count": 2
-      },
-      {
-        "period": 27040,
-        "count": 1
-      },
-      {
-        "period": 28392,
-        "count": 2
-      },
-      {
-        "period": 32110,
-        "count": 1
-      },
-      {
-        "period": 33124,
-        "count": 1
-      },
-      {
-        "period": 34476,
         "count": 1
       },
       {
@@ -153,31 +93,11 @@
         "count": 1
       },
       {
-        "period": 38532,
-        "count": 2
-      },
-      {
         "period": 42588,
-        "count": 3
-      },
-      {
-        "period": 43940,
-        "count": 1
+        "count": 2
       },
       {
         "period": 51376,
-        "count": 2
-      },
-      {
-        "period": 51714,
-        "count": 1
-      },
-      {
-        "period": 56784,
-        "count": 1
-      },
-      {
-        "period": 64220,
         "count": 1
       },
       {
@@ -185,35 +105,11 @@
         "count": 1
       },
       {
-        "period": 77064,
-        "count": 1
-      },
-      {
-        "period": 91936,
-        "count": 1
-      },
-      {
         "period": 96668,
         "count": 1
       },
       {
-        "period": 102752,
-        "count": 1
-      },
-      {
         "period": 115596,
-        "count": 1
-      },
-      {
-        "period": 123032,
-        "count": 1
-      },
-      {
-        "period": 166972,
-        "count": 1
-      },
-      {
-        "period": 241332,
         "count": 1
       },
       {
@@ -237,9 +133,9 @@
         "counts": {
           "left": 5,
           "middle": 5,
-          "right": 5
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 30,
         "period": 16562,
         "firstRepeatAt": 16592
@@ -248,9 +144,9 @@
         "counts": {
           "left": 5,
           "middle": 5,
-          "right": 5
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 56,
         "period": 42588,
         "firstRepeatAt": 42644
@@ -258,8 +154,8 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
-          "right": 7
+          "middle": 7,
+          "right": 5
         },
         "placement": 0,
         "transient": 157,
@@ -269,10 +165,10 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
+          "middle": 7,
           "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 294,
         "period": 6760,
         "firstRepeatAt": 7054
@@ -280,10 +176,10 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
-          "right": 7
+          "middle": 7,
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 503,
         "period": 5408,
         "firstRepeatAt": 5911
@@ -291,8 +187,8 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
-          "right": 9
+          "middle": 9,
+          "right": 5
         },
         "placement": 0,
         "transient": 0,
@@ -302,10 +198,10 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
-          "right": 9
+          "middle": 9,
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 10,
         "period": 4732,
         "firstRepeatAt": 4742
@@ -313,18 +209,18 @@
       {
         "counts": {
           "left": 5,
-          "middle": 5,
+          "middle": 9,
           "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 454,
         "period": 5070,
         "firstRepeatAt": 5524
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
+          "left": 7,
+          "middle": 5,
           "right": 5
         },
         "placement": 0,
@@ -334,31 +230,31 @@
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 5
+          "left": 7,
+          "middle": 5,
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 4,
         "period": 12168,
         "firstRepeatAt": 12172
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 5
+          "left": 7,
+          "middle": 5,
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 0,
         "period": 298116,
         "firstRepeatAt": 298116
       },
       {
         "counts": {
-          "left": 5,
+          "left": 7,
           "middle": 7,
-          "right": 7
+          "right": 5
         },
         "placement": 0,
         "transient": 18,
@@ -367,31 +263,31 @@
       },
       {
         "counts": {
-          "left": 5,
+          "left": 7,
           "middle": 7,
           "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 1,
         "period": 298116,
         "firstRepeatAt": 298117
       },
       {
         "counts": {
-          "left": 5,
+          "left": 7,
           "middle": 7,
-          "right": 7
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 94,
         "period": 3380,
         "firstRepeatAt": 3474
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 9
+          "left": 7,
+          "middle": 9,
+          "right": 5
         },
         "placement": 0,
         "transient": 708,
@@ -400,30 +296,30 @@
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 9
+          "left": 7,
+          "middle": 9,
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 25,
         "period": 51376,
         "firstRepeatAt": 51401
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 7,
+          "left": 7,
+          "middle": 9,
           "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 0,
         "period": 115596,
         "firstRepeatAt": 115596
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
+          "left": 9,
+          "middle": 5,
           "right": 5
         },
         "placement": 0,
@@ -433,31 +329,31 @@
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 5
+          "left": 9,
+          "middle": 5,
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 28,
         "period": 10140,
         "firstRepeatAt": 10168
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 5
+          "left": 9,
+          "middle": 5,
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 169,
         "period": 42588,
         "firstRepeatAt": 42757
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 7
+          "left": 9,
+          "middle": 7,
+          "right": 5
         },
         "placement": 0,
         "transient": 173,
@@ -466,31 +362,31 @@
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
+          "left": 9,
+          "middle": 7,
           "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 34,
         "period": 9464,
         "firstRepeatAt": 9498
       },
       {
         "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 7
+          "left": 9,
+          "middle": 7,
+          "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 50,
         "period": 6760,
         "firstRepeatAt": 6810
       },
       {
         "counts": {
-          "left": 5,
+          "left": 9,
           "middle": 9,
-          "right": 9
+          "right": 5
         },
         "placement": 0,
         "transient": 255,
@@ -499,619 +395,25 @@
       },
       {
         "counts": {
-          "left": 5,
+          "left": 9,
           "middle": 9,
-          "right": 9
+          "right": 7
         },
-        "placement": 1,
+        "placement": 0,
         "transient": 7,
         "period": 14196,
         "firstRepeatAt": 14203
       },
       {
         "counts": {
-          "left": 5,
+          "left": 9,
           "middle": 9,
           "right": 9
         },
-        "placement": 2,
+        "placement": 0,
         "transient": 55,
         "period": 37856,
         "firstRepeatAt": 37911
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 275,
-        "period": 5070,
-        "firstRepeatAt": 5345
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 59,
-        "period": 21970,
-        "firstRepeatAt": 22029
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 15210,
-        "firstRepeatAt": 15210
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 135,
-        "period": 11830,
-        "firstRepeatAt": 11965
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 42588,
-        "firstRepeatAt": 42588
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 27040,
-        "firstRepeatAt": 27040
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 23,
-        "period": 8112,
-        "firstRepeatAt": 8135
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 9,
-        "period": 32110,
-        "firstRepeatAt": 32119
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 130,
-        "period": 11830,
-        "firstRepeatAt": 11960
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 1122,
-        "period": 77064,
-        "firstRepeatAt": 78186
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 122,
-        "period": 3380,
-        "firstRepeatAt": 3502
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 1531,
-        "period": 12012,
-        "firstRepeatAt": 13543
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 622,
-        "period": 43940,
-        "firstRepeatAt": 44562
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 2,
-        "period": 241332,
-        "firstRepeatAt": 241334
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 1,
-        "period": 166972,
-        "firstRepeatAt": 166973
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 194,
-        "period": 6084,
-        "firstRepeatAt": 6278
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 531,
-        "period": 4732,
-        "firstRepeatAt": 5263
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 10,
-        "period": 5070,
-        "firstRepeatAt": 5080
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 157,
-        "period": 3380,
-        "firstRepeatAt": 3537
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 42,
-        "period": 102752,
-        "firstRepeatAt": 102794
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 294,
-        "period": 91936,
-        "firstRepeatAt": 92230
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 61,
-        "period": 4732,
-        "firstRepeatAt": 4793
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 92,
-        "period": 8112,
-        "firstRepeatAt": 8204
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 123032,
-        "firstRepeatAt": 123032
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 0,
-        "period": 7098,
-        "firstRepeatAt": 7098
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 22,
-        "period": 8450,
-        "firstRepeatAt": 8472
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 70,
-        "period": 33124,
-        "firstRepeatAt": 33194
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 4,
-        "period": 34476,
-        "firstRepeatAt": 34480
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 191,
-        "period": 4056,
-        "firstRepeatAt": 4247
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 51376,
-        "firstRepeatAt": 51376
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 629,
-        "period": 8112,
-        "firstRepeatAt": 8741
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 64220,
-        "firstRepeatAt": 64220
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 28,
-        "period": 8112,
-        "firstRepeatAt": 8140
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 4,
-        "period": 14872,
-        "firstRepeatAt": 14876
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 62,
-        "period": 5070,
-        "firstRepeatAt": 5132
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 98,
-        "period": 28392,
-        "firstRepeatAt": 28490
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 0,
-        "period": 5408,
-        "firstRepeatAt": 5408
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 284,
-        "period": 38532,
-        "firstRepeatAt": 38816
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 371,
-        "period": 6760,
-        "firstRepeatAt": 7131
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 489,
-        "period": 11830,
-        "firstRepeatAt": 12319
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 68,
-        "period": 18590,
-        "firstRepeatAt": 18658
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 94,
-        "period": 3380,
-        "firstRepeatAt": 3474
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 0,
-        "period": 56784,
-        "firstRepeatAt": 56784
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 38532,
-        "firstRepeatAt": 38532
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 197,
-        "period": 5070,
-        "firstRepeatAt": 5267
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 0,
-        "transient": 330,
-        "period": 6084,
-        "firstRepeatAt": 6414
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 46,
-        "period": 21970,
-        "firstRepeatAt": 22016
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 104,
-        "period": 6760,
-        "firstRepeatAt": 6864
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 0,
-        "transient": 1,
-        "period": 8112,
-        "firstRepeatAt": 8113
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 284,
-        "period": 8112,
-        "firstRepeatAt": 8396
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 2,
-        "period": 6760,
-        "firstRepeatAt": 6762
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 0,
-        "transient": 94,
-        "period": 51714,
-        "firstRepeatAt": 51808
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 118,
-        "period": 21294,
-        "firstRepeatAt": 21412
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 2,
-        "transient": 24,
-        "period": 28392,
-        "firstRepeatAt": 28416
       }
     ],
     "note": "Live V3 (Rev 47+). Double-step is not bijective; periods are typically much smaller than 26^4."

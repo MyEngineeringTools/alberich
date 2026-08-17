@@ -1,14 +1,14 @@
 {
   "protocol": "Modern V3",
   "algorithmRevision": "modern-v3-rev49-double-step",
-  "algorithmFingerprint": "849a1a8b8bcec854",
+  "algorithmFingerprint": "63daac15d27ccc97",
   "stepRule": "double-step",
   "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
   "generatorProfile": "Modern V3 Standard",
-  "sourceCommit": "9de6bd4d6a90112993b331622fca934fdc3d495c",
+  "algorithmSourceCommit": "659ba6c8bda210fe7705cd2c0cc1bc3e29c5ce5f",
   "script": "research/state-graph.mjs",
   "command": "research/state-graph.mjs --full",
-  "generatedAt": "2026-08-17T18:27:35+02:00",
+  "generatedAt": "2026-08-17T18:57:08+02:00",
   "researchMode": "full",
   "current": true,
   "status": "CURRENT",
@@ -23,32 +23,32 @@
   "gcd": "gcd(5,26)=1, gcd(7,26)=1, gcd(9,26)=1",
   "live": {
     "states": 456976,
-    "uniqueSuccessors": 303914,
-    "indegree1": 177606,
+    "uniqueSuccessors": 330512,
+    "indegree1": 218868,
     "cycles": "many (sampled)",
     "cycleLength": {
-      "n": 35,
+      "n": 12,
       "min": 2704,
       "p5": 2704,
-      "p25": 6760,
-      "median": 10140,
-      "p75": 14196,
-      "p95": 40560,
-      "max": 96668
+      "p25": 6084,
+      "median": 9126,
+      "p75": 21632,
+      "p95": 156156,
+      "max": 205504
     },
     "transient": {
-      "n": 35,
+      "n": 12,
       "min": 0,
       "p5": 0,
-      "p25": 3,
-      "median": 116,
-      "p75": 229,
-      "p95": 468,
-      "max": 718
+      "p25": 1,
+      "median": 102,
+      "p75": 141,
+      "p95": 266,
+      "max": 361
     },
     "coverage": null,
     "bijection": {
-      "samples": 27,
+      "samples": 3,
       "bijectiveCount": 0,
       "allBijective": false,
       "typical": {
@@ -58,23 +58,23 @@
           "right": 5
         },
         "states": 456976,
-        "uniqueSuccessors": 303914,
-        "collisions": 153062,
-        "indegree1": 177606,
-        "indegree0": 153062,
+        "uniqueSuccessors": 330512,
+        "collisions": 126464,
+        "indegree1": 218868,
+        "indegree0": 126464,
         "indegreeMax": 3,
         "bijective": false
       }
     },
     "period": {
-      "n": 35,
+      "n": 12,
       "min": 2704,
       "p5": 2704,
-      "p25": 6760,
-      "median": 10140,
-      "p75": 14196,
-      "p95": 40560,
-      "max": 96668
+      "p25": 6084,
+      "median": 9126,
+      "p75": 21632,
+      "p95": 156156,
+      "max": 205504
     },
     "statement": "Double-step is not injective. Typical cycles are much shorter than 26^4."
   },
@@ -86,14 +86,14 @@
     "status": "NOT CURRENT MODERN V3",
     "note": "nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.",
     "script": "research/state-graph.mjs",
-    "generatedAt": "2026-08-17T18:27:35+02:00",
-    "sourceCommit": "9de6bd4d6a90112993b331622fca934fdc3d495c",
+    "generatedAt": "2026-08-17T18:57:08+02:00",
+    "algorithmSourceCommit": "659ba6c8bda210fe7705cd2c0cc1bc3e29c5ce5f",
     "invertibility": {
       "samples": 27,
       "allInvertible": true
     },
     "bijection": {
-      "samples": 27,
+      "samples": 3,
       "allBijective": true,
       "typical": {
         "counts": {
@@ -111,7 +111,7 @@
       }
     },
     "period": {
-      "n": 27,
+      "n": 3,
       "min": 456976,
       "p5": 456976,
       "p25": 456976,
@@ -120,7 +120,7 @@
       "p95": 456976,
       "max": 456976
     },
-    "fullPeriodCount": 27,
+    "fullPeriodCount": 3,
     "fullPeriodFraction": 1,
     "cycles": 1,
     "cycleLength": 456976,
@@ -130,19 +130,19 @@
   },
   "doubleStep": {
     "bijection": {
-      "samples": 27,
+      "samples": 3,
       "bijectiveCount": 0,
       "allBijective": false
     },
     "period": {
-      "n": 35,
+      "n": 12,
       "min": 2704,
       "p5": 2704,
-      "p25": 6760,
-      "median": 10140,
-      "p75": 14196,
-      "p95": 40560,
-      "max": 96668
+      "p25": 6084,
+      "median": 9126,
+      "p75": 21632,
+      "p95": 156156,
+      "max": 205504
     },
     "note": "Double-step is not injective. Typical cycles are much shorter than 26^4."
   },

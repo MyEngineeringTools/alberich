@@ -4,7 +4,7 @@
   "current": false,
   "status": "NOT CURRENT MODERN V3",
   "script": "research/equivalent-keys.mjs",
-  "generatedAt": "2026-08-17T16:27:45.976Z",
+  "generatedAt": "2026-08-17T18:57:08+02:00",
   "seed": "mulberry32(0xA11CE)",
   "tests": {
     "ringThin": {

@@ -6,8 +6,8 @@
   "status": "NOT CURRENT MODERN V3",
   "note": "nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.",
   "script": "research/stepping-periods.mjs",
-  "generatedAt": "2026-08-17T18:27:35+02:00",
-  "sourceCommit": "9de6bd4d6a90112993b331622fca934fdc3d495c",
+  "generatedAt": "2026-08-17T18:57:08+02:00",
+  "algorithmSourceCommit": "659ba6c8bda210fe7705cd2c0cc1bc3e29c5ce5f",
   "space": 456976,
   "expectedPeriod": 456976,
   "observedPeriod": 456976,
@@ -20,14 +20,14 @@
     "current": false,
     "status": "NOT LIVE",
     "theoreticalStateSpace": 456976,
-    "n": 81,
+    "n": 27,
     "min": 456976,
     "max": 456976,
     "median": 456976,
     "histogram": [
       {
         "period": 456976,
-        "count": 81
+        "count": 27
       }
     ],
     "samples": [
@@ -46,28 +46,6 @@
         "counts": {
           "left": 5,
           "middle": 5,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
           "right": 7
         },
         "placement": 0,
@@ -79,53 +57,9 @@
         "counts": {
           "left": 5,
           "middle": 5,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -145,28 +79,6 @@
         "counts": {
           "left": 5,
           "middle": 7,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
           "right": 7
         },
         "placement": 0,
@@ -178,53 +90,9 @@
         "counts": {
           "left": 5,
           "middle": 7,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -244,28 +112,6 @@
         "counts": {
           "left": 5,
           "middle": 9,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
           "right": 7
         },
         "placement": 0,
@@ -277,53 +123,9 @@
         "counts": {
           "left": 5,
           "middle": 9,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 5,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -343,28 +145,6 @@
         "counts": {
           "left": 7,
           "middle": 5,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
           "right": 7
         },
         "placement": 0,
@@ -376,53 +156,9 @@
         "counts": {
           "left": 7,
           "middle": 5,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -442,28 +178,6 @@
         "counts": {
           "left": 7,
           "middle": 7,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
           "right": 7
         },
         "placement": 0,
@@ -475,53 +189,9 @@
         "counts": {
           "left": 7,
           "middle": 7,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -541,28 +211,6 @@
         "counts": {
           "left": 7,
           "middle": 9,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
           "right": 7
         },
         "placement": 0,
@@ -574,53 +222,9 @@
         "counts": {
           "left": 7,
           "middle": 9,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 7,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -640,28 +244,6 @@
         "counts": {
           "left": 9,
           "middle": 5,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
           "right": 7
         },
         "placement": 0,
@@ -673,53 +255,9 @@
         "counts": {
           "left": 9,
           "middle": 5,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 5,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -739,28 +277,6 @@
         "counts": {
           "left": 9,
           "middle": 7,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
           "right": 7
         },
         "placement": 0,
@@ -772,53 +288,9 @@
         "counts": {
           "left": 9,
           "middle": 7,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 7,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976
@@ -838,28 +310,6 @@
         "counts": {
           "left": 9,
           "middle": 9,
-          "right": 5
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 5
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
           "right": 7
         },
         "placement": 0,
@@ -871,53 +321,9 @@
         "counts": {
           "left": 9,
           "middle": 9,
-          "right": 7
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 7
-        },
-        "placement": 2,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
           "right": 9
         },
         "placement": 0,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 1,
-        "transient": 0,
-        "period": 456976,
-        "firstRepeatAt": 456976
-      },
-      {
-        "counts": {
-          "left": 9,
-          "middle": 9,
-          "right": 9
-        },
-        "placement": 2,
         "transient": 0,
         "period": 456976,
         "firstRepeatAt": 456976

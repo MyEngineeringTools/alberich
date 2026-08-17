@@ -34,7 +34,8 @@ def main() -> None:
             info = zipfile.ZipInfo(filename=name, date_time=date_time)
             info.compress_type = zipfile.ZIP_DEFLATED
             info.create_system = 3
-            info.external_attr = 0o100644 << 16
+            executable = path.suffix == ".sh" or path.name in {"start.sh"}
+            info.external_attr = (0o100755 if executable else 0o100644) << 16
             zf.writestr(info, path.read_bytes())
 
 

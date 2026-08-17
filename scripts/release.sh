@@ -65,6 +65,7 @@ sed -i "s/const BUILD_COMMIT = 'unpublished';/const BUILD_COMMIT = '${SHORT}';/"
 cp "$OUT/BUILD_INFO.json" "$tmp/alberich-web/BUILD_INFO.json"
 find "$tmp/alberich-web" -type d -exec chmod 755 {} +
 find "$tmp/alberich-web" -type f -exec chmod 644 {} +
+chmod 755 "$tmp/alberich-web/start.sh"
 pack "$tmp/alberich-web" "$OUT/alberich-web-${VER}.zip" alberich-web
 rm -rf "$tmp"
 

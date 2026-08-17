@@ -6,8 +6,8 @@
   "status": "NOT CURRENT MODERN V3",
   "note": "nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.",
   "script": "research/state-graph.mjs",
-  "generatedAt": "2026-08-17T18:57:08+02:00",
-  "algorithmSourceCommit": "659ba6c8bda210fe7705cd2c0cc1bc3e29c5ce5f",
+  "generatedAt": "2026-08-17T19:57:45+02:00",
+  "algorithmSourceCommit": "c65a01d0b500f7f30fca42c2db5e326f755a18dc",
   "invertibility": {
     "samples": 27,
     "allInvertible": true

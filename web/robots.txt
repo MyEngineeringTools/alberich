@@ -1,0 +1,5 @@
+# Alberich – https://alberich.pro/
+User-agent: *
+Allow: /
+
+Sitemap: https://alberich.pro/sitemap.xml

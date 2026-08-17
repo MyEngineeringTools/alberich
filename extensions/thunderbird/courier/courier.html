@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alberich — Kurier-QR</title>
+    <link rel="stylesheet" href="../import/import.css" />
+    <link rel="stylesheet" href="courier.css" />
+  </head>
+  <body>
+    <header>
+      <h1 data-i18n="courier.windowTitle">Alberich — Kurier-QR</h1>
+      <p class="sub" data-i18n="courier.scanHint">
+        QR vom anderen Gerät (ALBERICH-CTQR1). Kein Tafel-QR.
+      </p>
+    </header>
+
+    <section class="card">
+      <p class="count" id="letterCount">0</p>
+      <p class="courier-length-warn" id="lengthWarn" hidden role="status"></p>
+      <img id="qrImg" alt="" hidden />
+      <p class="file-name" id="qrMeta" hidden></p>
+      <div class="scan-box" id="scanBox" hidden>
+        <video id="video" autoplay playsinline muted></video>
+      </div>
+    </section>
+
+    <section class="card">
+      <button type="button" class="btn btn-primary" id="btnShowQr" data-i18n="courier.showQr">
+        QR anzeigen
+      </button>
+      <button type="button" class="btn btn-secondary" id="btnScan" data-i18n="courier.scan">
+        QR scannen
+      </button>
+      <button type="button" class="btn btn-secondary" id="btnStop" hidden data-i18n="courier.stopScan">
+        Scan beenden
+      </button>
+      <label class="btn btn-secondary file-btn">
+        <span data-i18n="courier.pickImage">QR-Bild</span>
+        <input type="file" id="fileInput" accept="image/*,.png,.jpg,.jpeg,.gif,.webp" hidden />
+      </label>
+    </section>
+
+    <p class="hint" id="hint" hidden></p>
+    <p class="toast" id="toast" hidden></p>
+
+    <footer>
+      <button type="button" class="btn btn-ghost" id="btnClose" data-i18n="import.close">Schließen</button>
+    </footer>
+
+    <script type="module" src="courier.js"></script>
+  </body>
+</html>

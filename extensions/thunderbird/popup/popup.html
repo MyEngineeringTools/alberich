@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alberich Companion</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body class="panel-body simple">
+    <header class="header">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">A</span>
+        <div>
+          <h1>Alberich</h1>
+          <p class="tagline" id="tagline" data-i18n="ui.tagline">Modern · Thunderbird</p>
+        </div>
+      </div>
+      <div class="header-end">
+        <div class="header-top-row">
+          <div class="lang-switch" role="group" data-i18n-title="ui.langTitle" title="Sprache">
+            <button type="button" class="lang-btn active" id="btnLangDe" data-lang="de">DE</button>
+            <span class="lang-sep" aria-hidden="true">|</span>
+            <button type="button" class="lang-btn" id="btnLangEn" data-lang="en">EN</button>
+          </div>
+          <button
+            type="button"
+            class="btn-info"
+            id="btnInfo"
+            data-i18n="ui.info"
+            data-i18n-title="ui.infoTitle"
+            title="Kurzhilfe"
+            aria-expanded="false"
+          >
+            Info
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="info-panel" id="infoPanel" hidden>
+      <h2 data-i18n="ui.infoHeading">Kurzhilfe</h2>
+      <ul>
+        <li>
+          <strong data-i18n="ui.info.sheet.label">Tafel:</strong>
+          <span data-i18n="ui.info.sheet.body"> JSON laden, Tag wählen.</span>
+        </li>
+        <li>
+          <strong data-i18n="ui.info.send.label">Verschlüsseln:</strong>
+          <span data-i18n="ui.info.send.body">
+            Text aus dem Schreiben-Fenster → Geheimtext zurück.</span
+          >
+        </li>
+        <li>
+          <strong data-i18n="ui.info.recv.label">Entschlüsseln:</strong>
+          <span data-i18n="ui.info.recv.body">
+            Geheimtext aus dem Schreiben-Fenster → Klartext zurück.</span
+          >
+        </li>
+        <li>
+          <strong data-i18n="ui.info.courier.label">Kurier:</strong>
+          <span data-i18n="ui.info.courier.body">
+            An = nur Geheimtext zwischen QR und Mail. Rechnen bleibt offline.</span
+          >
+        </li>
+        <li>
+          <strong data-i18n="ui.info.local.label">Lokal:</strong>
+          <span data-i18n="ui.info.local.body"> Kein Upload, keine Telemetrie.</span>
+        </li>
+      </ul>
+      <p class="info-more">
+        <a href="https://alberich.pro/?codebook" target="_blank" rel="noopener noreferrer">Schlüsseltafel</a>
+        ·
+        <a href="https://alberich.pro/" target="_blank" rel="noopener noreferrer">alberich.pro</a>
+      </p>
+      <div class="info-demo">
+        <p><strong data-i18n="ui.demoHeading">Demo-Tafel</strong></p>
+        <p class="demo-warn" data-i18n="ui.demoWarn">
+          Nur zum Ausprobieren — nicht für echte Nachrichten.
+        </p>
+        <button type="button" class="btn btn-secondary" id="btnLoadDemo" data-i18n="ui.demoLoad">
+          Demo-Tafel laden
+        </button>
+      </div>
+      <div class="info-imprint">
+        <p><strong data-i18n="ui.imprint">Impressum</strong></p>
+        <p class="imprint-body">
+          Dipl.-Ing.(FH) Christian Peter Kaiser<br />
+          My Engineering Tools · Zum Wildenstein 25<br />
+          42579 Heiligenhaus · GERMANY
+        </p>
+        <p>
+          <a href="mailto:alberich@posteo.de?subject=Alberich%20Thunderbird">alberich@posteo.de</a>
+        </p>
+        <p data-i18n="ui.thirdParty">QR: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe). „QR Code“ ist eine Marke von DENSO WAVE.</p>
+        <p>
+          <a href="../shared/THIRD_PARTY.md" data-i18n="ui.thirdPartyLink">Hinweise Dritter</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="courier-bar">
+      <div class="section-title" data-i18n="courier.roleLabel">Kurier</div>
+      <div class="role-bar courier-toggle" role="group" aria-label="Kurier">
+        <button type="button" class="role-btn active" id="btnCourierOff" data-i18n="courier.off">
+          Kurier aus
+        </button>
+        <button type="button" class="role-btn role-btn-courier" id="btnCourierOn" data-i18n="courier.on">
+          Kurier an
+        </button>
+      </div>
+      <p class="courier-hint" id="courierHint" hidden data-i18n="courier.hintOn"></p>
+    </div>
+
+    <div class="courier-confirm" id="courierConfirm" hidden>
+      <p class="courier-confirm-text" id="courierConfirmText"></p>
+      <div class="courier-confirm-actions">
+        <button type="button" class="btn btn-primary" id="btnCourierConfirmYes" data-i18n="courier.confirmYes">
+          Ja
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCourierConfirmNo" data-i18n="courier.confirmNo">
+          Abbrechen
+        </button>
+      </div>
+    </div>
+
+    <div id="machineWorkspace">
+    <p class="howto">
+      <span data-i18n="ui.howto.body"
+        >Schreiben: ver-/entschlüsseln. Empfangene Mail: Entschlüsseln → Klartext-Tab.</span
+      >
+    </p>
+
+    <p class="compose-status empty" id="composeStatus">—</p>
+
+    <section class="card key-card">
+      <div class="status empty" id="keyStatus" data-i18n="ui.noSheet">Keine Tafel — bitte JSON laden</div>
+      <div class="tafelwort-line" id="tafelwortLine" hidden></div>
+      <div class="month-banner" id="monthBanner" hidden>
+        <p class="month-banner-text" id="monthBannerText"></p>
+        <button type="button" class="btn btn-secondary" id="btnMonthBannerKeep" data-i18n="status.monthKeep">
+          Trotzdem diesen Tag nutzen
+        </button>
+      </div>
+      <div class="key-row">
+        <label class="sr-only" for="daySelect" data-i18n="ui.day">Tag</label>
+        <select id="daySelect" disabled data-i18n-title="ui.dayTitle" title="Tag wählen">
+          <option value="">Tag …</option>
+        </select>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="btnLoadSheet"
+          data-i18n="ui.loadJson"
+          data-i18n-title="ui.loadJsonTitle"
+          title="Monatstafel (JSON) — öffnet Import-Fenster"
+        >
+          Codebook laden
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          id="btnClearSheet"
+          data-i18n-title="ui.clearSheet"
+          title="Tafel entfernen"
+        >
+          ×
+        </button>
+      </div>
+    </section>
+
+    <section class="card actions-card">
+      <button
+        type="button"
+        class="btn btn-primary btn-big"
+        id="btnEncrypt"
+        data-i18n="ui.encrypt"
+        data-i18n-title="ui.encryptTitle"
+        title="Text aus dem Schreiben-Fenster holen, verschlüsseln, zurückschreiben"
+      >
+        Verschlüsseln
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-big btn-decrypt"
+        id="btnDecrypt"
+        data-i18n="ui.decrypt"
+        data-i18n-title="ui.decryptTitle"
+        title="Geheimtext aus dem Schreiben-Fenster holen, entschlüsseln, zurückschreiben"
+      >
+        Entschlüsseln
+      </button>
+
+      <div class="last-op" id="lastOp" hidden>
+        <div class="session-row">
+          <span class="session-label" data-i18n="ui.stamp">Stempel</span>
+          <span class="session-value mono" id="sessionStamp">ALBV</span>
+        </div>
+        <div class="session-row">
+          <span class="session-label" data-i18n="ui.messageKey">Spruchschlüssel</span>
+          <span class="session-value mono" id="sessionKey">—</span>
+        </div>
+        <div class="session-row">
+          <span class="session-label" data-i18n="ui.headerGroup">Kopfgruppe</span>
+          <span class="session-value mono" id="sessionHeader">—</span>
+        </div>
+        <div class="session-row">
+          <span class="session-label" data-i18n="ui.messageId">Message-ID</span>
+          <span class="session-value mono" id="sessionMid">—</span>
+        </div>
+        <div class="session-row">
+          <span class="session-label" data-i18n="ui.pruefgruppe">Prüfgruppe</span>
+          <span class="session-value mono" id="sessionPruef">—</span>
+        </div>
+        <p class="hint" data-i18n="ui.sessionLegend">
+          ALBV und Message-ID klar. Kopf = verschlüsselter Spruchschlüssel. Prüfgruppe = HMAC.
+        </p>
+      </div>
+
+      <p class="hint" id="hint" hidden></p>
+      <p class="toast" id="toast" hidden></p>
+    </section>
+    </div>
+
+    <section class="card courier-card" id="courierBridge" hidden>
+      <div class="feature-title" data-i18n="courier.bridgeTitle">Kurier-Brücke</div>
+      <p class="muted" data-i18n="courier.bridgeBody"></p>
+      <p class="courier-sheet-warn" id="courierSheetWarn" hidden data-i18n="courier.sheetWarn"></p>
+      <button type="button" class="btn btn-ghost" id="btnCourierClearSheet" hidden data-i18n="courier.clearSheet">
+        Tafel entfernen
+      </button>
+      <p class="compose-status empty" id="courierSourceStatus">—</p>
+      <p class="courier-length-warn" id="courierLengthWarn" hidden role="status"></p>
+      <label class="field-label" for="courierLetters">
+        <span data-i18n="ui.cipher">Geheimtext</span>
+        <span class="count-badge" id="courierLetterCount">0</span>
+      </label>
+      <textarea
+        id="courierLetters"
+        rows="5"
+        class="cipher-mode"
+        data-i18n-placeholder="courier.placeholder"
+        placeholder="Geheimtext-Buchstaben…"
+        spellcheck="false"
+      ></textarea>
+      <div class="actions-card">
+        <button type="button" class="btn btn-primary" id="btnCourierFromMail" data-i18n="courier.fromCompose">
+          Aus der Mail holen
+        </button>
+        <button type="button" class="btn btn-primary btn-decrypt" id="btnCourierToMail" data-i18n="courier.toCompose">
+          In die Mail schreiben
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCourierScan" data-i18n="courier.scan">
+          QR scannen
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCourierPickImage" data-i18n="courier.pickImage">
+          QR-Bild
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCourierOpenQr" data-i18n="courier.showQr">
+          QR anzeigen
+        </button>
+      </div>
+      <p class="muted" data-i18n="courier.bridgeFooter"></p>
+      <p class="hint" id="courierHintMsg" hidden></p>
+      <p class="toast" id="courierToast" hidden></p>
+    </section>
+
+    <footer class="footer">
+      <span id="footerText" data-i18n="ui.footer">Lokal · Modern · #ChatkontrolleAde</span>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

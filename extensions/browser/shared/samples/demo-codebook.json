@@ -1,0 +1,47 @@
+{
+  "format": "alberich-codebook",
+  "formatVersion": 1,
+  "year": 2026,
+  "month": 7,
+  "monthLabel": "DEMO Juli 2026 – nicht produktiv / not for production",
+  "generatedAt": "2026-07-01T00:00:00.000Z",
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-07-01",
+      "reflectorId": "C",
+      "rotorThin": "Beta",
+      "rotorLeft": "V",
+      "rotorMiddle": "VI",
+      "rotorRight": "VIII",
+      "ringCode": "EPEL",
+      "keyCode": "CDSZ",
+      "plugboard": "AE BF CM DQ HU JN LX PR SZ VW"
+    },
+    {
+      "day": 12,
+      "date": "2026-07-12",
+      "reflectorId": "B",
+      "rotorThin": "Gamma",
+      "rotorLeft": "II",
+      "rotorMiddle": "IV",
+      "rotorRight": "V",
+      "ringCode": "AAAA",
+      "keyCode": "WXYZ",
+      "plugboard": "AB CD EF GH IJ KL"
+    },
+    {
+      "day": 26,
+      "date": "2026-07-26",
+      "reflectorId": "D",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "III",
+      "rotorRight": "VIII",
+      "ringCode": "RING",
+      "keyCode": "DEMO",
+      "plugboard": "QA WS ED RF TG ZH",
+      "reflectorD": "AK CM DF EJ GH IN LP QR ST UV WX YZ"
+    }
+  ]
+}

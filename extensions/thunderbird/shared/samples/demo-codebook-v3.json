@@ -1,0 +1,63 @@
+{
+  "format": "alberich-codebook",
+  "formatVersion": 3,
+  "endwalzePolicy": "permutation",
+  "networkContext": "ALB",
+  "year": 2026,
+  "month": 8,
+  "monthLabel": "DEMO August 2026 V3 – nicht produktiv / not for production",
+  "generatedAt": "2026-08-01T00:00:00.000Z",
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-08-01",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "I",
+      "rotorRight": "VI",
+      "ringCode": "RCNY",
+      "keyCode": "JUFQ",
+      "plugboard": "AP CG DQ EF IO KZ LY MS RU WX",
+      "endwalzeWiring": "BPMFOKZLRYHXVCUWNGDEJSIATQ",
+      "lueckenfueller": {
+        "left": "CJLMNUY",
+        "middle": "BJKMNPRVX",
+        "right": "BFKOZ"
+      }
+    },
+    {
+      "day": 16,
+      "date": "2026-08-16",
+      "rotorThin": "Beta",
+      "rotorLeft": "V",
+      "rotorMiddle": "VI",
+      "rotorRight": "VIII",
+      "ringCode": "EPEL",
+      "keyCode": "CDSZ",
+      "plugboard": "AE BF CM DQ HU JN LX PR SZ VW",
+      "endwalzeWiring": "QWERTYUIOPASDFGHJKLZXCVBNM",
+      "lueckenfueller": {
+        "left": "AFLRX",
+        "middle": "BEIMQUY",
+        "right": "CDHKNPSVZ"
+      }
+    },
+    {
+      "day": 26,
+      "date": "2026-08-26",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "I",
+      "rotorRight": "VI",
+      "ringCode": "TEPA",
+      "keyCode": "LWHS",
+      "plugboard": "AU CQ EF GO IP JR KM LY SW VX",
+      "endwalzeWiring": "BWPMONQLRYVXFKJIUGHEDZCATS",
+      "lueckenfueller": {
+        "left": "BDJLNVX",
+        "middle": "ABDKMPRTV",
+        "right": "BDEOV"
+      }
+    }
+  ]
+}

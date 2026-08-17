@@ -1,0 +1,13 @@
+Copyright (C) 2026 Christian Peter Kaiser
+
+The software in this repository is licensed under the GNU Affero General
+Public License, version 3 only (AGPL-3.0-only). See LICENSE.
+
+The name “Alberich”, the gold-A-in-gear mark, and related product branding
+are not licensed under the AGPL. They remain all rights reserved.
+
+Documentation under docs/ is licensed AGPL-3.0-only together with the
+program, except that trademarks stay reserved as above.
+
+Third-party files keep their own copyright and license; see THIRD_PARTY.md.
+Do not add a Kaiser / Alberich copyright header to vendor code.

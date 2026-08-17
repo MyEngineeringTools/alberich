@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-08-16T10:09:42.497Z",
+  "messageKeyLetters": 4,
+  "combinatorial": {
+    "space": 456976,
+    "bits": 18.8018
+  },
+  "whatFourLettersControl": [
+    "Thin-Position (in V2: Thin steht danach still)",
+    "Left-Position",
+    "Middle-Position",
+    "Right-Position"
+  ],
+  "recommendation": "Vier Buchstaben bleiben mechanisch korrekt, solange vier Rotorlagen der Startzustand sind. Eine zufällige Message-ID gehört nicht in die Walzen, sondern in die Prüfgruppe.",
+  "observations": {
+    "samePlainDifferentMkDifferentCipher": true,
+    "samePlainSameMkSameCipher": true,
+    "headerDiffersWithMk": true,
+    "recoveredMessageKey": true
+  },
+  "bruteForceNote": "Bei bekanntem Tagesschlüssel ist der Spruchschlüssel 26^4. Der Header ist die Verschlüsselung des SK unter der Grundstellung — Known-Header-Crib der Länge 4. Das ist historisch üblich und kein Ersatz für Authentizität.",
+  "multiMessage": "Viele Nachrichten desselben Tages teilen Rotorwahl, Ringe, Stecker, Endwalze. Der SK wechselt. V2 hat keinen Message-Identifier und keinen MAC."
+}

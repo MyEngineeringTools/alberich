@@ -1,0 +1,32 @@
+{
+  "format": "alberich-codebook",
+  "formatVersion": 1,
+  "year": 2026,
+  "month": 7,
+  "monthLabel": "DEMO Juli 2026 – nicht produktiv / not for production",
+  "generatedAt": "2026-07-01T00:00:00.000Z",
+  "days": [
+    {
+      "day": 1,
+      "reflectorId": "C",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "II",
+      "rotorRight": "III",
+      "ringCode": "AAAA",
+      "keyCode": "WXYZ",
+      "plugboard": "AB CD EF"
+    },
+    {
+      "day": 18,
+      "reflectorId": "C",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "II",
+      "rotorRight": "III",
+      "ringCode": "BBBB",
+      "keyCode": "ABCD",
+      "plugboard": "AB CD EF"
+    }
+  ]
+}

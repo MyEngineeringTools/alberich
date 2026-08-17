@@ -1,0 +1,127 @@
+:root {
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --amber-400: #fbbf24;
+  --teal-500: #14b8a6;
+  --red-300: #fca5a5;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px 18px 24px;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--slate-300);
+  background: linear-gradient(165deg, #1e2937 0%, var(--slate-950) 50%);
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--slate-800);
+  border: 2px solid var(--amber-400);
+  color: var(--amber-400);
+  font-weight: 800;
+  font-size: 17px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--slate-400);
+  font-family: var(--mono);
+}
+
+.note {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--slate-400);
+  border: 1px dashed var(--slate-700);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.plain-out {
+  margin: 0;
+  padding: 14px 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--slate-700);
+  border-radius: 12px;
+  color: #f1f5f9;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 200px;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-secondary {
+  background: var(--slate-800);
+  color: var(--slate-300);
+  border: 1px solid var(--slate-600);
+}
+
+.btn-secondary:hover {
+  border-color: var(--slate-400);
+  color: #fff;
+}
+
+.hint {
+  margin: 10px 0 0;
+  color: var(--red-300);
+  font-size: 12px;
+}
+
+.toast {
+  margin: 10px 0 0;
+  color: var(--teal-500);
+  font-size: 12px;
+}

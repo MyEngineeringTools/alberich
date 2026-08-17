@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-08-16T10:09:42.574Z",
+  "cribLetters": 26,
+  "trueOffset": 8,
+  "hits": [
+    8
+  ],
+  "offsetsTested": 17,
+  "ms": 5.65,
+  "note": "Bei bekanntem Tagesschlüssel und SK ist die Crib-Lage ein linearer Scan. Ohne Tagesschlüssel ist das kein praktischer Bruch."
+}

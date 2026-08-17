@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alberich – Enigma M4 Simulator online | kostenlos</title>
+  <meta name="description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.">
+  <meta name="keywords" content="Enigma M4, Enigma Simulator, Vier-Walzen-Chiffre, Kriegsmarine, Spruchschlüssel, Schlüsseltafel, Alberich, online cipher">
+  <meta name="author" content="My Engineering Tools – Christian Peter Kaiser">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="Permissions-Policy" content="camera=(self), microphone=(), geolocation=(), payment=(), usb=()">
+
+  <!-- Canonical: alberich.pro is the primary public domain -->
+  <link rel="canonical" href="https://alberich.pro/">
+  <link rel="alternate" hreflang="de" href="https://alberich.pro/?lang=de">
+  <link rel="alternate" hreflang="en" href="https://alberich.pro/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://alberich.pro/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Alberich">
+  <meta property="og:url" content="https://alberich.pro/">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:title" content="Alberich – Enigma M4 Simulator online | kostenlos">
+  <meta property="og:description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch.">
+  <meta property="og:image" content="https://alberich.pro/assets/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Alberich – Enigma M4 Simulator">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Alberich – Enigma M4 Simulator online | kostenlos">
+  <meta name="twitter:description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos – DE/EN.">
+  <meta name="twitter:image" content="https://alberich.pro/assets/og-image.png">
+
+  <link rel="icon" href="assets/icon.png" type="image/png" sizes="any">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+  <link rel="stylesheet" href="styles.css?v=1">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Alberich",
+    "alternateName": "Alberich Enigma M4 Simulator",
+    "url": "https://alberich.pro/",
+    "description": "Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web, Android",
+    "browserRequirements": "Requires JavaScript",
+    "inLanguage": ["de", "en"],
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Christian Peter Kaiser",
+      "url": "https://alberich.pro/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "My Engineering Tools",
+      "url": "https://alberich.pro/"
+    },
+    "image": "https://alberich.pro/assets/og-image.png",
+    "sameAs": [
+      "https://codebook.alberich.pro/"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <h1>Alberich</h1>
+    </div>
+    <div class="header-actions">
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Sprache">
+        <button type="button" class="lang-btn" data-locale-btn="de" aria-pressed="false">DE</button>
+        <button type="button" class="lang-btn" data-locale-btn="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="text-btn" id="btnGuide" type="button" data-i18n="header.guide">Anleitung</button>
+      <button class="text-btn" id="btnInfo" type="button" data-i18n="header.info">Info</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="courier-role-bar" id="courierRoleBar">
+        <div class="section-title" data-i18n="courier.roleLabel">Kurier</div>
+        <div class="mode-toggle" role="group" aria-label="Kurier">
+          <button type="button" class="mode-btn active" id="btnCourierOff" data-i18n="courier.off">Kurier aus</button>
+          <button type="button" class="mode-btn mode-btn-courier" id="btnCourierOn" data-i18n="courier.on">Kurier an</button>
+        </div>
+        <p class="muted courier-role-hint" id="courierRoleHint" hidden data-i18n="courier.hintOn"></p>
+      </div>
+
+      <div id="machineWorkspace">
+      <div class="mode-system" id="modeSystem">
+        <div class="mode-status" id="modeStatus" data-main="modern" aria-live="polite">
+          <span class="mode-status-label" data-i18n="mode.active">Aktiver Modus</span>
+          <span class="mode-status-value" id="modeStatusValue">Modern · Spruchschlüssel</span>
+        </div>
+
+        <div class="mode-bar mode-bar-main">
+          <div class="section-title" style="margin:0;" data-i18n="mode.main">Hauptmodus</div>
+          <div class="mode-toggle" role="group" data-i18n-aria="mode.mainAria" aria-label="Hauptmodus">
+            <button type="button" class="mode-btn" id="btnMainTraditional" data-main-mode="traditional" data-i18n="mode.traditional">Traditionell</button>
+            <button type="button" class="mode-btn mode-btn-modern active" id="btnMainModern" data-main-mode="modern" data-i18n="mode.modern">Modern</button>
+          </div>
+        </div>
+
+        <p class="mode-hint" id="modeHint">
+          Endwalze + Lückenfüllerwalzen + Base-26 + automatischer Spruchschlüssel. Stärker und alltagstauglicher.
+        </p>
+        <details class="mode-info-details" id="modeInfoDetails">
+          <summary class="mode-info-summary">
+            <span class="mode-info-icon" aria-hidden="true">i</span>
+            <span data-i18n="mode.info.summary">Kurz erklärt</span>
+          </summary>
+          <p class="mode-info-body" id="modeInfoBody" data-i18n="mode.info.modernPermutation"></p>
+        </details>
+
+        <div class="mode-bar mode-bar-procedure procedure-locked" id="traditionalProcedureBar">
+          <div class="section-title" style="margin:0;" data-i18n="mode.procedure">Verfahren</div>
+          <div class="mode-toggle" role="group" data-i18n-aria="mode.procedureAria" aria-label="Schlüsselverfahren">
+            <button type="button" class="mode-btn" id="btnModeSimple" data-mode="simple" data-i18n="mode.simple" disabled aria-disabled="true">Einfach</button>
+            <button type="button" class="mode-btn active" id="btnModeMessage" data-mode="message" data-i18n="mode.message" disabled aria-disabled="true">Spruchschlüssel</button>
+          </div>
+          <p class="muted procedure-auto-hint" id="procedureAutoHint" hidden data-i18n="mode.procedureAutoHint">
+            Spruchschlüssel: wird automatisch erzeugt
+          </p>
+        </div>
+
+        <p class="charset-line" id="charsetLine" aria-live="polite">
+          <span data-i18n="charset.modern">Zeichensatz: Volltext (Base-26)</span>
+        </p>
+
+        <p class="muted modern-crypto-error" id="modernCryptoError" hidden role="alert"></p>
+      </div>
+
+      <div class="feature-panel" id="modernFeaturePanel" hidden>
+        <div class="feature-panel-title" data-i18n="modern.featuresTitle">Modern aktiv</div>
+        <p class="feature-line" id="modernAutoKeyStatus" data-i18n="modern.autoKeyStatus">
+          Spruchschlüssel: wird automatisch erzeugt
+        </p>
+        <p class="feature-line" id="modernEndwalzeNote" data-i18n="modern.endwalzeNote">
+          Endwalze: nicht-involutorisch – Entschlüsselung wird automatisch invertiert.
+        </p>
+        <div class="lueckenfueller-block" id="lueckenfuellerBlock">
+          <div class="lueckenfueller-head">
+            <span class="lueckenfueller-badge" id="lueckenfuellerBadge" data-i18n="modern.lueckenfuellerActive">
+              Lückenfüller aktiv (abgeleitet)
+            </span>
+            <button type="button" class="text-btn lueckenfueller-toggle" id="btnToggleNotches" data-i18n="modern.lueckenfuellerShow">
+              Kerben anzeigen
+            </button>
+          </div>
+          <pre class="lueckenfueller-notches mono-line" id="lueckenfuellerNotches" hidden></pre>
+        </div>
+      </div>
+
+      <div class="message-key-bar" id="messageKeyBar" hidden>
+        <div class="message-key-fields">
+          <div class="message-key-field">
+            <label for="messageKeyInput" data-i18n="message.keyLabel">Spruchschlüssel (4)</label>
+            <p class="muted message-key-note" data-i18n="message.keyNote">
+              Jede Nachricht mit einem neuen, zufällig erzeugten Spruchschlüssel senden.
+            </p>
+            <div class="message-key-row">
+              <input id="messageKeyInput" class="message-key-input" maxlength="4" value="" autocomplete="off" spellcheck="false" data-i18n-placeholder="message.keyPlaceholder" placeholder="z. B. LDNQ">
+              <button class="icon-btn" id="btnRandomMessageKey" type="button" data-i18n-aria="message.randomKeyAria" aria-label="Zufälliger Spruchschlüssel">
+                <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="message-key-meta">
+            <div class="mono-line muted" id="messageKeyHint">Kopfgruppe wird vorangestellt</div>
+            <div class="mono-line" id="headerGroupLine" hidden><span data-i18n="message.headerGroupLabel">Kopfgruppe</span> <span id="headerGroupDisplay" class="warn">————</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="message-key-bar direction-bar" id="directionBar" hidden>
+        <div class="traffic-bar">
+          <div class="section-title" style="margin:0;" data-i18n="message.trafficType">Eingabe-Art</div>
+          <div class="mode-toggle" role="group" data-i18n-aria="message.trafficTypeAria" aria-label="Klartext oder Geheimtext">
+            <button type="button" class="mode-btn active" id="btnRolePlain" data-role="plain" data-i18n="role.plain">Klartext</button>
+            <button type="button" class="mode-btn" id="btnRoleCipher" data-role="cipher" data-i18n="role.cipher">Geheimtext</button>
+          </div>
+        </div>
+        <p class="muted traffic-hint" id="trafficHint">
+          Klartext: tippen, STRG+V oder Einfügen. Geheimtext: Einfügen-Button oder tippen — Kopfgruppe wird abgetrennt.
+        </p>
+      </div>
+
+      <div class="message-key-bar modern-session-bar" id="modernSessionBar" hidden>
+        <div class="modern-session-head">
+          <p class="muted modern-session-status" data-i18n="modern.autoKeyStatus">
+            Spruchschlüssel: wird automatisch erzeugt
+          </p>
+          <button class="icon-btn" id="btnCopyModernSession" type="button" data-i18n-aria="modern.copySessionAria" aria-label="Sitzung kopieren">
+            <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16h-9V7h9v14Z"/></svg>
+          </button>
+        </div>
+        <div class="modern-session-meta">
+          <div class="mono-line">
+            <span data-i18n="modern.stampLabel">Stempel</span>
+            <span id="modernStampDisplay" class="warn">ALBV</span>
+          </div>
+          <div class="mono-line">
+            <span data-i18n="modern.autoKeyLabel">Auto-Spruchschlüssel</span>
+            <span id="modernSessionKeyDisplay" class="warn">————</span>
+          </div>
+          <div class="mono-line">
+            <span data-i18n="message.headerGroupLabel">Kopfgruppe</span>
+            <span id="modernHeaderDisplay" class="warn">————</span>
+          </div>
+          <div class="mono-line">
+            <span data-i18n="modern.messageIdLabel">Message-ID</span>
+            <span id="modernMessageIdDisplay" class="warn">————————</span>
+          </div>
+          <div class="mono-line">
+            <span data-i18n="modern.pruefLabel">Prüfgruppe</span>
+            <span id="modernPruefDisplay" class="warn">———— ———— ———— ———— ————</span>
+          </div>
+        </div>
+        <p class="muted modern-session-legend" data-i18n="modern.sessionLegend">
+          ALBV und Message-ID stehen klar im Spruch. Kopfgruppe = verschlüsselter Spruchschlüssel. Prüfgruppe = HMAC-Siegel, nicht durch die Walzen.
+        </p>
+      </div>
+
+      <div class="field-block">
+        <div class="field-head">
+          <div class="field-label"><span id="inputFieldLabel" data-i18n="field.input">Eingabe</span> <span class="count-badge" id="inputCount">0/0</span></div>
+          <div class="field-actions">
+            <button class="icon-btn" id="btnClearInput" type="button" data-i18n-aria="field.clearInputAria" aria-label="Eingabe löschen">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 6h2v9h-2V9Zm4 0h2v9h-2V9ZM7 9h2v9H7V9Zm-1 12h12a1 1 0 0 0 1-1V8H5v12a1 1 0 0 0 1 1Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnCopyInput" type="button" data-i18n-aria="field.copyInputAria" aria-label="Eingabe kopieren">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16h-9V7h9v14Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnPasteInput" type="button" data-i18n-aria="field.pasteAria" aria-label="Einfügen">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 2h-4.2A3 3 0 0 0 12 0a3 3 0 0 0-2.8 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm7 18H5V4h2v3h10V4h2v16Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnScanInputCourierQr" type="button" hidden data-i18n-aria="courier.scanAria" aria-label="Kurier-QR scannen">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5h2V3H3v2Zm4-2v2h2V3H7Zm4 0v2h2V3h-2Zm4 0v2h2V3h-2Zm4 0v2h2V3h-2ZM3 9h2V7H3v2Zm16-2v2h2V7h-2ZM3 13h2v-2H3v2Zm16-2v2h2v-2h-2ZM3 17h2v-2H3v2Zm16-2v2h2v-2h-2ZM3 21h2v-2H3v2Zm4 0h2v-2H7v2Zm4 0h2v-2h-2v2Zm4 0h2v-2h-2v2Zm4 0h2v-2h-2v2ZM8 8h8v8H8V8Z"/></svg>
+            </button>
+            <input type="file" id="courierQrFileInput" accept="image/*,.png,.jpg,.jpeg,.gif,.webp" hidden>
+          </div>
+        </div>
+        <p class="courier-length-warn" id="courierLengthWarn" hidden role="status"></p>
+        <textarea id="inputText" data-i18n-placeholder="field.input.placeholder" placeholder="Text, Zahlen und Satzzeichen werden automatisch umgewandelt" spellcheck="false"></textarea>
+      </div>
+
+      <div class="field-block">
+        <div class="field-head">
+          <div class="field-label"><span data-i18n="field.output">Ausgabe</span> <span class="count-badge" id="outputCount">0/0</span></div>
+          <div class="field-actions">
+            <button class="icon-btn" id="btnCopyOutput" type="button" data-i18n-aria="field.copyOutputAria" aria-label="Ausgabe kopieren">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16h-9V7h9v14Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnShareOutput" type="button" data-i18n-aria="field.shareOutputAria" aria-label="Ausgabe teilen">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 3v2h3.59L8.7 13.89l1.41 1.41L19 6.41V10h2V3h-7ZM5 5v14h14v-7h-2v5H7V7h5V5H5Z"/></svg>
+            </button>
+            <button class="icon-btn" id="btnShowCourierQr" type="button" hidden data-i18n-aria="courier.showQrAria" aria-label="Kurier-QR anzeigen">
+              <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm10 0h2v2h-2v-2Zm4 0h2v2h-2v-2Zm-4 4h2v2h-2v-2Zm2 2h2v2h-2v-2Zm2-2h2v2h-2v-2Zm-6 0h2v4h-2v-4Z"/></svg>
+            </button>
+          </div>
+        </div>
+        <textarea id="outputText" readonly></textarea>
+      </div>
+
+      <button class="btn btn-secondary" id="btnClearAll" type="button" data-i18n="field.clearAll">Alle Felder löschen</button>
+
+      <div class="rotor-section" id="rotorSection">
+        <div class="section-title" data-i18n="rotor.sectionTitle">Aktuelle Walzenstellung</div>
+        <div class="mono-line" id="reflectorLabel">Endwalze PERM · Lagecode B568</div>
+        <p class="muted endwalze-hint" id="endwalzeHint" hidden data-i18n="modern.endwalzeNote">
+          Endwalze: nicht-involutorisch – Entschlüsselung wird automatisch invertiert.
+        </p>
+        <div class="mono-line" id="rotorPositionLine">
+          <span id="startKeyBlock"><span id="startKeyLabel" data-i18n="rotor.startKey">Spruchschlüssel</span> <span id="keyCodeDisplay">CDSZ</span> · </span><span id="livePositionPrefix" data-i18n="rotor.livePrefix">Aktuell </span><span id="livePosition">CDSZ</span>
+        </div>
+        <div class="hint" id="editableHint" hidden data-i18n="rotor.hintSimple">Tippen: Umkehrwalze, Walzen, Startlage und Steckerbrett anpassen</div>
+        <div class="rotor-grid" id="rotorGrid"></div>
+        <div class="plugboard-head"><span data-i18n="rotor.plugboard">Steckerbrett</span> <span id="plugboardCount">(0/13)</span></div>
+        <div class="plugboard-pairs" id="plugboardPairs"></div>
+      </div>
+
+      <p class="footer-note" data-i18n="footer.reciprocal">Traditionell ist reziprok (gleiche Einstellung = Ver- und Entschlüsseln). Modern: Klartext senden, Geheimtext empfangen — gleicher Tagesschlüssel.</p>
+      </div>
+
+      <div id="courierBridge" hidden>
+        <div class="courier-bridge-card">
+          <div class="feature-panel-title" data-i18n="courier.bridgeTitle">Kurier-Brücke</div>
+          <p class="muted" data-i18n="courier.bridgeBody"></p>
+          <p class="courier-length-warn" id="courierBridgeSheetWarn" hidden data-i18n="courier.sheetWarn"></p>
+          <button class="btn btn-emergency" id="btnCourierWipeAll" type="button" hidden data-i18n="network.wipeAll">Not-Aus</button>
+          <div class="courier-bridge-actions">
+            <button class="btn btn-secondary" id="btnCourierScan" type="button" data-i18n="courier.scan">QR scannen</button>
+            <button class="btn btn-secondary" id="btnCourierPickImage" type="button" data-i18n="courier.pickImage">QR-Bild</button>
+          </div>
+          <p class="courier-length-warn" id="courierBridgeLengthWarn" hidden role="status"></p>
+          <div class="field-block">
+            <div class="field-head">
+              <div class="field-label"><span data-i18n="field.cipher">Geheimtext</span> <span class="count-badge" id="courierLetterCount">0</span></div>
+              <div class="field-actions">
+                <button class="icon-btn" id="btnCourierClear" type="button" data-i18n-aria="field.clearInputAria" aria-label="Löschen">
+                  <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4l1-2Zm1 6h2v9h-2V9Zm4 0h2v9h-2V9ZM7 9h2v9H7V9Zm-1 12h12a1 1 0 0 0 1-1V8H5v12a1 1 0 0 0 1 1Z"/></svg>
+                </button>
+                <button class="icon-btn" id="btnCourierCopy" type="button" data-i18n-aria="field.copyInputAria" aria-label="Kopieren">
+                  <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16h-9V7h9v14Z"/></svg>
+                </button>
+                <button class="icon-btn" id="btnCourierPaste" type="button" data-i18n-aria="field.pasteAria" aria-label="Einfügen">
+                  <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 2h-4.2A3 3 0 0 0 12 0a3 3 0 0 0-2.8 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm7 18H5V4h2v3h10V4h2v16Z"/></svg>
+                </button>
+              </div>
+            </div>
+            <textarea id="courierLettersInput" data-i18n-placeholder="courier.placeholder" placeholder="Geheimtext-Buchstaben…" spellcheck="false"></textarea>
+          </div>
+          <div class="courier-bridge-actions">
+            <button class="btn" id="btnCourierShowQr" type="button" data-i18n="courier.showQr">QR anzeigen</button>
+            <button class="btn btn-secondary" id="btnCourierShare" type="button" data-i18n="share.share">Teilen</button>
+          </div>
+          <p class="muted" data-i18n="courier.bridgeFooter"></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <nav class="site-footer-nav" aria-label="Weiterführende Links">
+        <a href="/blog/">Blog</a>
+        <span class="site-footer-sep" aria-hidden="true">·</span>
+        <a href="/?codebook" data-i18n="seo.linkCodebook">Schlüsseltafel</a>
+        <span class="site-footer-sep" aria-hidden="true">·</span>
+        <a href="https://play.google.com/store/apps/details?id=com.myengineering.alberich" target="_blank" rel="noopener noreferrer" data-i18n="seo.linkPlay">Android-App</a>
+        <span class="site-footer-sep" aria-hidden="true">·</span>
+        <a href="mailto:alberich@posteo.de?subject=Alberich%20Web" data-i18n="seo.linkContact">Kontakt</a>
+      </nav>
+      <p class="site-footer-copy" data-i18n="seo.footerCopy">© My Engineering Tools · alberich.pro</p>
+    </footer>
+  </main>
+
+  <div class="modal" id="setupModal">
+    <div class="modal-card wide">
+      <h2 data-i18n="setup.title">Walzenkonfiguration</h2>
+      <p class="muted" id="setupModalIntro">Spruchschlüssel = Startlage der Walzen. Änderungen gelten sofort.</p>
+
+      <div class="setup-source-bar">
+        <div class="section-title" style="margin:0;" data-i18n="setup.source">Schlüsselquelle</div>
+        <div class="mode-toggle" role="group" data-i18n-aria="setup.sourceAria" aria-label="Schlüsselquelle">
+          <button type="button" class="mode-btn" id="btnSourceCodebook" data-source="codebook" data-i18n="setup.sourceCodebook">Schlüsseltafel</button>
+          <button type="button" class="mode-btn active" id="btnSourceManual" data-source="manual" data-i18n="setup.sourceManual">Zufällig / Manuell</button>
+        </div>
+      </div>
+
+      <div class="codebook-panel" id="codebookPanel" hidden>
+        <div class="networks-section">
+          <div class="networks-header">
+            <span class="section-title networks-title" data-i18n="network.section">Netze</span>
+            <span class="muted networks-count" id="networksCount"></span>
+          </div>
+          <div class="networks-list" id="networksList" role="list"></div>
+          <div class="networks-toolbar">
+            <button class="btn btn-secondary btn-sm" id="btnNetworkAdd" type="button" data-i18n="network.add">Netz hinzufügen</button>
+            <button class="btn btn-secondary btn-sm" id="btnNetworkRename" type="button" data-i18n="network.rename">Umbenennen</button>
+            <button class="btn btn-secondary btn-sm" id="btnNetworkClearSheet" type="button" data-i18n="network.clearSheet">Tafel entfernen</button>
+            <button class="btn btn-secondary btn-sm btn-danger-ghost" id="btnNetworkDelete" type="button" data-i18n="network.delete">Netz löschen</button>
+            <button class="btn btn-sm btn-emergency" id="btnNetworkWipeAll" type="button" data-i18n="network.wipeAll">Not-Aus</button>
+          </div>
+        </div>
+
+        <div class="muted codebook-status" id="codebookStatus">Keine Schlüsseltafel in diesem Netz. Hier erzeugen oder JSON/QR importieren.</div>
+        <div class="codebook-month-banner" id="codebookMonthBanner" hidden>
+          <p class="codebook-month-banner-text" id="codebookMonthBannerText"></p>
+          <div class="codebook-month-banner-actions">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnMonthBannerKeep" data-i18n="codebook.monthBannerKeep">Trotzdem diesen Tag nutzen</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnMonthBannerNew" data-i18n="codebook.monthBannerNew">Neue Tafel</button>
+          </div>
+        </div>
+        <div class="codebook-generate">
+          <div class="section-title" data-i18n="codebook.generateTitle">Tafel erzeugen</div>
+          <p class="muted codebook-generate-hint" data-i18n="codebook.generateHint">Gleicher Algorithmus wie die Android-App. Bleibt in diesem Browser; QR nur mit dem Offline-Gerät des Partners teilen — nicht über den Messenger.</p>
+          <div class="codebook-generate-fields">
+            <div class="codebook-day-field">
+              <label for="codebookGenMonth" data-i18n="codebook.generateMonth">Monat</label>
+              <select id="codebookGenMonth"></select>
+            </div>
+            <div class="codebook-day-field">
+              <label for="codebookGenYear" data-i18n="codebook.generateYear">Jahr</label>
+              <select id="codebookGenYear"></select>
+            </div>
+          </div>
+          <div class="codebook-endwalze-policy">
+            <span class="codebook-endwalze-label" data-i18n="codebook.endwalzePolicy">Endwalze</span>
+            <div class="mode-toggle mode-toggle-compact" id="codebookEndwalzePolicy" role="group" data-i18n-aria="codebook.endwalzePolicyAria" aria-label="Endwalzen-Auswahl">
+              <button type="button" class="mode-btn mode-btn-modern" data-endwalze-policy="permutation" data-i18n="codebook.policy.permutation" data-i18n-title="codebook.policy.permutationHint" title="Freie 26-Buchstaben-Permutation, unabhängige Kerben">Freie Permutation</button>
+              <button type="button" class="mode-btn mode-btn-traditional" data-endwalze-policy="mix" data-i18n="codebook.policy.mix" data-i18n-title="codebook.policy.mixHint" title="Bruno, Caesar und Dora gemischt; Dora mit festem BO">Mix</button>
+              <button type="button" class="mode-btn mode-btn-traditional" data-endwalze-policy="historic" data-i18n="codebook.policy.historic" data-i18n-title="codebook.policy.historicHint" title="Nur die historischen festen Endwalzen (keine Dora)">Nur Bruno/Caesar</button>
+            </div>
+            <details class="mode-info-details codebook-policy-info" id="codebookPolicyInfo">
+              <summary class="mode-info-summary">
+                <span class="mode-info-icon codebook-policy-info-icon" aria-hidden="true">i</span>
+                <span data-i18n="codebook.policy.info.summary">Kurz erklärt</span>
+              </summary>
+              <div class="mode-info-body codebook-policy-info-body" data-i18n-html="codebook.policy.info.body"></div>
+            </details>
+          </div>
+          <p class="muted codebook-policy-hint" data-i18n="codebook.policy.hint">Vorauswahl folgt dem Hauptmodus. Du kannst die Option ändern.</p>
+          <p class="codebook-policy-mismatch" data-policy-mismatch hidden></p>
+          <button class="btn btn-primary" id="btnGenerateCodebook" type="button" data-i18n="codebook.generateButton">Monatstafel erzeugen</button>
+        </div>
+        <div class="section-title codebook-import-title" data-i18n="codebook.importTitle">Import</div>
+        <div class="codebook-actions">
+          <input type="file" id="codebookFileInput" accept="application/json,.json" hidden>
+          <input type="file" id="codebookQrFileInput" accept="image/*,.png,.jpg,.jpeg,.gif,.webp" hidden>
+          <button class="btn btn-secondary" id="btnImportCodebook" type="button" data-i18n="codebook.importJson">JSON importieren</button>
+          <button class="btn btn-secondary" id="btnImportCodebookQr" type="button" data-i18n="codebook.importQr">QR-Bild laden</button>
+          <button class="btn btn-secondary" id="btnScanCodebookQr" type="button" data-i18n="codebook.scanQr">Kamera scannen</button>
+          <div class="codebook-day-field">
+            <label for="codebookDaySelect" data-i18n="codebook.dayLabel">Tag der Tafel</label>
+            <select id="codebookDaySelect" disabled></select>
+          </div>
+        </div>
+        <div class="codebook-share" id="codebookShareRow">
+          <span class="section-title codebook-share-title" data-i18n="share.section">Tafel teilen</span>
+          <div class="codebook-share-actions">
+            <button class="btn btn-secondary" id="btnShowSheet" type="button" data-i18n="sheet.show">Tafel anzeigen</button>
+            <button class="btn btn-secondary" id="btnExportCodebookJson" type="button" data-i18n="share.exportJson">JSON speichern</button>
+            <button class="btn btn-secondary" id="btnExportCodebookQr" type="button" data-i18n="share.showQr">QR anzeigen</button>
+            <button class="btn btn-secondary" id="btnShareCodebook" type="button" data-i18n="share.share">Teilen</button>
+          </div>
+        </div>
+        <p class="muted codebook-hint" id="codebookHint" data-i18n="codebook.formatHint">
+          JSON (alberich-codebook) oder QR-PNG (ALBERICH-CBQR1|gzip|…).
+        </p>
+      </div>
+
+      <div class="form-grid" id="manualSetupGrid" style="margin-top: 12px;">
+        <div class="codebook-endwalze-policy" id="manualEndwalzePolicyBlock">
+          <span class="codebook-endwalze-label" data-i18n="codebook.endwalzePolicy">Endwalze</span>
+          <div class="mode-toggle mode-toggle-compact" id="manualEndwalzePolicy" role="group" data-i18n-aria="codebook.endwalzePolicyAria" aria-label="Endwalzen-Auswahl">
+            <button type="button" class="mode-btn mode-btn-modern" data-endwalze-policy="permutation" data-i18n="codebook.policy.permutation" data-i18n-title="codebook.policy.permutationHint" title="Freie 26-Buchstaben-Permutation, unabhängige Kerben">Freie Permutation</button>
+            <button type="button" class="mode-btn mode-btn-traditional" data-endwalze-policy="mix" data-i18n="codebook.policy.mix" data-i18n-title="codebook.policy.mixHint" title="Bruno, Caesar und Dora gemischt; Dora mit festem BO">Mix</button>
+            <button type="button" class="mode-btn mode-btn-traditional" data-endwalze-policy="historic" data-i18n="codebook.policy.historic" data-i18n-title="codebook.policy.historicHint" title="Nur die historischen festen Endwalzen (keine Dora)">Nur Bruno/Caesar</button>
+          </div>
+          <details class="mode-info-details codebook-policy-info" id="manualPolicyInfo">
+            <summary class="mode-info-summary">
+              <span class="mode-info-icon codebook-policy-info-icon" aria-hidden="true">i</span>
+              <span data-i18n="codebook.policy.info.summary">Kurz erklärt</span>
+            </summary>
+            <div class="mode-info-body codebook-policy-info-body" data-i18n-html="codebook.policy.info.body"></div>
+          </details>
+          <p class="muted codebook-policy-hint" data-i18n="setup.policy.randomHint">Gilt für „Zufällig“ — unabhängig von einer Monatstafel.</p>
+          <p class="codebook-policy-mismatch" data-policy-mismatch hidden></p>
+        </div>
+        <div id="manualReflectorBlock">
+          <label for="reflectorSelect" id="reflectorSelectLabel" data-i18n="setup.reflector">Umkehrwalze</label>
+          <select id="reflectorSelect">
+            <option value="B">Bruno</option>
+            <option value="C" selected>Caesar</option>
+            <option value="D">Dora</option>
+          </select>
+        </div>
+        <div id="manualPermutationBlock" hidden>
+          <label for="endwalzeWiringInput" data-i18n="setup.endwalzeWiring">Endwalze (26 Buchstaben)</label>
+          <div class="endwalze-wiring-row">
+            <input id="endwalzeWiringInput" class="mono" maxlength="26" spellcheck="false" autocomplete="off" autocapitalize="characters">
+            <button class="text-btn endwalze-wiring-roll" id="btnRollEndwalze" type="button" data-i18n="setup.endwalzeWiringRoll">Würfeln</button>
+          </div>
+          <p class="muted" id="endwalzeWiringHint" data-i18n="setup.endwalzeWiringHint">Vollständige A–Z-Permutation, nicht involutorisch. Jeder Buchstabe genau einmal.</p>
+          <p class="muted modern-crypto-error" id="endwalzeWiringError" hidden></p>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label for="ringCode" data-i18n="setup.rings">Ringstellung (4)</label>
+            <input id="ringCode" maxlength="4" value="EPEL">
+          </div>
+          <div>
+            <label for="keyCodeInput" id="keyCodeInputLabel">Spruchschlüssel (4)</label>
+            <input id="keyCodeInput" maxlength="4" value="CDSZ">
+            <p class="muted" id="keyCodeInputHint" style="margin:6px 0 0;font-size:0.78rem;">
+              Startlage der Walzen (pro Nachricht).
+            </p>
+          </div>
+        </div>
+        <div>
+          <label for="rotorThin" data-i18n="setup.rotorThin">4. Walze</label>
+          <select id="rotorThin">
+            <option value="Beta" data-i18n="setup.rotorThinBeta">Walze β</option>
+            <option value="Gamma" data-i18n="setup.rotorThinGamma">Walze γ</option>
+          </select>
+        </div>
+        <p class="muted" style="margin:0;" data-i18n="setup.mainRotorsHint">Hauptwalzen (I–VIII): Jede Walze darf nur einmal in der Walzenlage vorkommen.</p>
+        <p class="duplicate-hint" id="duplicateRotorHint" hidden></p>
+        <div>
+          <label for="rotorLeft" data-i18n="setup.rotorLeft">Linke Walze</label>
+          <select id="rotorLeft"></select>
+        </div>
+        <div>
+          <label for="rotorMiddle" data-i18n="setup.rotorMiddle">Mittlere Walze</label>
+          <select id="rotorMiddle"></select>
+        </div>
+        <div>
+          <label for="rotorRight" data-i18n="setup.rotorRight">Rechte Walze</label>
+          <select id="rotorRight"></select>
+        </div>
+        <div id="doraSection" hidden>
+          <p class="muted" id="doraFixedNote" data-i18n="setup.doraFixed">Fest verdrahtet: BO</p>
+          <label for="reflectorD" data-i18n="setup.doraLabel">UKW-D (12 Paare)</label>
+          <textarea class="setup" id="reflectorD"></textarea>
+          <p class="muted" id="doraHint" data-i18n="setup.doraHint">12 Patch-Kabel, Buchstabenpaare getrennt durch Leerzeichen. B und O sind durch BO belegt.</p>
+        </div>
+        <div>
+          <label for="plugboard" data-i18n="setup.plugboardLabel">Steckerbrett (max. 13 Paare)</label>
+          <textarea class="setup" id="plugboard"></textarea>
+          <p class="muted" data-i18n="setup.plugboardHint">Buchstabenpaare getrennt durch Leerzeichen, z. B. AB CD EF</p>
+        </div>
+        <div>
+          <p class="section-title" style="margin-bottom:8px;" data-i18n="setup.exportTitle">Schlüsseleinstellung exportieren</p>
+          <pre class="key-export" id="keyExport"></pre>
+          <button class="text-btn" id="btnCopyKey" type="button" data-i18n="setup.copyKey">Schlüssel kopieren</button>
+        </div>
+        <div class="form-row-2">
+          <button class="btn btn-secondary" id="btnResetDefault" type="button" data-i18n="setup.reset">↻ Standard</button>
+          <button class="btn btn-secondary" id="btnRandomize" type="button" data-i18n="setup.random">🎲 Zufällig</button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btnCloseSetup" type="button" data-i18n="setup.done">Fertig</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="guideModal">
+    <div class="modal-card guide-card">
+      <h2 data-i18n="guide.title">Alberich – Kurzanleitung</h2>
+
+      <h3 data-i18n="guide.s1.title">1. Was ist Alberich?</h3>
+      <p data-i18n="guide.s1.body"></p>
+
+      <h3 data-i18n="guide.s2.title">2. Zwei Hauptmodi</h3>
+      <p data-i18n-html="guide.s2.traditional"></p>
+      <p data-i18n-html="guide.s2.modern"></p>
+      <p data-i18n="guide.s2.switch"></p>
+
+      <h3 data-i18n="guide.s3.title">3. Modern – Alltag</h3>
+      <p data-i18n="guide.s3.intro"></p>
+      <ol class="guide-steps">
+        <li data-i18n="guide.s3.li1"></li>
+        <li data-i18n="guide.s3.li2"></li>
+        <li data-i18n="guide.s3.li3"></li>
+        <li data-i18n="guide.s3.li4"></li>
+        <li data-i18n="guide.s3.li5"></li>
+        <li data-i18n="guide.s3.li6"></li>
+      </ol>
+      <p data-i18n="guide.s3.telegramTitle"></p>
+      <ul>
+        <li data-i18n="guide.s3.telegramStamp"></li>
+        <li data-i18n="guide.s3.telegramHeader"></li>
+        <li data-i18n="guide.s3.telegramMid"></li>
+        <li data-i18n="guide.s3.telegramBody"></li>
+        <li data-i18n="guide.s3.telegramPruef"></li>
+      </ul>
+      <p data-i18n="guide.s3.envelope"></p>
+      <p data-i18n="guide.s3.auto"></p>
+      <p data-i18n="guide.s3.charset"></p>
+      <p data-i18n="guide.s3.plugs"></p>
+
+      <h3 data-i18n="guide.s4.title">4. Traditionell</h3>
+      <p data-i18n-html="guide.s4.simple"></p>
+      <p data-i18n-html="guide.s4.messageIntro"></p>
+      <ol class="guide-steps">
+        <li data-i18n="guide.s4.li1"></li>
+        <li data-i18n="guide.s4.li2"></li>
+        <li data-i18n="guide.s4.li3"></li>
+        <li data-i18n="guide.s4.li4"></li>
+      </ol>
+      <p data-i18n="guide.s4.charset"></p>
+
+      <h3 data-i18n="guide.s5.title">5. Schlüssel &amp; Netze</h3>
+      <p data-i18n-html="guide.s5.walzenlage"></p>
+      <p data-i18n-html="guide.s5.rings"></p>
+      <p data-i18n-html="guide.s5.ground"></p>
+      <p data-i18n-html="guide.s5.plugboard"></p>
+      <p data-i18n-html="guide.s5.reflector"></p>
+      <p data-i18n-html="guide.s5.endwalzePolicy"></p>
+      <p data-i18n-html="guide.s5.random"></p>
+      <p data-i18n-html="guide.s5.codebook"></p>
+      <p data-i18n-html="guide.s5.networks"></p>
+
+      <h3 data-i18n="guide.s6.title">6. Tipps</h3>
+      <ul>
+        <li data-i18n="guide.s6.li1"></li>
+        <li data-i18n="guide.s6.li2"></li>
+        <li data-i18n="guide.s6.li3"></li>
+        <li data-i18n="guide.s6.li4"></li>
+      </ul>
+
+      <h3 data-i18n="guide.s7.title">7. Zwei Geräte (Kurier)</h3>
+      <p data-i18n="guide.s7.p"></p>
+      <p data-i18n="guide.s7.why"></p>
+      <p data-i18n="guide.s7.limit"></p>
+      <ul>
+        <li data-i18n="guide.s7.li1"></li>
+        <li data-i18n="guide.s7.li2"></li>
+        <li data-i18n="guide.s7.li3"></li>
+        <li data-i18n="guide.s7.li4"></li>
+      </ul>
+
+      <div class="modal-actions">
+        <button class="text-btn" data-close="guideModal" type="button" data-i18n="common.close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="infoModal">
+    <div class="modal-card">
+      <h2 data-i18n="about.title">Über Alberich</h2>
+      <p data-i18n="about.p1">Alberich ist ein Enigma-M4-Simulator im Browser: Traditionell (historisch, involutorisch) und Modern (Endwalze, Lückenfüller, Base-26, Auto-Spruchschlüssel). Walzenlage, Ringe, Steckerbrett, Tagesschlüssel, Netze und Schlüsseltafeln.</p>
+      <p data-i18n="about.p2">Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.</p>
+      <p><strong data-i18n="about.imprint">Impressum</strong><br>
+      Dipl.-Ing.(FH) Christian Peter Kaiser<br>
+      My Engineering Tools<br>
+      Zum Wildenstein 25<br>
+      42579 Heiligenhaus<br>
+      GERMANY</p>
+      <p><span data-i18n="about.emailLabel">E-Mail:</span> <a href="mailto:alberich@posteo.de?subject=App%3A%20Alberich%20-%20Anfrage">alberich@posteo.de</a></p>
+      <p class="muted" data-i18n-html="about.thirdParty">QR und Kompression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Hinweise Dritter</a>. „QR Code“ ist eine Marke von DENSO WAVE.</p>
+      <p id="versionLabel">Version 1.0 (Revision 47)</p>
+      <div class="modal-actions">
+        <button class="text-btn" data-close="infoModal" type="button" data-i18n="common.close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="qrScanModal">
+    <div class="modal-card qr-scan-card">
+      <h2 id="qrScanTitle" data-i18n="qr.title">Schlüsseltafel scannen</h2>
+      <p class="muted" id="qrScanStatus" data-i18n="qr.statusStarting">Kamera wird gestartet…</p>
+      <div class="qr-scan-viewport">
+        <video id="qrScanVideo" playsinline webkit-playsinline muted autoplay></video>
+        <div class="qr-scan-frame" aria-hidden="true"></div>
+      </div>
+      <p class="muted qr-scan-hint" id="qrScanHint" data-i18n="qr.hint">
+        QR-Code aus dem Codebook-Tool in den Rahmen halten.
+        Beim ersten Mal die Kamera-Berechtigung im Browser erlauben.
+      </p>
+      <div class="modal-actions">
+        <button class="text-btn" id="btnRetryQrScan" type="button" hidden data-i18n="qr.retry">Erneut versuchen</button>
+        <button class="text-btn" id="btnCloseQrScan" type="button" data-i18n="qr.cancel">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="sheetViewModal">
+    <div class="modal-card sheet-view-card">
+      <div id="sheetPrintRoot">
+        <div class="sheet-view-header">
+          <h2 id="sheetViewTitle">Schlüsseltafel</h2>
+          <p class="sheet-view-tafelwort" id="sheetViewTafelwort" hidden></p>
+          <p class="sheet-view-meta" id="sheetViewMeta"></p>
+        </div>
+        <div class="table-scroll">
+          <table class="key-table">
+            <thead>
+              <tr>
+                <th data-i18n="sheet.th.day">Tag</th>
+                <th id="sheetThKind" data-i18n="sheet.th.ukw">UKW</th>
+                <th data-i18n="sheet.th.walzenlage">Walzenlage</th>
+                <th data-i18n="sheet.th.lage">Lage</th>
+                <th data-i18n="sheet.th.ring">Ring</th>
+                <th data-i18n="sheet.th.grund">Grund</th>
+                <th data-i18n="sheet.th.stecker">Stecker (10)</th>
+                <th id="sheetThExtra" data-i18n="sheet.th.dora">Dora</th>
+              </tr>
+            </thead>
+            <tbody id="sheetViewBody"></tbody>
+          </table>
+        </div>
+        <p class="sheet-view-footer" data-i18n="sheet.footer">
+          Lage = Alberich-Lagecode · Ring = Ringstellung · Grund = Grundstellung / Spruchschlüssel ·
+          Dora nur bei UKW Dora (inkl. festem Paar BO)
+        </p>
+      </div>
+      <div class="modal-actions sheet-view-actions no-print">
+        <button class="btn btn-secondary" id="btnCopySheet" type="button" data-i18n="sheet.copy">Text kopieren</button>
+        <button class="btn btn-secondary" id="btnPrintSheet" type="button" data-i18n="sheet.print">Drucken</button>
+        <button class="text-btn" data-close="sheetViewModal" type="button" data-i18n="common.close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="qrShareModal">
+    <div class="modal-card qr-share-card">
+      <h2 id="qrShareTitle" data-i18n="share.qrTitle">QR-Code der Tafel</h2>
+      <p class="qr-share-tafelwort" id="qrShareTafelwort" hidden></p>
+      <p class="muted" id="qrShareMeta" data-i18n="share.qrMetaDefault">Komprimierte Monatstafel</p>
+      <div class="qr-preview-wrap">
+        <img id="qrShareImg" alt="" width="560" height="560">
+      </div>
+      <p class="muted qr-share-hint" id="qrShareHint" data-i18n-html="share.qrHint">
+        Andere Geräte können den Code scannen oder das PNG speichern.
+        Envelope: <code>ALBERICH-CBQR1|gzip|…</code>
+      </p>
+      <div class="modal-actions qr-share-actions">
+        <button class="btn btn-secondary" id="btnDownloadQrShare" type="button" data-i18n="share.downloadPng">PNG speichern</button>
+        <button class="btn btn-secondary" id="btnShareQrPng" type="button" data-i18n="share.sharePng">PNG teilen</button>
+        <button class="text-btn" data-close="qrShareModal" type="button" data-i18n="common.close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { MAIN_ROTOR_IDS } from './js/cipher-data.js';
+
+    ['rotorLeft', 'rotorMiddle', 'rotorRight'].forEach((id) => {
+      const select = document.getElementById(id);
+      MAIN_ROTOR_IDS.forEach((rotorId) => {
+        const option = document.createElement('option');
+        option.value = rotorId;
+        option.textContent = rotorId;
+        select.appendChild(option);
+      });
+    });
+  </script>
+  <script type="module" src="js/app.js?v=1"></script>
+</body>
+</html>

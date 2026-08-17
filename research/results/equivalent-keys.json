@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-08-16T10:09:42.326Z",
+  "seed": "mulberry32(0xA11CE)",
+  "tests": {
+    "ringThin": {
+      "forcedDifferentRingChangesStream": true,
+      "setRotorsAlwaysZeroesThinRing": true,
+      "storedRingThinNeverApplied": true
+    },
+    "leftNotch": {
+      "leftNotchChangeSameStream": true,
+      "middleNotchChangeDifferentStream": true
+    },
+    "derivedNotchCollisions": {
+      "collisionsFound": 0,
+      "examples": [],
+      "note": "Gleiche Kerben aus verschiedenen Ringstellungen bei festem Stecker — Lückenfüller ist kein unabhängiger Schlüssel."
+    },
+    "ringPosition": {
+      "sameOffsetDifferentNotchTiming": true,
+      "note": "Gleiches Wiring-Offset (pos-ring) ist bei Kerben-am-Pos nicht äquivalent."
+    },
+    "endwalze": {
+      "sameDoraPairsSameWiring": true,
+      "doraNotBruno": true,
+      "doraIsComposedNotFreePerm": true
+    },
+    "keystream": {
+      "sameKeySameStream": true,
+      "differentGroundDifferentStream": true
+    }
+  },
+  "findings": [
+    "DEAD: ringThin — setRotors setzt thin.ring immer auf 0.",
+    "DEAD: left Lückenfüller-Kerbe — step() prüft nur middle und right.",
+    "Equivalent/derived: verschiedene Ringstellungen können dieselben Kerben erzeugen.",
+    "Ring/Pos-Offset allein erzeugt keinen Equivalent Key, weil Kerben an pos hängen.",
+    "Endwalze Dora: Paarung + feste affine Mischung, nicht 26!."
+  ]
+}

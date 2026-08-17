@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://alberich.pro/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://alberich.pro/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://alberich.pro/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://alberich.pro/"/>
+  </url>
+  <url>
+    <loc>https://alberich.pro/blog/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://codebook.alberich.pro/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

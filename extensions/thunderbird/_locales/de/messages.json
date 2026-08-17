@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Alberich Companion (Thunderbird)",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Modern-Modus lokal im Schreiben-Fenster. Optional Kurier: nur Geheimtext-QR, Rechnen bleibt offline.",
+    "description": "Store description"
+  },
+  "actionTitle": {
+    "message": "Alberich Companion",
+    "description": "Main toolbar tooltip"
+  },
+  "composeTitle": {
+    "message": "Alberich — ver-/entschlüsseln",
+    "description": "Compose toolbar tooltip"
+  },
+  "messageTitle": {
+    "message": "Alberich — entschlüsseln",
+    "description": "Message display toolbar tooltip"
+  }
+}

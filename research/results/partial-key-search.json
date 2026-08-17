@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-08-16T10:09:42.534Z",
+  "findings": [
+    {
+      "name": "plugboard-conjugation",
+      "result": "Stecker ist eine Involution π. Modern-Encrypt ist π ∘ E ∘ π, wobei E der Rotor+Endwalzenweg nach dem Schritt ist. Das ist eine Konjugation nur wenn E involutorisch wäre. E ist nicht involutorisch, daher π∘E∘π ≠ Konjugation einer Involution. Trotzdem: bekanntes π reduziert den Suchraum auf E."
+    },
+    {
+      "name": "header-separated-from-body",
+      "result": "Der Spruchschlüssel-Header wird unter der Grundstellung verschlüsselt. Der Körper startet danach bei der Spruchschlüssel-Lage. Ein Angreifer kann Header und Body getrennt behandeln. Der Header ist nur 4 Buchstaben."
+    },
+    {
+      "name": "endwalze-separable",
+      "endIsPermutation": true,
+      "inverseOfInverse": true,
+      "result": "Bei bekanntem Rotorweg (Walzen+Ringe+Lagen) ist die Endwalze die unbekannte 26er-Permutation zwischen Thin-Ausgang und Stecker-Rückweg. Mit genug Klartextpaaren nach Entfernen von Stecker und Rotoren ist sie direkt ablesbar. Das ist Meet-in-the-Middle gegen die nominelle Kombination Plug×Endwalze."
+    },
+    {
+      "name": "demonstrated-decomposition",
+      "headerLen": 4,
+      "bodyLen": 8,
+      "result": "Implementierte Zerlegung: (1) Header unter Grundstellung, (2) Body unter SK. Keine vollständige MITM-Suche über 26! in diesem Lauf — der Suchraum der Endwalze bleibt kombinatorisch groß, wird aber bei bekanntem Rotorweg zu einer Tabelle."
+    }
+  ],
+  "reducedClaim": "Der nominelle kombinierte Schlüsselraum ist nicht die Angriffskomplexität. Header, Stecker-Konjugation und bekannter Rotorweg zerlegen ihn. Das wird nicht versteckt."
+}

@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "short_name": "Alberich",
+  "version": "1.0.23",
+  "description": "__MSG_extDescription__",
+  "default_locale": "de",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Alberich Companion (Seitenleiste)",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "panel/panel.html"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "clipboardWrite",
+    "clipboardRead",
+    "offscreen",
+    "sidePanel"
+  ],
+  "host_permissions": []
+}

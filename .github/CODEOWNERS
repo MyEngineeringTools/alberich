@@ -1,0 +1,6 @@
+# Crypto core — review before merging protocol changes.
+/web/js/modern-v3.js @MyEngineeringTools
+/web/js/cipher-engine.js @MyEngineeringTools
+/web/js/codebook.js @MyEngineeringTools
+/reference/ @MyEngineeringTools
+/docs/crypto-spec/ @MyEngineeringTools

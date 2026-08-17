@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  selftests:
+    name: Repository acceptance (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["18", "20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Core regression
+        run: bash scripts/test.sh
+      - name: Research smoke
+        run: bash scripts/test-research.sh
+      - name: Repository hygiene
+        run: bash scripts/test-repository.sh
+      - name: Extension packaging
+        run: bash scripts/test-packaging.sh
+      - name: Golden vector generator
+        run: node reference/generate-vectors.mjs && python3 reference/alberich_reference.py --vectors reference/golden-vectors.json

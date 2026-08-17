@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Alberich Companion",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Modern mode locally. Optional courier: ciphertext QR only, crypto stays offline.",
+    "description": "Extension description"
+  }
+}

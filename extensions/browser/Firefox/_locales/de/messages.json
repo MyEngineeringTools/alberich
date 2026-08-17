@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Alberich Companion",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Modern-Modus lokal. Optional Kurier: nur Geheimtext-QR, Rechnen bleibt offline.",
+    "description": "Extension description"
+  }
+}

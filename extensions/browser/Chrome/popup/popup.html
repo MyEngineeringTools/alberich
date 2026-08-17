@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alberich Companion</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">A</span>
+        <div>
+          <h1>Alberich Companion</h1>
+          <p class="tagline">Modern-Modus · lokal</p>
+        </div>
+      </div>
+      <a
+        class="link-external"
+        href="https://alberich.pro/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >In Alberich öffnen ↗</a
+      >
+    </header>
+
+    <section class="card key-card">
+      <div class="status" id="keyStatus">Keine Tafel</div>
+      <div class="key-row">
+        <label class="sr-only" for="daySelect">Tag</label>
+        <select id="daySelect" disabled title="Tag der Monatstafel">
+          <option value="">Tag …</option>
+        </select>
+        <label class="btn btn-secondary file-btn">
+          JSON laden
+          <input type="file" id="fileInput" accept="application/json,.json,text/plain" hidden />
+        </label>
+        <button type="button" class="btn btn-ghost" id="btnClearSheet" title="Tafel entfernen">
+          Tafel ×
+        </button>
+      </div>
+      <details class="paste-json">
+        <summary>JSON einfügen</summary>
+        <textarea
+          id="jsonPaste"
+          rows="3"
+          placeholder='{"format":"alberich-codebook", …}'
+          spellcheck="false"
+        ></textarea>
+        <button type="button" class="btn btn-secondary" id="btnImportJson">Importieren</button>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="role-bar" role="group" aria-label="Richtung">
+        <button type="button" class="role-btn active" id="roleSend" data-role="send">
+          Senden
+        </button>
+        <button type="button" class="role-btn" id="roleRecv" data-role="recv">
+          Empfangen
+        </button>
+      </div>
+      <label class="field-label" id="fieldLabel" for="mainText">Klartext</label>
+      <textarea
+        id="mainText"
+        rows="7"
+        placeholder="Text tippen oder einfügen…"
+        spellcheck="true"
+      ></textarea>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btnEncrypt">Verschlüsseln</button>
+        <button type="button" class="btn btn-primary" id="btnDecrypt">Entschlüsseln</button>
+      </div>
+      <div class="actions secondary">
+        <button type="button" class="btn btn-secondary" id="btnCopy">In Zwischenablage</button>
+        <button type="button" class="btn btn-secondary" id="btnPaste">Aus Zwischenablage</button>
+        <button type="button" class="btn btn-ghost" id="btnClear">Löschen</button>
+      </div>
+      <p class="hint" id="hint" hidden></p>
+      <p class="toast" id="toast" hidden></p>
+    </section>
+
+    <footer class="footer">
+      <span>Nur Modern · Base-26 · Auto-Spruchschlüssel</span>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

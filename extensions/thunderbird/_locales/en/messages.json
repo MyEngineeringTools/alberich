@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "Alberich Companion (Thunderbird)",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Modern mode locally in compose. Optional courier: ciphertext QR only, crypto stays offline.",
+    "description": "Store description"
+  },
+  "actionTitle": {
+    "message": "Alberich Companion",
+    "description": "Main toolbar tooltip"
+  },
+  "composeTitle": {
+    "message": "Alberich — encrypt/decrypt",
+    "description": "Compose toolbar tooltip"
+  },
+  "messageTitle": {
+    "message": "Alberich — decrypt",
+    "description": "Message display toolbar tooltip"
+  }
+}

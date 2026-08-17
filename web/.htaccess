@@ -1,0 +1,42 @@
+# =============================================================================
+# Alberich Web – Apache (.htaccess)
+# Canonical domain: https://alberich.pro/
+# Same webspace for alberich.pro, www and alberich.myengineering.tools
+# Upload this file into the document root (next to index.html).
+# =============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # --- HTTPS erzwingen (falls der Hoster das nicht schon global macht) ---
+  # Bei Redirect-Loop diese 2 Zeilen auskommentieren.
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # --- www.alberich.pro → alberich.pro (Pfad + Query bleiben) ---
+  RewriteCond %{HTTP_HOST} ^www\.alberich\.pro$ [NC]
+  RewriteRule ^ https://alberich.pro%{REQUEST_URI} [L,R=301]
+
+  # --- alberich.myengineering.tools → alberich.pro ---
+  RewriteCond %{HTTP_HOST} ^alberich\.myengineering\.tools$ [NC]
+  RewriteRule ^ https://alberich.pro%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "no-referrer"
+  Header set Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=(), usb=()"
+  Header set X-Frame-Options "DENY"
+</IfModule>
+
+# --- Cache für statische Assets (HTML nutzt ?v=… als Cache-Bust) ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/x-icon "access plus 30 days"
+</IfModule>

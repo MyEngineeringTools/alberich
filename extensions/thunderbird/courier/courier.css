@@ -1,0 +1,42 @@
+.count {
+  margin: 0 0 8px;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.courier-length-warn {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #fcd34d;
+}
+
+.courier-length-warn.over {
+  color: #fca5a5;
+}
+
+#qrImg {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.scan-box {
+  margin-top: 8px;
+}
+
+.scan-box video {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #000;
+}
+
+.file-btn {
+  margin-top: 8px;
+}

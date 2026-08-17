@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alberich — Codebook laden</title>
+    <link rel="stylesheet" href="import.css" />
+  </head>
+  <body>
+    <header>
+      <h1 data-i18n="import.title">Codebook laden</h1>
+      <p class="sub" data-i18n="import.sub">
+        Monatstafel (JSON) aus Alberich — bleibt hier geöffnet, damit der Dateidialog
+        funktioniert.
+      </p>
+    </header>
+
+    <section class="card">
+      <label class="btn btn-primary file-btn">
+        <span data-i18n="import.pickFile">JSON-Datei wählen…</span>
+        <input type="file" id="fileInput" accept="application/json,.json,text/plain" hidden />
+      </label>
+      <p class="file-name" id="fileName" hidden></p>
+    </section>
+
+    <section class="card">
+      <p class="or" data-i18n="import.orPaste">oder JSON hier einfügen:</p>
+      <textarea
+        id="pasteArea"
+        rows="8"
+        data-i18n-placeholder="import.pastePlaceholder"
+        placeholder='{ "format": "alberich-codebook", … }'
+        spellcheck="false"
+      ></textarea>
+      <button type="button" class="btn btn-secondary" id="btnImportPaste" data-i18n="import.applyPaste">
+        Eingefügtes JSON übernehmen
+      </button>
+    </section>
+
+    <p class="hint" id="hint" hidden></p>
+    <p class="toast" id="toast" hidden></p>
+
+    <footer>
+      <button type="button" class="btn btn-ghost" id="btnClose" data-i18n="import.close">Schließen</button>
+    </footer>
+
+    <script type="module" src="import.js"></script>
+  </body>
+</html>

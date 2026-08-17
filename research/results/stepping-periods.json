@@ -1,0 +1,226 @@
+{
+  "generatedAt": "2026-08-16T10:10:06.877Z",
+  "expectedCurrentBallpark": [
+    2028,
+    4732,
+    11492,
+    12844,
+    14196
+  ],
+  "current": {
+    "note": "Aktuelle step(): Right immer, Middle bei Right-Kerbe, Left+Middle bei Middle-Kerbe. Left-Kerbe ungenutzt. Thin steht.",
+    "configs": 6084,
+    "distinctPeriods": [
+      2028,
+      4732,
+      11492,
+      12844,
+      14196
+    ],
+    "histogram": [
+      {
+        "period": 2028,
+        "count": 676
+      },
+      {
+        "period": 4732,
+        "count": 676
+      },
+      {
+        "period": 11492,
+        "count": 2028
+      },
+      {
+        "period": 12844,
+        "count": 2028
+      },
+      {
+        "period": 14196,
+        "count": 676
+      }
+    ],
+    "sampleAAA": [
+      {
+        "counts": {
+          "middle": 5,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 14198,
+          "transient": 2,
+          "period": 14196,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 5,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 2030,
+          "transient": 2,
+          "period": 2028,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 5,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 4734,
+          "transient": 2,
+          "period": 4732,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 7,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 12846,
+          "transient": 2,
+          "period": 12844,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 5
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 7
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      },
+      {
+        "counts": {
+          "middle": 9,
+          "right": 9
+        },
+        "fromAAA": {
+          "firstRepeatAt": 11494,
+          "transient": 2,
+          "period": 11492,
+          "returnedToStart": false
+        }
+      }
+    ]
+  },
+  "verifiedExpected": {
+    "allExpectedPresent": true,
+    "extraPeriods": [],
+    "missingExpected": []
+  },
+  "modernV3": {
+    "available": true,
+    "theoreticalStateSpace": 456976,
+    "min": 11492,
+    "max": 298116,
+    "median": 195364,
+    "histogram": [
+      {
+        "period": 11492,
+        "count": 1
+      },
+      {
+        "period": 12844,
+        "count": 1
+      },
+      {
+        "period": 33124,
+        "count": 1
+      },
+      {
+        "period": 34476,
+        "count": 1
+      },
+      {
+        "period": 38532,
+        "count": 3
+      },
+      {
+        "period": 42588,
+        "count": 1
+      },
+      {
+        "period": 80444,
+        "count": 3
+      },
+      {
+        "period": 89908,
+        "count": 1
+      },
+      {
+        "period": 195364,
+        "count": 3
+      },
+      {
+        "period": 218348,
+        "count": 6
+      },
+      {
+        "period": 241332,
+        "count": 1
+      },
+      {
+        "period": 244036,
+        "count": 3
+      },
+      {
+        "period": 269724,
+        "count": 1
+      },
+      {
+        "period": 298116,
+        "count": 1
+      }
+    ],
+    "fractionOfStateSpaceMin": 0.02514792899408284,
+    "fractionOfStateSpaceMax": 0.6523668639053254,
+    "note": "Nur gleichmäßige Basis-Muster {5,7,9}, Start AAAA. Zufällige Teilmengen separat in V3-Tests."
+  }
+}

@@ -11,7 +11,8 @@ source "$ROOT/scripts/lib-git.sh"
 enable_node18_webcrypto
 cd "$ROOT/web"
 
-# web/package.json sets "type": "module" so Node 18+ accepts import in *.js
+# package.json "type": "module" markers so Node 18 accepts import in *.js
+# (Node 20.19+/22 detect ESM from syntax; Node 18 does not).
 node js/tests/modern-crypto-selftest.js
 node js/tests/modern-v3-selftest.js
 node js/tests/codebook-selftest.js

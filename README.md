@@ -37,7 +37,8 @@ SPDX-License-Identifier: `AGPL-3.0-only`
 - Node.js **18+** to run `bash scripts/test.sh` (CI matrix: 18, 20, 22)
 - Python 3 only for the independent reference in `reference/`
 
-There is no `.env` and no `package.json`. Nothing to configure for a local run.
+There is no `.env` and no npm install. The few `package.json` files are ESM
+markers for Node 18 (`"type": "module"`), not a dependency tree.
 
 ## Installation / development
 

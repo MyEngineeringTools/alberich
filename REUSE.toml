@@ -13,6 +13,8 @@ path = [
   "web/docs/**",
   "web/CHANGELOG.md",
   "web/package.json",
+  "extensions/browser/package.json",
+  "extensions/thunderbird/package.json",
   "VERSIONS",
   "CHANGELOG.md",
   "README.md",

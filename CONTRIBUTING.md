@@ -12,8 +12,9 @@ Alberich is a small solo project. Patches are welcome if they stay focused.
   extension manifests, and (outside this tree) Android `version.properties`.
   Do not let studio copies drift. Sync studio → this tree, never the reverse.
 - Keep the web app a static site. Do not add a bundler or an npm dependency
-  tree. `web/package.json` exists only so Node treats `web/**/*.js` as ESM
-  (`"type": "module"`). Do not add `dependencies`.
+  tree. `web/package.json`, `extensions/browser/package.json`, and
+  `extensions/thunderbird/package.json` exist only so Node 18 treats those
+  trees as ESM (`"type": "module"`). Do not add `dependencies`.
 - Android stays out of this tree.
 - Browser companion lives in `extensions/browser/`. Chrome is the UI
   source; run `sync-from-chrome.sh` after panel changes.

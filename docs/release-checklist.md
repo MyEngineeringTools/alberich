@@ -26,10 +26,13 @@
 
 After the repository is public:
 
-- [ ] Enable private vulnerability reporting
-- [ ] Check secret scanning and push protection
-- [ ] Protect `main` (require CI, no force-push)
-- [ ] Require DCO on external PRs
+- [ ] Enable **private vulnerability reporting**
+- [ ] Check **secret scanning**
+- [ ] Check **push protection**
+- [ ] Branch ruleset for `main`: no force-push, require up-to-date branch
+- [ ] Require CI to pass before merge
+- [ ] Require **DCO** on external PRs
+- [ ] Use GitHub **Security Advisories** for coordinated fixes
 - [ ] Confirm SECURITY.md disclosure mailbox
 
 Offline / courier:

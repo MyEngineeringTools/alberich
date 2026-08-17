@@ -46,7 +46,6 @@ for (let off = 0; off <= enc.body.length - crib.length; off++) {
 const ms = performance.now() - t0;
 
 const out = {
-  generatedAt: new Date().toISOString(),
   cribLetters: crib.length,
   trueOffset: cribAt,
   hits,

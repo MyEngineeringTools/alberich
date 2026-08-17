@@ -178,7 +178,6 @@ function longIdenticalKeystream() {
 }
 
 const out = {
-  generatedAt: new Date().toISOString(),
   seed: 'mulberry32(0xA11CE)',
   tests: {
     ringThin: thinRingIgnored(),

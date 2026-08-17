@@ -116,7 +116,6 @@ const scenarios = {};
 }
 
 const out = {
-  generatedAt: new Date().toISOString(),
   scenarios,
   limits: [
     'Vollsuche Plugboard 10 Paare oder 26! Endwalze ist hier nicht ausführbar.',

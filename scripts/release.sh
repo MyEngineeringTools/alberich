@@ -2,16 +2,17 @@
 # SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
 # SPDX-License-Identifier: AGPL-3.0-only
 set -euo pipefail
+export TZ=UTC
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 # shellcheck source=lib-git.sh
 source "$ROOT/scripts/lib-git.sh"
+export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
 
 require_clean_git "refusing release from dirty working tree"
 require_cmd git
 require_cmd node
 require_cmd python3
-require_cmd zip
 require_cmd sha256sum
 require_cmd awk
 
@@ -48,12 +49,12 @@ writeFileSync('dist/release/BUILD_INFO.json', `${JSON.stringify(info, null, 2)}\
 console.log('BUILD_INFO', info.gitCommit, info.algorithmFingerprint);
 JS
 
-EPOCH="$(git log -1 --format=%ct)"
-stamp() {
-  # Normalize mode so two clones with different umasks produce the same zip.
-  find "$1" -type d -exec chmod 755 {} +
-  find "$1" -type f -exec chmod 644 {} +
-  find "$1" -exec touch -d "@${EPOCH}" {} +
+pack() {
+  python3 "$ROOT/scripts/write-deterministic-zip.py" \
+    --root "$1" \
+    --out "$2" \
+    --epoch "${SOURCE_DATE_EPOCH}" \
+    ${3:+--prefix "$3"}
 }
 
 tmp="$(mktemp -d)"
@@ -62,19 +63,15 @@ cp -a "$ROOT/web/." "$tmp/alberich-web/"
 sed -i "s/const BUILD_COMMIT = 'unpublished';/const BUILD_COMMIT = '${SHORT}';/" \
   "$tmp/alberich-web/js/app.js"
 cp "$OUT/BUILD_INFO.json" "$tmp/alberich-web/BUILD_INFO.json"
-stamp "$tmp/alberich-web"
-(
-  cd "$tmp"
-  find alberich-web -type f | LC_ALL=C sort | zip -Xq "$OUT/alberich-web-${VER}.zip" -@
-)
+find "$tmp/alberich-web" -type d -exec chmod 755 {} +
+find "$tmp/alberich-web" -type f -exec chmod 644 {} +
+pack "$tmp/alberich-web" "$OUT/alberich-web-${VER}.zip" alberich-web
 rm -rf "$tmp"
 
 for browser in chrome edge firefox; do
-  stamp "$ROOT/dist/extensions/${browser}"
-  (
-    cd "$ROOT/dist/extensions/${browser}"
-    find . -type f | LC_ALL=C sort | zip -Xq "$OUT/alberich-${browser}-${VER}.zip" -@
-  )
+  find "$ROOT/dist/extensions/${browser}" -type d -exec chmod 755 {} +
+  find "$ROOT/dist/extensions/${browser}" -type f -exec chmod 644 {} +
+  pack "$ROOT/dist/extensions/${browser}" "$OUT/alberich-${browser}-${VER}.zip"
 done
 
 (cd "$OUT" && sha256sum alberich-*.zip BUILD_INFO.json > SHA256SUMS)

@@ -13,9 +13,7 @@ cd "$ROOT"
 source "$ROOT/scripts/lib-git.sh"
 
 MODE="${1:---smoke}"
-export ALBERICH_RESEARCH_TIME="${ALBERICH_RESEARCH_TIME:-$(git log -1 --format=%cI 2>/dev/null || echo 2026-08-17T00:00:00.000Z)}"
-
-echo "reproduce $MODE  time=$ALBERICH_RESEARCH_TIME"
+echo "reproduce $MODE"
 
 if [[ "$MODE" == "--smoke" ]]; then
   bash "$ROOT/scripts/test-research.sh"

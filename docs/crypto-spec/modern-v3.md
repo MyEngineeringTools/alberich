@@ -108,6 +108,11 @@ Die Buchstabenanzahl `k` bestimmt die Bytelänge `L` eindeutig, weil
 
 Leer → leer. Ungültiges `k`, Wert ≥ 256^L oder kein UTF-8 → Fehler.
 
+`MAX_PLAINTEXT_CHARS` (200000) is only the pre-encode input guard.
+The codec ceiling is `MAX_BASE26_LETTERS` (200000). The largest UTF-8
+payload that still encodes is `maxByteLenForDigits(200000)` = **117510
+bytes**. Recommended Modern V3 length remains 4096 characters.
+
 Das A–J-Muster an jeder geraden Position von V1 entfällt für längere
 Texte. Die höchstwertige Stelle bleibt leicht verzerrt — das wird nicht
 als Avalanche verkauft.

@@ -13,9 +13,10 @@ Public-release hygiene on this same revision line (no protocol change):
 
 - Release and full research refuse a dirty working tree. ZIPs carry
   `BUILD_INFO.json` (commit, algorithm fingerprint).
-- Input limits are enforced (plaintext, cipher, Base-26, codebook JSON,
-  QR image size/pixels, network context). Recommended V3 length is 4096
-  characters; the technical maximum stays 200000.
+- Input limits are enforced. The 200000 figure is an input guard, not a
+  guaranteed encodable length: Base-26 V2 hits `MAX_BASE26_LETTERS`
+  sooner. Recommended Modern V3 length remains 4096 characters.
+- Release ZIPs are built with `TZ=UTC` and a deterministic ZIP writer.
 
 - Research results labelled by protocol and step rule; legacy three-wheel
   numbers live under `research/results/legacy/` as `NOT CURRENT`.

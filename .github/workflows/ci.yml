@@ -26,5 +26,8 @@ jobs:
         run: bash scripts/test-repository.sh
       - name: Extension packaging
         run: bash scripts/test-packaging.sh
+      - name: Reproducible release (UTC vs Berlin)
+        if: matrix.node == '22'
+        run: bash scripts/test-reproducible-release.sh
       - name: Golden vector generator
         run: node reference/generate-vectors.mjs && python3 reference/alberich_reference.py --vectors reference/golden-vectors.json

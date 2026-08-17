@@ -23,18 +23,19 @@ They are **not** a cryptographic security rating and not an AES comparison.
 | Multi-message | PARTIAL | Birthday vs Monte-Carlo on SK/MID |
 | Candidate oracle (HMAC) | PASS | Wrong day key → `modern.macFailed` |
 | Formal security proof | NONE | |
-| Message-length advice | PASS | Technical max 200000 chars; recommended 4096 |
+| Message-length advice | PASS | UI guard 200000 chars; Base-26 cap is tighter; recommended 4096 |
 
-Technical maximum (`LIMITS.MAX_PLAINTEXT_CHARS` = 200000) is a
-memory/BigInt gate. Live double-step periods in the current samples run
-from about 2704 to 184548 body letters (median ~11492). A 200000-letter
-body can wrap the typical walk more than ten times and can add
-autocorrelation for classical period finding. That does **not** by
-itself recover the day key.
+Three different ceilings:
 
-Recommended Modern V3 Standard length: **4096 plaintext characters**
-(~one typical cycle or less after Base-26 V2). This is advice, not a
-silent hard fail. The hard fail stays at the technical maximum.
+1. **UI/input guard** — `MAX_PLAINTEXT_CHARS` = 200000 characters accepted
+   before processing. This is not “200000 characters always encrypt”.
+2. **Transport bound** — `MAX_BASE26_LETTERS` = 200000 body letters. Base-26
+   V2 needs `minDigitsForByteLen(L)` letters for `L` UTF-8 bytes
+   (≈ `L · log(256)/log(26)`). `maxByteLenForDigits(200000)` = **117510
+   UTF-8 bytes**; long ASCII hits this first.
+3. **Recommended Modern V3** — **4096 plaintext characters**. Live
+   double-step periods in current samples run from about 2704 to ~1e5 body
+   letters (median ~10k). Advice, not a hard fail.
 
 Nominal support, generator entropy, min-entropy, equivalent-key notes and
 best demonstrated attack are different numbers. Do not collapse them into

@@ -74,7 +74,6 @@ const findings = [];
 }
 
 const out = {
-  generatedAt: new Date().toISOString(),
   findings,
   reducedClaim:
     'Der nominelle kombinierte Schlüsselraum ist nicht die Angriffskomplexität. Header, Stecker-Konjugation und bekannter Rotorweg zerlegen ihn. Das wird nicht versteckt.',

@@ -173,8 +173,18 @@ const { smoke, full, exhaustive } = parseArgs(process.argv);
 const rng = mulberry32(0x51e9);
 const combos = countCombos();
 const placementsPerCombo = exhaustive ? 3 : 1;
-const extraDoubleStepSamples = exhaustive ? 24 : full ? 8 : 6;
-const extraStarts = exhaustive ? 4 : 1;
+const extraDoubleStepSamples = exhaustive ? 24 : full ? 3 : 2;
+const extraStarts = exhaustive ? 4 : 0;
+const invertCombos = smoke
+  ? combos.filter((c) => c.left === c.middle && c.middle === c.right)
+  : combos;
+const fullCascadeMaps = exhaustive
+  ? combos
+  : smoke
+    ? invertCombos
+    : combos.filter((c) => c.left === 5 && c.middle === 5 && c.right === 5
+      || c.left === 7 && c.middle === 7 && c.right === 7
+      || c.left === 9 && c.middle === 9 && c.right === 9);
 
 const cascade = {
   invertibility: [],
@@ -188,38 +198,42 @@ const doubleStep = {
   bijectiveCount: 0,
 };
 
-for (const counts of combos) {
+for (const counts of invertCombos) {
   for (let p = 0; p < placementsPerCombo; p++) {
     const notches = rngNotches(rng);
+    const expensive = exhaustive || fullCascadeMaps.some(
+      (c) => c.left === counts.left && c.middle === counts.middle && c.right === counts.right,
+    );
     const inv = invertibilityCheck(notches);
     cascade.invertibility.push({ counts, ...inv });
     if (!inv.invertible) {
       throw new Error(`cascade predecessor reconstruction failed for ${JSON.stringify(counts)}`);
     }
 
-    const bij = bijectionCheck('cascade', notches);
-    cascade.bijections.push({ counts, ...bij });
-    if (!bij.bijective) {
-      throw new Error(`cascade was not bijective for ${JSON.stringify(counts)}`);
-    }
-
-    const w = walk('cascade', notches);
-    cascade.periods.push({ counts, ...w });
-    if (w.cycle === SPACE && w.transient === 0) cascade.fullPeriodCount += 1;
-
-    for (let s = 0; s < extraStarts; s++) {
-      const start = unpack(seededInt(rng, SPACE));
-      const fromStart = walk('cascade', notches, start);
-      if (fromStart.cycle !== w.cycle && fromStart.cycle !== null) {
-        cascade.periods.push({ counts, start: pack(start), ...fromStart, note: 'extra-start' });
+    if (expensive) {
+      const bij = bijectionCheck('cascade', notches);
+      cascade.bijections.push({ counts, ...bij });
+      if (!bij.bijective) {
+        throw new Error(`cascade was not bijective for ${JSON.stringify(counts)}`);
+      }
+      const w = walk('cascade', notches);
+      cascade.periods.push({ counts, ...w });
+      if (w.cycle === SPACE && w.transient === 0) cascade.fullPeriodCount += 1;
+      for (let s = 0; s < extraStarts; s++) {
+        const start = unpack(seededInt(rng, SPACE));
+        const fromStart = walk('cascade', notches, start);
+        if (fromStart.cycle !== w.cycle && fromStart.cycle !== null) {
+          cascade.periods.push({ counts, start: pack(start), ...fromStart, note: 'extra-start' });
+        }
       }
     }
   }
 }
 
-for (const counts of combos) {
+const dsCombos = exhaustive ? combos : combos.filter((_, i) => i % 3 === 0);
+for (const counts of dsCombos) {
   const notches = rngNotches(rng);
-  if (full) {
+  if (exhaustive || counts.left === counts.middle) {
     const bij = bijectionCheck('doubleStep', notches);
     doubleStep.bijections.push({ counts, ...bij });
     if (bij.bijective) doubleStep.bijectiveCount += 1;

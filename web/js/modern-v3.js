@@ -171,6 +171,17 @@ export function minDigitsForByteLen(byteLen) {
   return k;
 }
 
+/** Largest UTF-8 byte length whose Base-26 V2 digit count is <= maxDigits. */
+export function maxByteLenForDigits(maxDigits) {
+  const K = Number(maxDigits);
+  if (!Number.isInteger(K) || K < 0) return -1;
+  if (K === 0) return 0;
+  let L = Math.max(0, Math.floor((K * Math.log(26)) / Math.log(256)) - 2);
+  while (minDigitsForByteLen(L + 1) <= K) L += 1;
+  while (L > 0 && minDigitsForByteLen(L) > K) L -= 1;
+  return L;
+}
+
 export function byteLenFromDigits(k) {
   const K = Number(k);
   if (!Number.isInteger(K) || K < 0) return null;

@@ -137,9 +137,9 @@ if [[ -f research/results/fingerprint.json ]]; then
 import json, subprocess
 from pathlib import Path
 fp = json.loads(Path("research/results/fingerprint.json").read_text())
-commit = fp.get("sourceCommit")
+commit = fp.get("algorithmSourceCommit") or fp.get("sourceCommit")
 if not commit or commit == "unpublished":
-    raise SystemExit("fingerprint missing sourceCommit")
+    raise SystemExit("fingerprint missing algorithmSourceCommit")
 head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 files = [
     "VERSIONS",
@@ -154,7 +154,7 @@ files = [
 ]
 diff = subprocess.run(["git", "diff", "--quiet", commit, "HEAD", "--", *files])
 if diff.returncode != 0:
-    raise SystemExit(f"algorithm files changed since sourceCommit {commit}")
+    raise SystemExit(f"algorithm files changed since algorithmSourceCommit {commit}")
 print("OK   algorithm files unchanged since", commit[:12], "HEAD", head[:12])
 PY
 fi

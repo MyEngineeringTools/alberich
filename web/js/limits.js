@@ -4,10 +4,9 @@
  *
  * Hard input limits for the crypto workspace. Fail closed.
  *
- * Technical maxima protect memory / BigInt / UI. They are not a
- * security rating. Live V3 double-step periods are often ~3e3–2e4
- * body letters; a 200k-letter body can wrap that walk many times.
- * RECOMMENDED_* is the cryptanalytic advice for Modern V3 Standard.
+ * UI/input guard: MAX_PLAINTEXT_CHARS rejects before encode.
+ * Transport bound: MAX_BASE26_LETTERS is the actual codec ceiling
+ * (see maxByteLenForDigits). RECOMMENDED_* is cryptanalytic advice.
  */
 
 export const LIMITS = Object.freeze({

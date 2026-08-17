@@ -28,6 +28,7 @@ import {
   generateLueckenfueller,
   isV3Telegram,
   minDigitsForByteLen,
+  maxByteLenForDigits,
   modernV3DecryptPayload,
   modernV3EncryptPayload,
   nextV3Positions,
@@ -198,6 +199,13 @@ assert(base26v2ToUtf8(utf8ToBase26v2('Äpfel 🔐')).text === 'Äpfel 🔐', 'v2
   const onlyAJ = even.every((ch) => ch <= 'J');
   assert(letters.length === minDigitsForByteLen(1), 'v2 1-byte digit count');
   assert(byteLenFromDigits(letters.length) === 1, 'v2 invert digit count');
+  {
+    const cap = 2_000;
+    const maxBytes = maxByteLenForDigits(cap);
+    assert(maxBytes > 0, 'base26 cap maps to positive UTF-8 bytes');
+    assert(minDigitsForByteLen(maxBytes) <= cap, 'max bytes fit the digit cap');
+    assert(minDigitsForByteLen(maxBytes + 1) > cap, 'one more byte exceeds the digit cap');
+  }
   // single byte still small; multi-byte must escape the every-other A–J crib
   const long = utf8ToBase26v2('The quick brown fox jumps over the lazy dog 0123456789');
   const evenLong = [...long].filter((_, i) => i % 2 === 0);

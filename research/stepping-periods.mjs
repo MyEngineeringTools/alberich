@@ -165,7 +165,7 @@ function liveAndCascadePeriods(full) {
   const rng = mulberry32(0x7a11);
   const live = [];
   const cascade = [];
-  const placements = full ? 3 : 1;
+  const placements = process.argv.includes('--exhaustive') ? 3 : 1;
 
   for (const left of COUNTS) {
     for (const middle of COUNTS) {

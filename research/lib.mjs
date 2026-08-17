@@ -96,9 +96,34 @@ export function gitCommitTime() {
   }
 }
 
-/** Wall clock is not a reproducibility input. Prefer commit time or an env pin. */
+/** Last commit that touched a normative algorithm file. Stable across packaging commits. */
+export function algorithmSourceCommit() {
+  try {
+    return execFileSync(
+      'git',
+      ['-C', REPO_ROOT, 'log', '-1', '--format=%H', '--', ...ALGORITHM_SOURCE_FILES],
+      { encoding: 'utf8' },
+    ).trim();
+  } catch {
+    return 'unpublished';
+  }
+}
+
+export function algorithmSourceCommitTime() {
+  try {
+    return execFileSync(
+      'git',
+      ['-C', REPO_ROOT, 'log', '-1', '--format=%cI', '--', ...ALGORITHM_SOURCE_FILES],
+      { encoding: 'utf8' },
+    ).trim();
+  } catch {
+    return '1970-01-01T00:00:00.000Z';
+  }
+}
+
+/** Wall clock is not a reproducibility input. */
 export function researchTimestamp() {
-  return process.env.ALBERICH_RESEARCH_TIME || gitCommitTime();
+  return process.env.ALBERICH_RESEARCH_TIME || algorithmSourceCommitTime();
 }
 
 export function researchMode() {
@@ -116,7 +141,7 @@ export function stampLiveV3({ script, command } = {}) {
     stepRule: LIVE_STEP_RULE,
     stepRuleDetail: LIVE_STEP_RULE_DETAIL,
     generatorProfile: 'Modern V3 Standard',
-    sourceCommit: gitHead(),
+    algorithmSourceCommit: algorithmSourceCommit(),
     script,
     command: command || process.argv.slice(1).map((p) => p.replace(`${REPO_ROOT}/`, '')).join(' '),
     generatedAt: researchTimestamp(),
@@ -138,7 +163,7 @@ export function stampCascadeFuture({ script } = {}) {
     note: 'nextV3PositionsCascade is not wired into CipherEngine.step(). Live is double-step.',
     script,
     generatedAt: researchTimestamp(),
-    sourceCommit: gitHead(),
+    algorithmSourceCommit: algorithmSourceCommit(),
   };
 }
 

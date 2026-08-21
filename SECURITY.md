@@ -47,7 +47,7 @@ on this line.
 
 ## Supported versions
 
-Supported line is in [VERSIONS](VERSIONS): web `1.0` (Revision 49),
+Supported line is in [VERSIONS](VERSIONS): web `1.0` (Revision 50),
 browser `1.0.24`, Thunderbird `1.0.14`, Android `1.0` (Revision 29).
 Older store and site revisions are not maintained.
 

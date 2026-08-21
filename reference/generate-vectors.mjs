@@ -81,7 +81,8 @@ vectors.push({
   const trad = new CipherEngine();
   trad.setCryptoMode('traditional');
   trad.setReflector('C');
-  trad.setRotors('V', 'VI', 'VIII', 'Beta', 'D', 'S', 'Z', 'C', 'P', 'E', 'L');
+  trad.setRotors('V', 'VI', 'VIII', 'Beta', 'D', 'S', 'Z', 'C', 'P', 'E', 'L', DAY.ringThin);
+  trad.setThinRing(DAY.ringThin);
   trad.setPlugboard(DAY.plugboard);
   const plain = 'HELLOALBERICHTESTMESSAGE';
   const cipher = trad.encryptMessage(plain);
@@ -102,6 +103,7 @@ vectors.push({
       ring_l: 'P',
       ring_m: 'E',
       ring_r: 'L',
+      ring_t: DAY.ringThin,
     },
     plain,
     cipher,

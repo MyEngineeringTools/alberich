@@ -7,6 +7,7 @@ export default {
     'Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.',
   'meta.ogLocale': 'de_DE',
 
+  'seo.linkManual': 'Handbuch',
   'seo.linkCodebook': 'Schlüsseltafel',
   'seo.linkPlay': 'Android-App',
   'seo.linkContact': 'Kontakt',
@@ -565,7 +566,7 @@ export default {
 
   'guide.s5.title': '5. Schlüssel & Netze',
   'guide.s5.walzenlage':
-    '<strong>Walzenlage:</strong> Dünne Walze / Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Traditionell: sie dreht nicht, Ringstellung der Griechenwalze bleibt 0. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Im Modern-Modus gilt auch ihre Ringstellung.',
+    '<strong>Walzenlage:</strong> Dünne Walze / Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Traditionell: sie dreht nicht, ihre Ringstellung gilt. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Die Ringstellung der Griechenwalze gilt in beiden Modi.',
   'guide.s5.rings':
     '<strong>Ringstellung:</strong> 4 Buchstaben, gilt für die ganze Nachricht / den Tag.',
   'guide.s5.ground':
@@ -601,12 +602,16 @@ export default {
   'guide.s7.li2': 'Online: Kurier an. Keine Schlüsseltafel, kein Klartext. Nur QR und Buchstaben.',
   'guide.s7.li3': 'Senden: offline verschlüsseln, QR zeigen, online scannen, Buchstaben in den Messenger.',
   'guide.s7.li4': 'Empfangen: online Buchstaben einfügen oder QR zeigen, offline scannen, entschlüsseln.',
+  'guide.handbook':
+    'Ausführlich: <a href="/manual/">Handbuch unter alberich.pro/manual</a>.',
 
   'about.title': 'Über Alberich',
   'about.p1':
     'Alberich ist ein Enigma-M4-Simulator im Browser: Traditionell (historisch, involutorisch) und Modern (Endwalze, Lückenfüller, Base-26, Auto-Spruchschlüssel). Walzenlage, Ringe, Steckerbrett, Tagesschlüssel, Netze und Schlüsseltafeln.',
   'about.p2':
     'Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.',
+  'about.handbook':
+    'Handbuch: <a href="/manual/">alberich.pro/manual</a>.',
   'about.imprint': 'Impressum',
   'about.emailLabel': 'E-Mail:',
   'about.license':

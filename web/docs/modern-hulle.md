@@ -75,6 +75,6 @@ HKDF trennt die Schlüssel. Replay ist nur Sitzung.
 
 ## Griechenwalze
 
-Sitzt immer im Stromweg. Traditionell: dreht nicht, Ringstellung der Griechenwalze = 0.
-Modern: läuft mit, wenn die linke Walze an einer Kerbe steht; selbst
-keine Kerben.
+Sitzt immer im Stromweg. Traditionell: dreht nicht, Ringstellung gilt
+(historische M4). Modern: läuft mit, wenn die linke Walze an einer Kerbe
+steht; selbst keine Kerben. Die Ringstellung gilt in beiden Modi.

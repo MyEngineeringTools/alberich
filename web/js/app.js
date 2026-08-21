@@ -127,7 +127,7 @@ import {
 } from './endwalze-policy.js';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 49)';
+const VERSION = '1.0 (Revision 50)';
 /** Replaced by scripts/release.sh in the packaged web zip. */
 const BUILD_COMMIT = 'unpublished';
 const PROTOCOL_LABEL = 'Modern V3';
@@ -1988,6 +1988,7 @@ function setEngineToKeyCode(code) {
   } else {
     engine.setReflector(state.reflectorId);
   }
+  const thinRing = state.ringThin || applyRingCode(state.ringCode)?.thin || 'A';
   engine.setRotors(
     state.rotorLeft,
     state.rotorMiddle,
@@ -2000,8 +2001,10 @@ function setEngineToKeyCode(code) {
     state.ringLeft,
     state.ringMiddle,
     state.ringRight,
+    thinRing,
   );
   engine.setPlugboard(state.plugboard);
+  engine.setThinRing(thinRing);
 
   if (isModern(state.mainMode)) {
     if (!usesModernV3()) {
@@ -2013,7 +2016,6 @@ function setEngineToKeyCode(code) {
     lastModernCryptoError = null;
     engine.setCryptoMode('modern');
     engine.setModernProtocol('v3');
-    engine.setThinRing(state.ringThin || applyRingCode(state.ringCode)?.thin || 'A');
     engine.setEndwalze(state.endwalzeWiring);
     engine.setLueckenfuellerNotches(state.lueckenfueller);
     return true;

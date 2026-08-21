@@ -75,5 +75,5 @@ edits. HKDF separates keys. Replay is session-only.
 ## Greek / thin rotor
 
 Always in the electrical path. Traditional: does not step; the Greek
-rotor ring stays 0. Modern: steps when the left rotor is at a notch; no
-notches of its own.
+rotor ring applies (historical M4). Modern: steps when the left rotor is
+at a notch; no notches of its own. The ring applies in both modes.

@@ -9,7 +9,7 @@ They are **not** a cryptographic security rating and not an AES comparison.
 | --- | --- | --- |
 | Independent implementation | PASS | Python reference matches Web JS |
 | Golden vectors | PASS | Live double-step + `ground:` IKM |
-| Traditional M4 | PASS | Unchanged involutory vector |
+| Traditional M4 | PASS | Involutory; four rings including Greek (Web Revision 50) |
 | State graph (live) | PASS | Not bijective; typical period \(\ll 26^4\) |
 | State graph (cascade, future) | PASS | Invertible; period \(26^4\) for `{5,7,9}` |
 | Stepping period (live) | PASS | Measured; not a full cycle |

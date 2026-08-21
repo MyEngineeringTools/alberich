@@ -7,6 +7,7 @@ export default {
     'Enigma M4 simulator in the browser: rotors, plugboard, message key and monthly code sheets. Free, no account – German and English. Also available as an Android app.',
   'meta.ogLocale': 'en_GB',
 
+  'seo.linkManual': 'Handbook',
   'seo.linkCodebook': 'Code sheet',
   'seo.linkPlay': 'Android app',
   'seo.linkContact': 'Contact',
@@ -565,7 +566,7 @@ export default {
 
   'guide.s5.title': '5. Keys & networks',
   'guide.s5.walzenlage':
-    '<strong>Rotor order:</strong> Thin / Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. Traditional: it does not step; the Greek rotor ring stays 0. Modern: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. In Modern its ring setting also applies.',
+    '<strong>Rotor order:</strong> Thin / Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. Traditional: it does not step; its ring setting applies. Modern: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. The Greek rotor ring applies in both modes.',
   'guide.s5.rings':
     '<strong>Ring settings:</strong> 4 letters, fixed for the message / day.',
   'guide.s5.ground':
@@ -601,12 +602,16 @@ export default {
   'guide.s7.li2': 'Online: courier on. No code sheet, no plaintext. Only QR and letters.',
   'guide.s7.li3': 'Send: encrypt offline, show QR, scan online, copy letters into the messenger.',
   'guide.s7.li4': 'Receive: paste letters or show a QR online, scan offline, decrypt.',
+  'guide.handbook':
+    'In full: <a href="/manual/">handbook at alberich.pro/manual</a>.',
 
   'about.title': 'About Alberich',
   'about.p1':
     'Alberich is an Enigma M4 simulator in the browser: Traditional (historical, involutory) and Modern (end rotor, filler notches, Base-26, auto message key). Rotor order, rings, plugboard, daily keys, networks and code sheets.',
   'about.p2':
     'The name Alberich refers to the dwarf Alberich of Germanic mythology — guardian of the Nibelung treasure and master of the forge. His cloak of invisibility hides the wearer: secrets remain open only to those who know the secret.',
+  'about.handbook':
+    'Handbook: <a href="/manual/">alberich.pro/manual</a>.',
   'about.imprint': 'Legal notice',
   'about.emailLabel': 'Email:',
   'about.license':

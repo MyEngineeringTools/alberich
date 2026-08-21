@@ -274,7 +274,7 @@ class Machine:
         self.left = Rotor(*ROTORS[left], pos=letter_pos(pos_l), ring=letter_pos(ring_l))
         self.middle = Rotor(*ROTORS[middle], pos=letter_pos(pos_m), ring=letter_pos(ring_m))
         self.right = Rotor(*ROTORS[right], pos=letter_pos(pos_r), ring=letter_pos(ring_r))
-        thin_ring = letter_pos(ring_t) if ring_t and self.protocol == "v3" else 0
+        thin_ring = letter_pos(ring_t) if ring_t else 0
         self.thin = Rotor(*ROTORS[thin], pos=letter_pos(pos_t), ring=thin_ring)
 
     def step(self) -> None:

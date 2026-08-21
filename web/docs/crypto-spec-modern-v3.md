@@ -67,7 +67,8 @@ Traditional und V2 behalten den Dreier-Schritt (linke Kerbe tot, Thin fest).
 
 ### Thin-Ring
 
-In V3 gilt `thin.ring`. In Traditional/V2 bleibt `thin.ring = 0`.
+`thin.ring` gilt in Traditionell (historische M4) und in Modern V3.
+Die Griechenwalze steppt nur in V3. V2 wird nicht weiter unterstützt.
 
 ### Endwalze
 

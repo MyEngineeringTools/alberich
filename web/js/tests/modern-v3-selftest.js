@@ -95,11 +95,12 @@ function configureV3(engine, keyCode4) {
   return true;
 }
 
-function configureTraditional(engine) {
+function configureTraditional(engine, ringThin = DAY.ringThin) {
   engine.setCryptoMode('traditional');
   engine.setModernProtocol('v2');
   engine.setReflector('C');
-  engine.setRotors('V', 'VI', 'VIII', 'Beta', 'D', 'S', 'Z', 'C', 'P', 'E', 'L');
+  engine.setRotors('V', 'VI', 'VIII', 'Beta', 'D', 'S', 'Z', 'C', 'P', 'E', 'L', ringThin);
+  engine.setThinRing(ringThin);
   engine.setPlugboard(DAY.plugboard);
 }
 
@@ -107,11 +108,21 @@ function configureTraditional(engine) {
 {
   const engine = new CipherEngine();
   configureTraditional(engine);
+  assert(engine.rotors.thin.ring === 4, 'traditional thin ring E applied');
+  const startThinPos = engine.rotors.thin.pos;
   const plain = 'HELLOALBERICHTESTMESSAGE';
   const cipher = engine.encryptMessage(plain);
+  assert(engine.rotors.thin.pos === startThinPos, 'traditional thin does not step');
   configureTraditional(engine);
   assert(engine.encryptMessage(cipher) === plain, 'traditional still involutory');
-  assert(engine.rotors.thin.ring === 0, 'traditional thin ring stays 0');
+
+  const engineA = new CipherEngine();
+  configureTraditional(engineA, 'A');
+  const cipherA = engineA.encryptMessage(plain);
+  const engineE = new CipherEngine();
+  configureTraditional(engineE, 'E');
+  const cipherE = engineE.encryptMessage(plain);
+  assert(cipherA !== cipherE, 'traditional thin ring changes ciphertext');
 }
 
 // --- V2 still works ---

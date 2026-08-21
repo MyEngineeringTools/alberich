@@ -1,13 +1,13 @@
 # Canonical product versions — the same numbers as the shipped apps.
-# This repository is not a 0.x restart. Web 1.0 (Revision 49) here is
-# the same 1.0 (Revision 49) as alberich.pro.
+# This repository is not a 0.x restart. Web 1.0 (Revision 50) here is
+# the same 1.0 (Revision 50) as alberich.pro.
 # Change here first, then the platform files.
 # Android source is not in this tree; the numbers still live here so
 # studio and this repo stay aligned.
 
-web.display=1.0 (Revision 49)
+web.display=1.0 (Revision 50)
 web.name=1.0
-web.revision=49
+web.revision=50
 
 browser.version=1.0.24
 

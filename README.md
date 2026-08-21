@@ -6,7 +6,7 @@ sheets, courier QR.
 
 - Live instance: [https://alberich.pro/](https://alberich.pro/)
 - Versions: see [VERSIONS](VERSIONS) — the same numbers as the live apps:
-  web `1.0 (Revision 49)`, browser `1.0.24`, Thunderbird `1.0.14`,
+  web `1.0 (Revision 50)`, browser `1.0.24`, Thunderbird `1.0.14`,
   Android `1.0 (Revision 29)` / code 29. Not a separate GitHub count.
 - Platforms here: static **web** app, **browser companion** (Chrome / Edge /
   Firefox), and **Thunderbird** MailExtension

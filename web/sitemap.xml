@@ -10,6 +10,14 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://alberich.pro/"/>
   </url>
   <url>
+    <loc>https://alberich.pro/manual/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://alberich.pro/manual/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://alberich.pro/manual/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://alberich.pro/manual/"/>
+  </url>
+  <url>
     <loc>https://alberich.pro/blog/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>

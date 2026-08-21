@@ -1,14 +1,14 @@
 # Research results
 
 Current files in this directory describe **live Modern V3** (double-step,
-Revision 49). That is the algorithm in `CipherEngine.stepModernV3()`.
+Revision 50). That is the algorithm in `CipherEngine.stepModernV3()`.
 
 A file that is current must carry:
 
 ```json
 {
   "protocol": "Modern V3",
-  "algorithmRevision": "modern-v3-rev49-double-step",
+  "algorithmRevision": "modern-v3-rev50-double-step",
   "algorithmFingerprint": "…",
   "stepRule": "double-step",
   "generatorProfile": "Modern V3 Standard",

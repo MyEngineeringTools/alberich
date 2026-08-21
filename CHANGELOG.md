@@ -3,6 +3,18 @@
 Versions in this repository are the same as the shipped apps. There is no
 separate GitHub 0.x line.
 
+## 1.0 (Revision 50) — web
+
+Folgt **1.0 (Revision 49)**. Traditional Greek-rotor ring applies
+as on the historical M4. Older Traditional traffic whose first ring
+letter was not A decrypts differently. Handbook at `/manual/`.
+Modern V3 unchanged.
+
+- Web app under `web/` — version `1.0 (Revision 50)`.
+- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
+- Android (outside this tree) — `1.0 (Revision 29)`, `versionCode` 29.
+
 ## 1.0 (Revision 49) — web
 
 Folgt **1.0 (Revision 48)**. Live V3 stepping is again the Revision 47

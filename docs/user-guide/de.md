@@ -57,7 +57,7 @@ Nur A–Z für die Maschine. Zahlen und Satzzeichen werden umgewandelt (z. B. Pu
 
 ## 5. Schlüssel & Netze
 
-**Walzenlage:** Dünne Walze / Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Traditionell: sie dreht nicht, Ringstellung der Griechenwalze bleibt 0. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Im Modern-Modus gilt auch ihre Ringstellung.
+**Walzenlage:** Dünne Walze / Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Traditionell: sie dreht nicht, ihre Ringstellung gilt. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Die Ringstellung der Griechenwalze gilt in beiden Modi.
 
 **Ringstellung:** 4 Buchstaben, gilt für die ganze Nachricht / den Tag.
 

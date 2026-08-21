@@ -8,10 +8,12 @@ The check group is not a second message key. It sits at the end, verifies that t
 
 When creating a sheet: Modern always uses free permutation. Traditional: Mix or Bruno/Caesar only.
 
-The Greek rotor (Beta/Gamma) always sits in the electrical path. Traditional: it does not step; its ring stays 0. Modern: it steps when the left rotor is at a notch; in Modern its ring setting also applies.
+The Greek rotor (Beta/Gamma) always sits in the electrical path. Traditional: it does not step; its ring setting applies. Modern: it steps when the left rotor is at a notch; the ring applies in both modes.
+
+Handbook: https://alberich.pro/manual/
 
 Unchanged: historic Enigma M4, generate/view/print monthly sheets, JSON and QR, courier, networks, emergency wipe.
 
 Modern is an experimental rotor protocol. It is not an AES replacement and has no security proof. Confidentiality remains a rotor cipher.
 
-Version 1.0 (Revision 49). Spec: crypto-spec-modern-v3.md
+Version 1.0 (Revision 50). Spec: crypto-spec-modern-v3.md

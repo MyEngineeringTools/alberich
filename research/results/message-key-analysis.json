@@ -1,7 +1,7 @@
 {
   "protocol": "Modern V3",
-  "algorithmRevision": "modern-v3-rev49-double-step",
-  "algorithmFingerprint": "bb63c205f4e6560e",
+  "algorithmRevision": "modern-v3-rev50-double-step",
+  "algorithmFingerprint": "cc2e6ac7616890d2",
   "stepRule": "double-step",
   "stepRuleDetail": "Right always; Right notch → Middle; Middle notch → Left and Middle; Left notch → Thin and Left",
   "generatorProfile": "Modern V3 Standard",

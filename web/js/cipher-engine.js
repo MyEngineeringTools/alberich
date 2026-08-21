@@ -72,8 +72,8 @@ export class CipherEngine {
   }
 
   /**
-   * Thin-Ringstellung. Nur Modern V3 ruft das auf.
-   * Traditional und V2 lassen thin.ring = 0 (setRotors).
+   * Ringstellung der Griechenwalze. Historische M4 und Modern V3:
+   * der Ring zählt. Die Walze steppt nur in Modern V3.
    * @param {string} letter
    */
   setThinRing(letter) {
@@ -106,17 +106,11 @@ export class CipherEngine {
     this.reflectorWiring = buildDoraReflectorWiring(editablePairs, free);
   }
 
-  setRotors(rotorLeft, rotorMiddle, rotorRight, rotorThin, posLeft, posMiddle, posRight, posThin, ringLeft, ringMiddle, ringRight) {
+  setRotors(rotorLeft, rotorMiddle, rotorRight, rotorThin, posLeft, posMiddle, posRight, posThin, ringLeft, ringMiddle, ringRight, ringThin) {
     this.applyRotor(this.rotors.left, rotorLeft, posLeft, ringLeft);
     this.applyRotor(this.rotors.middle, rotorMiddle, posMiddle, ringMiddle);
     this.applyRotor(this.rotors.right, rotorRight, posRight, ringRight);
-
-    const thinSpec = ROTORS[rotorThin];
-    this.rotors.thin.id = rotorThin;
-    this.rotors.thin.pos = this.letterToPos(posThin);
-    this.rotors.thin.ring = 0;
-    this.rotors.thin.wiring = thinSpec.wiring;
-    this.rotors.thin.notch = thinSpec.notch;
+    this.applyRotor(this.rotors.thin, rotorThin, posThin, ringThin || 'A');
   }
 
   applyRotor(rotor, id, pos, ring) {

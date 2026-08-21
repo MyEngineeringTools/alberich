@@ -2,6 +2,15 @@
 
 Format: Version **X.Y (Revision N)**
 
+## 1.0 (Revision 50)
+
+- Traditionell: Ringstellung der Griechenwalze gilt wie auf der historischen M4
+- Ältere Traditional-Sprüche mit erstem Ringbuchstaben ≠ A entschlüsseln anders
+- Handbuch unter `/manual/`; Footer, Kurzanleitung und Info verlinken dorthin
+- Modern V3 unverändert
+
+Folgt **1.0 (Revision 49)**.
+
 ## 1.0 (Revision 49)
 
 - Live-V3 wieder mit Double-Step wie Revision 47 (Kaskade nur Research)

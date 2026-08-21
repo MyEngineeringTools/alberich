@@ -57,7 +57,7 @@ A–Z only for the machine. Numbers and punctuation are converted (e.g. period �
 
 ## 5. Keys & networks
 
-**Rotor order:** Thin / Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. Traditional: it does not step; the Greek rotor ring stays 0. Modern: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. In Modern its ring setting also applies.
+**Rotor order:** Thin / Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. Traditional: it does not step; its ring setting applies. Modern: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. The Greek rotor ring applies in both modes.
 
 **Ring settings:** 4 letters, fixed for the message / day.
 

@@ -604,6 +604,8 @@ export default {
   'guide.s7.li4': 'Empfangen: online Buchstaben einfügen oder QR zeigen, offline scannen, entschlüsseln.',
   'guide.handbook':
     'Ausführlich: <a href="/manual/">Handbuch unter alberich.pro/manual</a>.',
+  'guide.android':
+    'Android: <a href="/fdroid/">Play Store oder F-Droid unter alberich.pro/fdroid</a>.',
 
   'about.title': 'Über Alberich',
   'about.p1':
@@ -612,6 +614,8 @@ export default {
     'Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.',
   'about.handbook':
     'Handbuch: <a href="/manual/">alberich.pro/manual</a>.',
+  'about.android':
+    'Android: <a href="/fdroid/">Play Store oder F-Droid unter alberich.pro/fdroid</a>.',
   'about.imprint': 'Impressum',
   'about.emailLabel': 'E-Mail:',
   'about.license':

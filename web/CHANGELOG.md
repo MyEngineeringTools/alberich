@@ -2,6 +2,15 @@
 
 Format: Version **X.Y (Revision N)**
 
+## 1.0 (Revision 51)
+
+- QR-Scan der Rückkamera nicht mehr gespiegelt (Tafel-QR und Kurier-QR)
+- Vorschau entspricht dem Sensorbild; gelber Rahmen quadratisch
+- Cache-Bust `styles.css?v=51` / `js/app.js?v=51` (CSS 7 Tage Cache)
+- Modern V3 unverändert
+
+Folgt **1.0 (Revision 50)**.
+
 ## 1.0 (Revision 50)
 
 - Traditionell: Ringstellung der Griechenwalze gilt wie auf der historischen M4

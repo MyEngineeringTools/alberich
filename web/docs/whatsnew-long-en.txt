@@ -1,19 +1,11 @@
-Modern — details (Web)
+QR scan — details (Web)
 
-Modern is one procedure: a free 26-letter end rotor (non-involutory) and visible filler notches on the sheet (5, 7 or 9). They are not derived from rings and plugs.
+The rear-camera live preview was flipped horizontally. Sheet QRs and courier QRs share the same scanner; aiming from the preview presented a mirrored code to the decoder.
 
-Telegram layout: ALBV + 4-letter header + 8-letter message ID + body + 20-letter check group (HKDF-SHA-256 and HMAC-SHA-256). The message key is created automatically. Everyday text goes through Base-26.
+The flip is gone. The yellow frame is square and fills the camera view. File import and paste were unaffected.
 
-The check group is not a second message key. It sits at the end, verifies that the telegram is complete and unaltered, and without it there is no plaintext. The header shown in the UI is the encrypted message key (second group of four), not the ALBV stamp.
-
-When creating a sheet: Modern always uses free permutation. Traditional: Mix or Bruno/Caesar only.
-
-The Greek rotor (Beta/Gamma) always sits in the electrical path. Traditional: it does not step; its ring setting applies. Modern: it steps when the left rotor is at a notch; the ring applies in both modes.
+Unchanged: Modern V3, Traditional, sheets, courier procedure, networks.
 
 Handbook: https://alberich.pro/manual/
 
-Unchanged: historic Enigma M4, generate/view/print monthly sheets, JSON and QR, courier, networks, emergency wipe.
-
-Modern is an experimental rotor protocol. It is not an AES replacement and has no security proof. Confidentiality remains a rotor cipher.
-
-Version 1.0 (Revision 50). Spec: crypto-spec-modern-v3.md
+Version 1.0 (Revision 51). Spec: crypto-spec-modern-v3.md

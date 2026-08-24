@@ -3,6 +3,17 @@
 Versions in this repository are the same as the shipped apps. There is no
 separate GitHub 0.x line.
 
+## 1.0 (Revision 51) — web
+
+Folgt **1.0 (Revision 50)**. Rear-camera QR preview is no longer
+mirrored; yellow frame is square (sheet QR and courier QR).
+Modern V3 unchanged.
+
+- Web app under `web/` — version `1.0 (Revision 51)`.
+- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.15`.
+- Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
+
 ## 1.0 (Revision 50) — web
 
 Folgt **1.0 (Revision 49)**. Traditional Greek-rotor ring applies

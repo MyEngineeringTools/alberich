@@ -127,7 +127,7 @@ import {
 } from './endwalze-policy.js';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 50)';
+const VERSION = '1.0 (Revision 51)';
 /** Replaced by scripts/release.sh in the packaged web zip. */
 const BUILD_COMMIT = 'unpublished';
 const PROTOCOL_LABEL = 'Modern V3';

@@ -1,19 +1,11 @@
-Modern — ausführlich (Web)
+QR-Scan — ausführlich (Web)
 
-Modern ist ein Verfahren: freie 26-Buchstaben-Endwalze (nicht involutorisch) und sichtbare Lückenfüller-Kerben auf der Tafel (5, 7 oder 9). Sie werden nicht aus Ringen und Steckern abgeleitet.
+Die Live-Vorschau der Rückkamera war horizontal gespiegelt. Tafel-QR und Kurier-QR nutzen denselben Scanner; wer nach dem Bildschirm zielte, hielt dem Sensor einen seitenverkehrten Code hin.
 
-Das Telegramm lautet: ALBV + 4 Buchstaben Kopf + 8 Buchstaben Message-ID + Körper + 20 Buchstaben Prüfgruppe (HKDF-SHA-256 und HMAC-SHA-256). Der Spruchschlüssel entsteht automatisch. Alltagstext läuft über Base-26.
+Die Spiegelung ist entfernt. Der gelbe Rahmen ist quadratisch und füllt den Kamerabereich. Foto-Import und Einfügen waren davon nicht betroffen.
 
-Die Prüfgruppe ist kein zweiter Spruchschlüssel. Sie sitzt am Ende, prüft ob der Spruch vollständig und unverändert ist, und ohne sie gibt es keinen Klartext. Die Kopfgruppe in der Anzeige ist der verschlüsselte Spruchschlüssel (zweite Vierergruppe), nicht der Stempel ALBV.
-
-Tafel erzeugen: Modern immer freie Permutation. Traditionell: Mix oder Nur Bruno/Caesar.
-
-Die Griechenwalze (Beta/Gamma) sitzt immer im Stromweg. Traditionell: sie dreht nicht, ihre Ringstellung gilt. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; die Ringstellung gilt in beiden Modi.
+Unverändert: Modern V3, Traditionell, Tafeln, Kurier-Verfahren, Netze.
 
 Handbuch: https://alberich.pro/manual/
 
-Unverändert: historische Enigma M4, Monatstafeln erzeugen/zeigen/drucken, JSON und QR, Kurier, Netze, Not-Aus.
-
-Modern ist ein experimentelles Rotorprotokoll. Es ist kein AES-Ersatz und trägt keinen Sicherheitsbeweis. Die Vertraulichkeit bleibt eine Rotorchiffre.
-
-Version 1.0 (Revision 50). Spezifikation: crypto-spec-modern-v3.md
+Version 1.0 (Revision 51). Spezifikation: crypto-spec-modern-v3.md

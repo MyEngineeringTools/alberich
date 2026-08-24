@@ -604,6 +604,8 @@ export default {
   'guide.s7.li4': 'Receive: paste letters or show a QR online, scan offline, decrypt.',
   'guide.handbook':
     'In full: <a href="/manual/">handbook at alberich.pro/manual</a>.',
+  'guide.android':
+    'Android: <a href="/fdroid/">Play Store or F-Droid at alberich.pro/fdroid</a>.',
 
   'about.title': 'About Alberich',
   'about.p1':
@@ -612,6 +614,8 @@ export default {
     'The name Alberich refers to the dwarf Alberich of Germanic mythology — guardian of the Nibelung treasure and master of the forge. His cloak of invisibility hides the wearer: secrets remain open only to those who know the secret.',
   'about.handbook':
     'Handbook: <a href="/manual/">alberich.pro/manual</a>.',
+  'about.android':
+    'Android: <a href="/fdroid/">Play Store or F-Droid at alberich.pro/fdroid</a>.',
   'about.imprint': 'Legal notice',
   'about.emailLabel': 'Email:',
   'about.license':

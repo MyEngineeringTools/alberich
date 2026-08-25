@@ -9,6 +9,9 @@ Folgt **1.0 (Revision 50)**. Rear-camera QR preview is no longer
 mirrored; yellow frame is square (sheet QR and courier QR).
 Modern V3 unchanged.
 
+Research stamp: fingerprint hashes algorithm JS only, not `VERSIONS`.
+Checked-in results restamped (`909cc1f35c98789c`).
+
 - Web app under `web/` — version `1.0 (Revision 51)`.
 - Browser extension under `extensions/browser/` — version `1.0.24`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.15`.

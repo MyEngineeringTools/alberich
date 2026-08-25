@@ -14,7 +14,7 @@ Checked-in results restamped (`909cc1f35c98789c`).
 
 - Web app under `web/` — version `1.0 (Revision 51)`.
 - Browser extension under `extensions/browser/` — version `1.0.24`.
-- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.15`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
 - Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
 
 ## 1.0 (Revision 50) — web

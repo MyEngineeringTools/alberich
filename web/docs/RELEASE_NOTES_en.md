@@ -7,7 +7,7 @@
 | **Web** | 1.0 (Revision 51) |
 | **Android** | 1.0 (Revision 30), `versionCode` 30 |
 | **Companion** | 1.0.24 |
-| **Thunderbird** | 1.0.15 |
+| **Thunderbird** | 1.0.14 |
 
 What’s new (short): [`whatsnew-en.txt`](whatsnew-en.txt)  
 Long form: [`whatsnew-long-en.txt`](whatsnew-long-en.txt)  

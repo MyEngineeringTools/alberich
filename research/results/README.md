@@ -1,14 +1,15 @@
 # Research results
 
-Current files in this directory describe **live Modern V3** (double-step,
-Revision 50). That is the algorithm in `CipherEngine.stepModernV3()`.
+Current files in this directory describe **live Modern V3** (double-step).
+That is the algorithm in `CipherEngine.stepModernV3()`. The fingerprint
+hashes the normative JS sources, not `VERSIONS` (UI revision).
 
 A file that is current must carry:
 
 ```json
 {
   "protocol": "Modern V3",
-  "algorithmRevision": "modern-v3-rev50-double-step",
+  "algorithmRevision": "modern-v3-rev51-double-step",
   "algorithmFingerprint": "…",
   "stepRule": "double-step",
   "generatorProfile": "Modern V3 Standard",

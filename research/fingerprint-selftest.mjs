@@ -17,6 +17,7 @@ function assert(cond, msg) {
 const files = readAlgorithmSources();
 const base = fingerprintFromContents(files);
 assert(/^[0-9a-f]{16}$/.test(base), 'fingerprint shape');
+assert(!ALGORITHM_SOURCE_FILES.includes('VERSIONS'), 'product version is not the algorithm');
 assert(ALGORITHM_SOURCE_FILES.includes('web/js/cipher-data.js'), 'wirings are normative');
 assert(ALGORITHM_SOURCE_FILES.includes('web/js/modern-v3.js'), 'V3 is normative');
 

@@ -25,9 +25,10 @@ export const REPO_ROOT = dirname(RESEARCH_DIR);
 export const RESULTS_DIR = `${RESEARCH_DIR}/results`;
 export const CORPUS_DIR = `${RESEARCH_DIR}/corpus`;
 
-/** Files that define the live Modern V3 machine. A change here invalidates results. */
+/** Files that define the live Modern V3 machine. A change here invalidates results.
+ *  VERSIONS is the product display number, not the algorithm — a UI/CSS
+ *  revision must not move the research fingerprint. */
 export const ALGORITHM_SOURCE_FILES = Object.freeze([
-  'VERSIONS',
   'web/js/cipher-data.js',
   'web/js/cipher-engine.js',
   'web/js/codebook-generate.js',

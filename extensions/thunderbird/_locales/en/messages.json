@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Alberich Companion (Thunderbird)",
+    "message": "Alberich Mail Companion",
     "description": "Extension name"
   },
   "extDescription": {
@@ -8,15 +8,15 @@
     "description": "Store description"
   },
   "actionTitle": {
-    "message": "Alberich Companion",
+    "message": "Alberich Mail Companion",
     "description": "Main toolbar tooltip"
   },
   "composeTitle": {
-    "message": "Alberich — encrypt/decrypt",
+    "message": "Alberich Mail Companion — encrypt/decrypt",
     "description": "Compose toolbar tooltip"
   },
   "messageTitle": {
-    "message": "Alberich — decrypt",
+    "message": "Alberich Mail Companion — decrypt",
     "description": "Message display toolbar tooltip"
   }
 }

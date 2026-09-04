@@ -50,4 +50,78 @@ assert(three.every((id) => mains.includes(id)), 'known main rotors');
 
 assert(typeof pick(mains) === 'string', 'pick');
 
+{
+  const src = await import('node:fs/promises').then((fs) => fs);
+  const files = [
+    'js/secure-random.js',
+    'js/codebook-generate.js',
+    'js/modern-v3.js',
+    'js/modern-crypto.js',
+    'js/full-key-fingerprint.js',
+  ];
+  for (const rel of files) {
+    const text = await src.readFile(rel, 'utf8');
+    assert(!/\bMath\.random\b/.test(text), `${rel} has no Math.random`);
+  }
+  const random = await src.readFile('js/secure-random.js', 'utf8');
+  assert(random.includes('crypto.getRandomValues') || random.includes('getRandomValues'), 'CSPRNG uses getRandomValues');
+  assert(random.includes('x >= limit'), 'rejection sampling present');
+  assert(random.includes('0x100000000'), 'rejection uses 2^32 range');
+}
+
+{
+  const n = 3;
+  const limit = Math.floor(0x100000000 / n) * n;
+  assert(limit % n === 0, 'rejection limit is multiple of n');
+  assert(limit === 4294967295, 'n=3 rejects 0xFFFFFFFF');
+  const orig = crypto.getRandomValues.bind(crypto);
+  let calls = 0;
+  crypto.getRandomValues = (buf) => {
+    calls += 1;
+    if (calls === 1) {
+      buf[0] = 0xFFFFFFFF;
+      return buf;
+    }
+    buf[0] = 1;
+    return buf;
+  };
+  try {
+    const v = cryptoRandomInt(3);
+    assert(calls >= 2, 'out-of-range draw rejected, CSPRNG called again');
+    assert(v === 1 % 3, 'accepted draw after rejection');
+  } finally {
+    crypto.getRandomValues = orig;
+  }
+}
+
+{
+  const orig = crypto.getRandomValues;
+  try {
+    delete crypto.getRandomValues;
+    if (crypto.getRandomValues) crypto.getRandomValues = undefined;
+    Object.defineProperty(crypto, 'getRandomValues', { value: undefined, configurable: true, writable: true });
+    let threw = false;
+    try {
+      cryptoRandomInt(26);
+    } catch {
+      threw = true;
+    }
+    assert(threw, 'missing getRandomValues fails closed');
+  } finally {
+    Object.defineProperty(crypto, 'getRandomValues', { value: orig, configurable: true, writable: true });
+  }
+}
+
+{
+  const counts = new Array(26).fill(0);
+  const samples = 26 * 400;
+  for (let i = 0; i < samples; i++) counts[cryptoRandomInt(26)] += 1;
+  const expected = samples / 26;
+  let chi = 0;
+  for (const c of counts) chi += ((c - expected) ** 2) / expected;
+  assert(chi < 52.62, `chi-square smoke cryptoRandomInt(26) χ²=${chi.toFixed(2)} (df=25, 0.001)`);
+}
+
+assert(randomMessageKey4(() => 0.999) !== randomMessageKey4(), 'test rng injection does not replace production CSPRNG');
+
 console.log('\nAll secure-random selftests passed.');

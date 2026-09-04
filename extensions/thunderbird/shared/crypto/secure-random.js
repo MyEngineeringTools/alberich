@@ -1,6 +1,8 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Kryptographisch sicherer Zufall (Web Crypto API).
  * Gleichverteilt per Rejection Sampling — wie im Codebook-Generator.
  */
@@ -11,13 +13,6 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
  * Gleichverteilte Ganzzahl in [0, maxExclusive).
  * @param {number} maxExclusive
  */
-function webCrypto() {
-  if (globalThis.crypto?.getRandomValues) return globalThis.crypto;
-  throw new Error(
-    'Web Crypto getRandomValues required (Node 18: --experimental-global-webcrypto)',
-  );
-}
-
 export function cryptoRandomInt(maxExclusive) {
   const max = Math.floor(Number(maxExclusive));
   if (!Number.isFinite(max) || max <= 0) return 0;
@@ -27,7 +22,7 @@ export function cryptoRandomInt(maxExclusive) {
   const buf = new Uint32Array(1);
   let x;
   do {
-    webCrypto().getRandomValues(buf);
+    crypto.getRandomValues(buf);
     x = buf[0];
   } while (x >= limit);
   return x % max;
@@ -98,20 +93,6 @@ export function randomDoraEditablePairs() {
   for (let i = 0; i < 24; i += 2) {
     const a = remaining[i];
     const b = remaining[i + 1];
-    pairs.push(a < b ? a + b : b + a);
-  }
-  return pairs.sort().join(' ');
-}
-
-/**
- * Freie Dora: 13 Paare über A–Z, kein festes BO.
- */
-export function randomDoraFreePairs() {
-  const letters = shuffle([...ALPHABET]);
-  const pairs = [];
-  for (let i = 0; i < 26; i += 2) {
-    const a = letters[i];
-    const b = letters[i + 1];
     pairs.push(a < b ? a + b : b + a);
   }
   return pairs.sort().join(' ');

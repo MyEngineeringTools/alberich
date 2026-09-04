@@ -21,6 +21,12 @@ import { LIMITS } from './limits.js';
 export const ALBERICH_CODEBOOK_FORMAT = 'alberich-codebook';
 /** Höchste akzeptierte Version (3 = Modern V3 / freie Permutation). */
 export const ALBERICH_CODEBOOK_FORMAT_VERSION = 3;
+/** Machine code for a failed import. Never commit a partial sheet. */
+export const IMPORT_REJECTED = 'IMPORT_REJECTED';
+
+function fail(error) {
+  return { ok: false, rejected: IMPORT_REJECTED, error };
+}
 
 const REFLECTOR_IDS = new Set([
   REFLECTOR_ID_BRUNO,
@@ -63,75 +69,84 @@ const THIN_SET = new Set(THIN_ROTOR_IDS);
 /**
  * JSON-Text oder Objekt parsen und validieren.
  * @param {string|object} raw
- * @returns {{ ok: true, sheet: CodebookSheet } | { ok: false, error: string }}
+ * @returns {{ ok: true, sheet: CodebookSheet } | { ok: false, rejected: 'IMPORT_REJECTED', error: string }}
  */
 export function parseCodebookJson(raw) {
   if (typeof raw === 'string' && new TextEncoder().encode(raw).length > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
-    return { ok: false, error: 'limits.codebookJson' };
+    return fail('limits.codebookJson');
   }
   let data;
   try {
     data = typeof raw === 'string' ? JSON.parse(raw) : raw;
   } catch {
-    return { ok: false, error: 'codebook.err.invalidJson' };
+    return fail('codebook.err.invalidJson');
   }
 
-  if (!data || typeof data !== 'object') {
-    return { ok: false, error: 'codebook.err.notObject' };
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return fail('codebook.err.notObject');
+  }
+
+  if (data.kind === 'ALB3_TIMEBOOK_V1' || data.format === 'ALB3_TIMEBOOK_V1') {
+    return fail('timebook.err.notLegacyFormat');
   }
 
   if (data.format !== ALBERICH_CODEBOOK_FORMAT) {
-    return { ok: false, error: 'codebook.err.badFormat' };
+    return fail('codebook.err.badFormat');
   }
 
-  const version = Number(data.formatVersion);
-  if (!Number.isFinite(version) || version < 1 || version > ALBERICH_CODEBOOK_FORMAT_VERSION) {
-    return { ok: false, error: `codebook.err.badVersion|${data.formatVersion}` };
+  if (!Number.isInteger(data.formatVersion)
+    || data.formatVersion < 1
+    || data.formatVersion > ALBERICH_CODEBOOK_FORMAT_VERSION) {
+    return fail(`codebook.err.badVersion|${data.formatVersion}`);
   }
+  const version = data.formatVersion;
 
   if (!Array.isArray(data.days) || data.days.length === 0) {
-    return { ok: false, error: 'codebook.err.noDays' };
+    return fail('codebook.err.noDays');
   }
 
   const days = [];
   for (const entry of data.days) {
     const checked = validateDayEntry(entry, version);
     if (!checked.ok) {
-      return {
-        ok: false,
-        error: `codebook.err.dayEntry\t${entry?.day ?? '?'}\t${checked.error}`,
-      };
+      return fail(`codebook.err.dayEntry\t${entry?.day ?? '?'}\t${checked.error}`);
     }
     days.push(checked.day);
   }
 
   days.sort((a, b) => a.day - b.day);
 
-  const year = Number(data.year);
-  const month = Number(data.month);
-  if (!Number.isInteger(year) || year < 1900 || year > 2100) {
-    return { ok: false, error: 'codebook.err.badYear' };
+  if (!Number.isInteger(data.year) || data.year < 1900 || data.year > 2100) {
+    return fail('codebook.err.badYear');
   }
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    return { ok: false, error: 'codebook.err.badMonth' };
+  if (!Number.isInteger(data.month) || data.month < 1 || data.month > 12) {
+    return fail('codebook.err.badMonth');
+  }
+  const year = data.year;
+  const month = data.month;
+
+  if (Object.prototype.hasOwnProperty.call(data, 'monthIndex0') && data.monthIndex0 != null) {
+    if (!Number.isInteger(data.monthIndex0) || data.monthIndex0 !== month - 1) {
+      return fail('codebook.err.monthIndexMismatch');
+    }
   }
 
   const dim = daysInUtcMonth(year, month);
   const seenDays = new Set();
   for (const d of days) {
-    if (d.day > dim) return { ok: false, error: 'codebook.err.dayOutOfMonth' };
-    if (seenDays.has(d.day)) return { ok: false, error: 'codebook.err.duplicateDay' };
+    if (d.day > dim) return fail('codebook.err.dayOutOfMonth');
+    if (seenDays.has(d.day)) return fail('codebook.err.duplicateDay');
     seenDays.add(d.day);
     if (d.date) {
       const expected = `${year}-${String(month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
-      if (d.date !== expected) return { ok: false, error: 'codebook.err.dateMismatch' };
+      if (d.date !== expected) return fail('codebook.err.dateMismatch');
     }
   }
 
   const endwalzePolicy = parseEndwalzePolicy(data.endwalzePolicy);
   if (version >= 3) {
     if (endwalzePolicy !== 'permutation') {
-      return { ok: false, error: 'codebook.err.v3Policy' };
+      return fail('codebook.err.v3Policy');
     }
   }
 
@@ -139,7 +154,7 @@ export function parseCodebookJson(raw) {
   if (Object.prototype.hasOwnProperty.call(data, 'networkContext') && data.networkContext != null && data.networkContext !== '') {
     const net = String(data.networkContext);
     if (!/^[A-Z0-9]{1,16}$/.test(net)) {
-      return { ok: false, error: 'codebook.err.networkContext' };
+      return fail('codebook.err.networkContext');
     }
     networkContext = net;
   }
@@ -151,7 +166,7 @@ export function parseCodebookJson(raw) {
       formatVersion: version,
       year,
       month,
-      monthIndex0: typeof data.monthIndex0 === 'number' ? data.monthIndex0 : month - 1,
+      monthIndex0: month - 1,
       monthLabel: typeof data.monthLabel === 'string' ? data.monthLabel : `${month}/${year}`,
       generatedAt: typeof data.generatedAt === 'string' ? data.generatedAt : '',
       ...(endwalzePolicy ? { endwalzePolicy } : {}),

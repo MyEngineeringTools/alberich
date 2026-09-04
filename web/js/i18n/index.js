@@ -4,8 +4,8 @@
  * Schlanke i18n-Schicht für Alberich Web (DE / EN).
  * Auto-Locale aus Browser + manuelle Wahl + localStorage.
  */
-import de from './de.js?v=1';
-import en from './en.js?v=1';
+import de from './de.js?v=17';
+import en from './en.js?v=17';
 
 const STORAGE_KEY = 'alberich-locale';
 const catalogs = { de, en };
@@ -112,10 +112,10 @@ export function localizeError(error) {
     const parts = error.split('\t');
     const day = parts[1] || '?';
     const detailKey = parts[2] || '';
-    return t('codebook.err.dayEntry', {
-      day,
-      detail: detailKey.startsWith('codebook.') ? t(detailKey) : detailKey,
-    });
+    const detail = (detailKey.startsWith('codebook.') || detailKey.startsWith('modern.'))
+      ? t(detailKey)
+      : detailKey;
+    return t('codebook.err.dayEntry', { day, detail });
   }
 
   // key|p1|p2 with named placeholders version/magic/algo in catalogs
@@ -130,12 +130,19 @@ export function localizeError(error) {
     }
   }
 
+  if (error.startsWith('timebook.err.')) {
+    const mapped = t(error);
+    return mapped === error ? t('qr.err.invalidSheet') : mapped;
+  }
+
   if (
     error.startsWith('codebook.')
     || error.startsWith('qr.')
     || error.startsWith('camera.')
     || error.startsWith('toast.')
     || error.startsWith('setup.')
+    || error.startsWith('modern.')
+    || error.startsWith('timebook.')
   ) {
     return t(error);
   }

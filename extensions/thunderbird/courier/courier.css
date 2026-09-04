@@ -1,5 +1,7 @@
-/* SPDX-FileCopyrightText: 2026 Christian Peter Kaiser */
-/* SPDX-License-Identifier: AGPL-3.0-only */
+/**
+ * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 .count {
   margin: 0 0 8px;
   font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;

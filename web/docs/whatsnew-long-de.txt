@@ -1,11 +1,19 @@
-QR-Scan — ausführlich (Web)
+V3 gehärtet — ausführlich (Web)
 
-Die Live-Vorschau der Rückkamera war horizontal gespiegelt. Tafel-QR und Kurier-QR nutzen denselben Scanner; wer nach dem Bildschirm zielte, hielt dem Sensor einen seitenverkehrten Code hin.
+Alberich Web kann jetzt gehärtete Schlüsseltafeln erzeugen und verwenden. Jeder Zeitslot trägt einen vollständigen, unabhängigen Modern-V3-Schlüssel. Die Uhr wählt den gespeicherten Schlüssel; sie leitet kein Schlüsselmaterial ab.
 
-Die Spiegelung ist entfernt. Der gelbe Rahmen ist quadratisch und füllt den Kamerabereich. Foto-Import und Einfügen waren davon nicht betroffen.
+Profile: 24 Stunden, 4 Stunden (Voreinstellung) oder 1 Stunde. Alberich-Schlüsselzeit ist ganzjährig MEZ (UTC+1), ohne Sommerzeit, unabhängig von der Zeitzone des Geräts.
 
-Unverändert: Modern V3, Traditionell, Tafeln, Kurier-Verfahren, Netze.
+24 Stunden ist derselbe Tagesrhythmus wie „V3 · Tagesschlüssel“, aber Live-QR und MEZ statt JSON oder Standbild. Druck oder Datei: Tagesschlüssel. Gleiches Teilen wie 4 h: 24 Stunden. Weniger Nachrichten unter einem Schlüssel: 4 Stunden.
+
+Die Ansicht „Aktuelle Walzenstellung“ folgt diesem Slot: Walzenlage, Endwalzen-Verdrahtung (26 Buchstaben, nicht PERM), Lagecode, Lückenfüller-Kerben und Steckerbrett. Wechselt der Slot zur vollen Stunde (1-Stunden-Tafel) bzw. an der Slotgrenze (4 h / 24 h), aktualisiert sich die Anzeige von selbst. Eine bereits begonnene Nachricht bleibt auf dem Slot, mit dem sie gestartet wurde. Neue Nachrichten nutzen den dann gültigen Schlüssel.
+
+Transfer: gehärtete Tafeln per Live-QR (CBQR2, dynamisch) oder als Binärdatei `.alb3cb2` (dasselbe kanonische CBQR2-Paket wie im QR). JSON bleibt dem Tagesschlüssel vorbehalten. QR-Bild laden ist für gehärtete Tafeln ausgegraut. Bestehende Tagesschlüssel-Tafeln (CBQR1 / JSON) funktionieren weiter.
+
+Unverändert: Modern-V3-Telegramm ALBV | HDR4 | MID8 | BODY | PRUEF20, Cipher-Kern, Traditionell, Kurier, Netze.
 
 Handbuch: https://alberich.pro/manual/
 
-Version 1.0 (Revision 51). Spezifikation: crypto-spec-modern-v3.md
+Netze listet eine gehärtete Tafel mit Monat und Fingerprint, nicht mit dem Legacy-Tafelwort. Ein Scan ohne Monatslabel bleibt sichtbar.
+
+Version 1.0 (Revision 65). Spezifikation: crypto-spec-modern-v3.md

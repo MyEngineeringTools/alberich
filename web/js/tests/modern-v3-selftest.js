@@ -435,7 +435,7 @@ assert(!timingSafeEqualLetters('ABCD', 'ABCE'), 'ct neq');
 
 // --- codebook v3 ---
 {
-  const sheet = generateMonthSheet(2026, 9, 'de', { endwalzePolicy: 'permutation' });
+  const sheet = await generateMonthSheet(2026, 9, 'de', { endwalzePolicy: 'permutation' });
   assert(sheet.formatVersion === 3, 'generated V3 version');
   assert(sheet.days.every((d) => d.endwalzeWiring && d.lueckenfueller), 'V3 days have wiring+notches');
   const parsed = parseCodebookJson(sheet);

@@ -1,0 +1,33 @@
+{
+  "format": "CBQR2_TRANSPORT_V1",
+  "magic": "ALB3Q2",
+  "version": 1,
+  "note": "RAW envelope is byte-canonical. GZIP output is not identity.",
+  "raw": {
+    "innerHex": "000102030405060708090a0b0c0d0e0f",
+    "codec": 0,
+    "uncompressedLength": 16,
+    "envelopeHex": "414c42335132010000000010000102030405060708090a0b0c0d0e0f"
+  },
+  "mur": {
+    "maxFragmentLength": 20,
+    "minFragmentLength": 10,
+    "firstSeqNum": 0,
+    "seqLen": 2,
+    "fragmentLen": 15,
+    "firstFrames": [
+      "ur:bytes/1-2/lpadaocsckcyhtghjpgygwhdcefpgsfweogyeyadaeaeaeaebeaedrjnjngu",
+      "ur:bytes/2-2/lpaoaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabsdsfyssqd",
+      "ur:bytes/3-2/lpaxaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabslstkghry",
+      "ur:bytes/4-2/lpaaaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabsgtnepdbz",
+      "ur:bytes/5-2/lpahaocsckcyhtghjpgygwhkckfwfdflechfftaybkbdbnbtckbswfonmnkp",
+      "ur:bytes/6-2/lpamaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabsutytmnfd",
+      "ur:bytes/7-2/lpataocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabsksjpckfg",
+      "ur:bytes/8-2/lpayaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabsnydtjshk",
+      "ur:bytes/9-2/lpasaocsckcyhtghjpgygwhdcefpgsfweogyeyadaeaeaeaebeaeamiyzeve",
+      "ur:bytes/10-2/lpbkaocsckcyhtghjpgygwhdcefpgsfweogyeyadaeaeaeaebeaeeolufdrl",
+      "ur:bytes/11-2/lpbdaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabspessstbk",
+      "ur:bytes/12-2/lpbnaocsckcyhtghjpgygwadaoaxaaahamatayasbkbdbnbtbabshsmwfroe"
+    ]
+  }
+}

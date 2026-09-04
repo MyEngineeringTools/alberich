@@ -1,1 +1,1 @@
-QR-Scan der Rückkamera nicht gespiegelt; gelber Rahmen quadratisch (Tafel und Kurier). Modern V3 unverändert.
+V3 gehärtet: eigener Vollschlüssel je Zeitslot (24 h / 4 h / 1 h, ganzjährig MEZ). Die Walzenstellung folgt der Uhr; eine begonnene Nachricht bleibt. 24 h hat denselben Takt wie Tagesschlüssel. Gehärtete Tafeln: Binärdatei (.alb3cb2) analog JSON, plus Live-QR. Netze zeigt Monat und Fingerprint. Telegramm ALBV unverändert.

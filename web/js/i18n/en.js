@@ -2,9 +2,9 @@
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only @type {Record<string, string>} */
 export default {
-  'meta.title': 'Alberich – Enigma M4 simulator online | free',
+  'meta.title': 'Alberich – Modern Enigma Encryption | M4 & Modern V3',
   'meta.description':
-    'Enigma M4 simulator in the browser: rotors, plugboard, message key and monthly code sheets. Free, no account – German and English. Also available as an Android app.',
+    'Alberich combines a historical Enigma M4 simulation with Modern V3 rotor encryption, Base-26 encoding, key sheets and Courier mode directly in the browser.',
   'meta.ogLocale': 'en_GB',
 
   'seo.linkManual': 'Handbook',
@@ -15,7 +15,7 @@ export default {
   'seo.linkSource': 'Source',
   'seo.footerCopy': '© My Engineering Tools · AGPL-3.0-only · alberich.pro',
 
-  'brand.tagline': 'Four-rotor cipher',
+  'brand.tagline': 'Classic Enigma. Modern Encryption.',
   'brand.taglineCourier': 'Courier bridge — ciphertext only',
 
   'header.guide': 'Guide',
@@ -92,6 +92,16 @@ export default {
   'modern.endwalzeInvolutory': 'End rotor must not be involutory in V3.',
   'modern.endwalzeGenerateFailed':
     'Unable to generate a secure non-involutory end rotor. No key material was applied.',
+  'modern.securityStateFailed':
+    'Encryption is not possible. The local security state could not be saved reliably.',
+  'modern.timeRollbackBlocked':
+    'New message blocked: device time is behind the last sent time slot.',
+  'modern.watermarkFailed':
+    'Cannot send. The send watermark could not be saved.',
+  'timebook.err.noCbqr1Export':
+    'Internal timebook cannot be exported as a CBQR1/JSON sheet.',
+  'timebook.err.notLegacyFormat':
+    'Internal timebook is not alberich-codebook JSON.',
   'modern.base26InvalidLength': 'Base-26 V2: invalid length.',
   'modern.base26Range': 'Base-26 V2: value does not fit the length.',
   'modern.base26Utf8': 'Base-26 V2: not valid UTF-8.',
@@ -107,6 +117,7 @@ export default {
   'rotor.endwalze': 'End rotor',
   'rotor.perm': 'PERM',
   'rotor.hintModern': 'Tap: adjust end rotor, rotors, ground setting and plugboard',
+  'rotor.notchHint': 'Active notches · L {left} ({lc}) · M {middle} ({mc}) · R {right} ({rc})',
 
   'message.keyLabel': 'Message key (4)',
   'message.keyNote': 'Send each message with a new, randomly chosen message key.',
@@ -210,7 +221,7 @@ export default {
   'message.trafficHint.plain': 'Plaintext: type, Ctrl+V or Paste — traffic with header group.',
   'message.trafficHint.cipher': 'Ciphertext: Paste — split into header group and body.',
 
-  'info.version': 'Version {version} · {protocol} · {commit}',
+  'info.version': 'Version {version} · {protocol}',
 
   'setup.title': 'Rotor setup',
   'setup.source': 'Key source',
@@ -274,7 +285,87 @@ export default {
   'codebook.generateHint': 'Same algorithm as the Android app. Stays in this browser; share the QR only with the partner’s offline device — not via messenger.',
   'codebook.generateMonth': 'Month',
   'codebook.generateYear': 'Year',
-  'codebook.generateButton': 'Generate monthly sheet',
+  'codebook.generateButton': 'Generate codebook',
+  'codebook.generating': 'Generating codebook…',
+  'codebook.kindLabel': 'Sheet type',
+  'codebook.kindHardened': 'V3 hardened',
+  'codebook.kindLegacy': 'V3 · daily key',
+  'codebook.profileLegend': 'Key validity',
+  'codebook.profileHelp':
+    'Key validity is how long Alberich keeps the same full V3 key for new messages. Shorter intervals limit how much traffic is produced under one key. Everyone on a network must use the same codebook.',
+  'codebook.profile.4h': '4 hours',
+  'codebook.profile.4hHint': 'Recommended',
+  'codebook.profile.24h': '24 hours',
+  'codebook.profile.24hHint': 'Simple',
+  'codebook.profile.1h': '1 hour',
+  'codebook.profile.1hHint': 'Higher protection',
+  'codebook.hardened.info.body':
+    '<p>V3 hardened is Modern V3 with an automatically changing full key: end rotor and filler notches sit on the sheet, telegram <code>ALBV</code>. The clock selects the period; it does not derive the key.</p>'
+    + '<p>Alberich switches on <strong>Alberich key time</strong> (CET / UTC+1 all year, no daylight saving). The “Current key” display follows the clock. A message already started stays on its key. The next new message uses the period that is current then.</p>'
+    + '<p><strong>24 hours · Simple</strong> — one full V3 key per calendar day. Same interval as “V3 · daily key”, but live QR and CET instead of JSON or a still QR. Print or files: daily key; same sharing as 4&nbsp;h: 24 hours; less traffic under one key: 4 hours.</p>'
+    + '<p><strong>4 hours · Recommended</strong> — six time keys per day. Less traffic under the same key than with 24 hours.</p>'
+    + '<p><strong>1 hour · Higher protection</strong> — 24 time keys per day, the shortest shared key period.</p>'
+    + '<p>Everyone on a network must use the same sheet. Share with the live QR code; receive with the camera, without picking a time slot.</p>',
+  'codebook.hardenedLabel': 'V3 hardened',
+  'codebook.legacyLabel': 'V3 · daily key',
+  'codebook.profileNamed.DAY_24H': '24 hours',
+  'codebook.profileNamed.HOURS_4': '4 hours',
+  'codebook.profileNamed.HOUR_1': '1 hour',
+  'codebook.keyTimeMez': 'Alberich key time: CET',
+  'codebook.keyTimeHint':
+    'Alberich switches keys on CET (UTC+1) all year, regardless of the device location.',
+  'codebook.currentKey': 'Current key',
+  'codebook.forNewUntil': 'For new messages until {time}',
+  'codebook.nextChange': 'Next change in {remain}',
+  'codebook.liveRemainLabel': 'Change in',
+  'codebook.liveBadgeTitle':
+    'V3 hardened · {profile} · current key {hours} · change in {clock} (Alberich key time CET)',
+  'codebook.slotKeys': '{count} time keys',
+  'codebook.slotDetails': 'Details',
+  'codebook.showKey': 'Show key',
+  'codebook.slotCurrent': 'Current',
+  'timebook.daySummary': '{day} {month} · {count} time keys',
+  'timebook.field.rotorThin': 'Greek rotor',
+  'timebook.field.rotorLeft': 'Moving rotor left',
+  'timebook.field.rotorMiddle': 'Moving rotor middle',
+  'timebook.field.rotorRight': 'Moving rotor right',
+  'timebook.field.ringCode': 'Ring setting',
+  'timebook.field.keyCode': 'Ground setting',
+  'timebook.field.plugboard': 'Plugboard',
+  'timebook.field.endwalze': 'End rotor',
+  'timebook.field.notchLeft': 'Filler notches left ({count})',
+  'timebook.field.notchMiddle': 'Filler notches middle ({count})',
+  'timebook.field.notchRight': 'Filler notches right ({count})',
+  'codebook.outOfMonth': 'This codebook does not cover the current Alberich month.',
+  'codebook.fingerprint': 'Fingerprint',
+  'modern.timeRollback':
+    'The device clock is earlier than an Alberich key period already used. Please check the date and time.',
+  'modern.externalizeFailed':
+    'The message could not be released safely. The local security state could not be saved.',
+  'modern.decrypting': 'Decrypting message…',
+  'modern.noKeyMatch':
+    'No matching key for this message was found in the selected codebook.',
+  'modern.ambiguousKey':
+    'The message could not be matched to a single key.',
+  'share.liveHint': 'The recipient holds the camera on the QR code.',
+  'share.paused': 'Transfer paused',
+  'share.pause': 'Pause',
+  'share.resume': 'Resume',
+  'share.stopLive': 'Stop sharing',
+  'share.hardenedMeta': '{network} · {month} · V3 hardened · {profile}',
+  'qr.receiving': 'Receiving codebook',
+  'qr.fragments': '{have} / {need} fragments reconstructed',
+  'qr.importConfirm': 'Import',
+  'qr.receivedTitle': 'Codebook received',
+  'qr.err.invalidSheet': 'Invalid codebook',
+  'qr.err.transferBroken': 'Transfer incomplete or damaged',
+  'qr.err.needLiveScan': 'Please scan animated codebooks with the camera, not as a still image.',
+  'timebook.err.noCbqr1Export': 'Hardened codebooks cannot be exported as CBQR1.',
+  'codebook.hardenedNoJsonExport':
+    'Hardened sheets save as a binary file (.alb3cb2), not JSON.',
+  'codebook.hardenedNoFileImport':
+    'A still QR image cannot carry a hardened sheet. Use the live QR or a binary file.',
+  'timebook.err.outOfMonth': 'The codebook does not cover the current Alberich-key-time month.',
   'codebook.endwalzePolicy': 'End rotor',
   'codebook.endwalzePolicyAria': 'End-rotor choice for the sheet',
   'codebook.policy.permutation': 'Free permutation',
@@ -301,11 +392,16 @@ export default {
   'sheet.export.notches': 'Notches L/M/R: {left} / {middle} / {right}',
   'codebook.importTitle': 'Import',
   'codebook.importJson': 'Import JSON',
+  'codebook.importFile': 'Import file',
+  'codebook.importBinary': 'Import binary file',
   'codebook.importQr': 'Load QR image',
   'codebook.scanQr': 'Scan with camera',
   'codebook.dayLabel': 'Day on sheet',
-  'codebook.formatHint': 'Applies to the active network. Generate here, or import alberich-codebook / QR ALBERICH-CBQR1|gzip|…. After loading, compare the sheet word with your partner.',
+  'codebook.formatHint': 'Applies to the active network. Generate here or import JSON/QR. The camera recognises existing and hardened sheets automatically. After loading, compare the sheet word or fingerprint with your partner.',
+  'codebook.formatHintHardened':
+    'Hardened sheet: save or import a binary file (.alb3cb2), like JSON for the daily key. Live QR sharing remains. Do not use a still QR image.',
   'codebook.sourceJson': 'JSON',
+  'codebook.sourceBinary': 'Binary file',
   'codebook.sourceQrImage': 'QR image',
   'codebook.sourceQrScan': 'QR scan',
   'codebook.sourceImport': 'Import',
@@ -388,6 +484,7 @@ export default {
   'toast.codebookImportPrompt': 'Import a JSON sheet into this network',
   'toast.codebookActive': 'Code sheet active',
   'toast.manualSource': 'Manual / random input',
+  'toast.saveFailed': 'Could not save the sheet (browser storage is full).',
   'toast.fileTooLarge': 'File too large',
   'toast.fileReadFailed': 'Could not read file',
   'limits.plaintext': 'Plaintext exceeds the technical maximum. Nothing was encrypted.',
@@ -415,6 +512,7 @@ export default {
   'toast.networkMax': 'At most {max} networks',
   'toast.networkNameEmpty': 'Please enter a name',
   'toast.shareJsonSaved': 'JSON saved: {filename}',
+  'toast.shareBinarySaved': 'Binary file saved: {filename}',
   'toast.shareQrReady': 'QR code ready',
   'toast.shareQrFailed': 'Could not create QR code',
   'toast.sharePngSaved': 'PNG saved: {filename}',
@@ -425,6 +523,7 @@ export default {
 
   'share.section': 'Share sheet',
   'share.exportJson': 'Save JSON',
+  'share.exportBinary': 'Save binary file',
   'share.showQr': 'Show QR',
   'share.share': 'Share',
   'share.qrTitle': 'Sheet QR code',
@@ -493,6 +592,15 @@ export default {
   'codebook.err.mainUnique': 'Main rotors must be unique',
   'codebook.err.ringsIncomplete': 'Ring setting incomplete',
   'codebook.err.keyIncomplete': 'Ground setting incomplete',
+  'codebook.err.plugsInvalid': 'Plugboard invalid (V3: exactly 10 A–Z pairs)',
+  'codebook.err.plugSelf': 'Plugboard: a letter cannot be plugged to itself',
+  'codebook.err.plugDuplicate': 'Plugboard: a letter is used more than once',
+  'codebook.err.v3Policy': 'V3 sheets require end-rotor policy “permutation”',
+  'codebook.err.networkContext': 'Network context invalid (A–Z/0–9, 1–16 characters)',
+  'codebook.err.dayOutOfMonth': 'Day is not in this month',
+  'codebook.err.duplicateDay': 'Duplicate day on the sheet',
+  'codebook.err.dateMismatch': 'Date field does not match year/month/day',
+  'codebook.err.monthIndexMismatch': 'monthIndex0 contradicts the month',
 
   'qr.err.decompress': 'Could not decompress QR payload',
   'qr.err.badFormat': 'Invalid QR format (expected ALBERICH-CBQR1|gzip|…)',
@@ -512,7 +620,7 @@ export default {
   'guide.title': 'Alberich – Quick guide',
   'guide.s1.title': '1. What is Alberich?',
   'guide.s1.body':
-    'Alberich is a free Enigma M4 simulator in the browser (German/English), no account required. Four-rotor cipher with rotors, rings, plugboard and daily keys — plus code sheets and networks. Monthly sheets are created in the web app or the Android app.',
+    'Alberich is a browser-based rotor encryption application built around two distinct worlds: a historically oriented simulation of the Enigma M4 and Alberich’s modern Modern V3 encryption system. Features include Base-26, automatic message keys, key sheets, nets and Courier mode. Processing is local in the browser (German/English), no account required. Monthly sheets are created in the web app or the Android app.',
 
   'guide.s2.title': '2. Two main modes',
   'guide.s2.traditional':
@@ -566,7 +674,7 @@ export default {
 
   'guide.s5.title': '5. Keys & networks',
   'guide.s5.walzenlage':
-    '<strong>Rotor order:</strong> Thin / Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. Traditional: it does not step; its ring setting applies. Modern: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. The Greek rotor ring applies in both modes.',
+    '<strong>Rotor order:</strong> Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. On the historical M4 the Greek rotor did not step (Traditional: it does not step; its ring setting applies). In Alberich Modern V3 it can step with the machine: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. The Greek rotor ring applies in both modes.',
   'guide.s5.rings':
     '<strong>Ring settings:</strong> 4 letters, fixed for the message / day.',
   'guide.s5.ground':
@@ -608,9 +716,17 @@ export default {
     'Android: <a href="/fdroid/">Play Store or F-Droid at alberich.pro/fdroid</a>.',
 
   'about.title': 'About Alberich',
+  'about.claim': 'Classic Enigma. Modern Encryption.',
+  'about.subclaim': 'Enigma M4 · Modern V3 · Courier',
   'about.p1':
-    'Alberich is an Enigma M4 simulator in the browser: Traditional (historical, involutory) and Modern (end rotor, filler notches, Base-26, auto message key). Rotor order, rings, plugboard, daily keys, networks and code sheets.',
+    'Alberich is a browser-based rotor encryption application built around two distinct worlds: a historically oriented simulation of the Enigma M4 and Alberich\'s modern Modern V3 encryption system.',
   'about.p2':
+    'The classic mode recreates the operating principle of the Enigma M4 for historical, technical and experimental use. Modern V3 develops the rotor concept further and combines it with features designed for modern text and present-day workflows.',
+  'about.p3':
+    'These include Base-26 encoding, automatic message keys, key sheets, communication nets and Courier mode for transferring encrypted messages between separate devices.',
+  'about.p4':
+    'Processing is performed locally in the browser wherever possible. Plaintext and key material are designed to remain on the device instead of being unnecessarily transmitted elsewhere.',
+  'about.origin':
     'The name Alberich refers to the dwarf Alberich of Germanic mythology — guardian of the Nibelung treasure and master of the forge. His cloak of invisibility hides the wearer: secrets remain open only to those who know the secret.',
   'about.handbook':
     'Handbook: <a href="/manual/">alberich.pro/manual</a>.',
@@ -619,7 +735,7 @@ export default {
   'about.imprint': 'Legal notice',
   'about.emailLabel': 'Email:',
   'about.license':
-    'Alberich is licensed under the <strong>GNU Affero General Public License 3.0 only</strong> (AGPL-3.0-only). <a href="LICENSE">License text</a>. Corresponding source: <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">github.com/MyEngineeringTools/alberich</a>. The name and mark are not licensed under the AGPL.',
+    'License: <a href="LICENSE">AGPL-3.0-only</a> · <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">Source</a>. The name and mark are not licensed under the AGPL.',
   'about.thirdParty':
     'QR and compression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Third-party notices</a>. “QR Code” is a trademark of DENSO WAVE.',
 };

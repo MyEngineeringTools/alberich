@@ -22,7 +22,6 @@ import {
   posToLetter,
 } from './modern-crypto.js';
 import { cryptoRandomInt, randomFourLetters } from './secure-random.js';
-import { LIMITS } from './limits.js';
 
 /** Sichtbarer Telegrammstempel — nur A–Z, sonst frisst extractLetters die Ziffer. */
 export const MODERN_V3_STAMP = 'ALBV';
@@ -171,17 +170,6 @@ export function minDigitsForByteLen(byteLen) {
   return k;
 }
 
-/** Largest UTF-8 byte length whose Base-26 V2 digit count is <= maxDigits. */
-export function maxByteLenForDigits(maxDigits) {
-  const K = Number(maxDigits);
-  if (!Number.isInteger(K) || K < 0) return -1;
-  if (K === 0) return 0;
-  let L = Math.max(0, Math.floor((K * Math.log(26)) / Math.log(256)) - 2);
-  while (minDigitsForByteLen(L + 1) <= K) L += 1;
-  while (L > 0 && minDigitsForByteLen(L) > K) L -= 1;
-  return L;
-}
-
 export function byteLenFromDigits(k) {
   const K = Number(k);
   if (!Number.isInteger(K) || K < 0) return null;
@@ -218,33 +206,19 @@ export function base26ToInt(letters) {
 }
 
 export function utf8ToBase26v2(text) {
-  const raw = String(text ?? '');
-  if (raw.length > LIMITS.MAX_PLAINTEXT_CHARS) {
-    throw new Error('limits.plaintext');
-  }
-  const bytes = new TextEncoder().encode(raw);
-  if (bytes.length > LIMITS.MAX_PLAINTEXT_CHARS) {
-    throw new Error('limits.plaintext');
-  }
+  const bytes = new TextEncoder().encode(String(text ?? ''));
   if (bytes.length === 0) return '';
-  const digits = minDigitsForByteLen(bytes.length);
-  if (digits > LIMITS.MAX_BASE26_LETTERS) {
-    throw new Error('limits.base26');
-  }
   let n = 0n;
   for (let i = 0; i < bytes.length; i++) {
     n = (n << 8n) | BigInt(bytes[i]);
   }
-  return intToBase26(n, digits);
+  return intToBase26(n, minDigitsForByteLen(bytes.length));
 }
 
 export function base26v2ToUtf8(letters) {
   const clean = String(letters ?? '')
     .toUpperCase()
     .replace(/[^A-Z]/g, '');
-  if (clean.length > LIMITS.MAX_BASE26_LETTERS) {
-    return { ok: false, error: 'limits.base26' };
-  }
   if (clean.length === 0) return { ok: true, text: '' };
   const L = byteLenFromDigits(clean.length);
   if (L == null) return { ok: false, error: 'modern.base26InvalidLength' };
@@ -269,22 +243,12 @@ export function base26v2ToUtf8(letters) {
 // Kanonisches Schlüsselmaterial + Prüfgruppe
 // ---------------------------------------------------------------------------
 
-export function validateNetworkContext(value) {
-  const cleaned = String(value ?? '')
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, '');
-  if (cleaned.length > LIMITS.MAX_NETWORK_CONTEXT) {
-    return { ok: false, error: 'modern.networkContextTooLong' };
-  }
-  return { ok: true, value: cleaned || DEFAULT_NETWORK_CONTEXT };
-}
-
 export function normalizeNetworkContext(value) {
-  const checked = validateNetworkContext(value);
-  if (!checked.ok) {
-    throw new Error(checked.error);
-  }
-  return checked.value;
+  const s = String(value ?? '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 16);
+  return s || DEFAULT_NETWORK_CONTEXT;
 }
 
 export function normalizeEpoch(value) {
@@ -366,17 +330,14 @@ export function canonicalMacInput({ networkContext, epoch, messageId, header, bo
   ].join('\n');
 }
 
-async function subtle() {
-  if (globalThis.crypto?.subtle) return globalThis.crypto.subtle;
-  if (typeof process !== 'undefined' && process.versions?.node) {
-    const { webcrypto } = await import('node:crypto');
-    return webcrypto.subtle;
-  }
-  throw new Error('Web Crypto subtle API required for Modern V3');
+function subtle() {
+  const c = globalThis.crypto;
+  if (!c?.subtle) throw new Error('Web Crypto subtle API required for Modern V3');
+  return c.subtle;
 }
 
 export async function deriveAuthKey(canonicalKeyUtf8) {
-  const api = await subtle();
+  const api = subtle();
   const ikm = new TextEncoder().encode(canonicalKeyUtf8);
   const salt = new TextEncoder().encode(HKDF_SALT);
   const info = new TextEncoder().encode(HKDF_INFO);
@@ -390,7 +351,7 @@ export async function deriveAuthKey(canonicalKeyUtf8) {
 }
 
 export async function hmacSha256(keyBytes, msgBytes) {
-  const api = await subtle();
+  const api = subtle();
   const key = await api.importKey(
     'raw',
     keyBytes,
@@ -469,9 +430,6 @@ export function parseV3Telegram(letters) {
   const clean = String(letters ?? '')
     .toUpperCase()
     .replace(/[^A-Z]/g, '');
-  if (clean.length > LIMITS.MAX_CIPHER_LETTERS) {
-    return { ok: false, error: 'limits.cipher' };
-  }
   const min = MODERN_V3_STAMP.length + HEADER_LETTERS + MESSAGE_ID_LETTERS + PRUEF_LETTERS;
   if (clean.length < min) {
     return { ok: false, error: 'modern.v3TooShort' };
@@ -567,22 +525,8 @@ export async function modernV3EncryptPayload(opts) {
   if (!wiring.ok) return { ok: false, error: wiring.error };
   const notches = validateLueckenfueller(dayConfig?.notches || dayConfig?.lueckenfueller);
   if (!notches.ok) return { ok: false, error: notches.error };
-  const net = validateNetworkContext(dayConfig?.networkContext);
-  if (!net.ok) return net;
 
-  const plain = String(plainText ?? '');
-  if (plain.length > LIMITS.MAX_PLAINTEXT_CHARS) {
-    return { ok: false, error: 'limits.plaintext' };
-  }
-  let bodyLetters;
-  try {
-    bodyLetters = utf8ToBase26v2(plain);
-  } catch (err) {
-    return { ok: false, error: err?.message || 'limits.plaintext' };
-  }
-  if (bodyLetters.length > LIMITS.MAX_BASE26_LETTERS) {
-    return { ok: false, error: 'limits.base26' };
-  }
+  const bodyLetters = utf8ToBase26v2(plainText);
   if (!configure(groundKey)) return { ok: false, error: 'modern.configureFailed' };
   const header = engine.encryptMessage(messageKey);
   if (header.length !== HEADER_LETTERS) return { ok: false, error: 'modern.headerFailed' };
@@ -592,7 +536,7 @@ export async function modernV3EncryptPayload(opts) {
   const messageId = /^[A-Z]{8}$/.test(opts.messageId || '')
     ? opts.messageId
     : randomMessageId();
-  const networkContext = net.value;
+  const networkContext = normalizeNetworkContext(dayConfig.networkContext);
   const epoch = normalizeEpoch(dayConfig.epoch);
   const authKey = await deriveAuthKey(
     canonicalDayKey({
@@ -645,10 +589,8 @@ export async function modernV3DecryptPayload(opts) {
   if (!wiring.ok) return { ok: false, error: wiring.error };
   const notches = validateLueckenfueller(dayConfig?.notches || dayConfig?.lueckenfueller);
   if (!notches.ok) return { ok: false, error: notches.error };
-  const net = validateNetworkContext(dayConfig?.networkContext);
-  if (!net.ok) return net;
 
-  const networkContext = net.value;
+  const networkContext = normalizeNetworkContext(dayConfig.networkContext);
   const epoch = normalizeEpoch(dayConfig.epoch);
   const authKey = await deriveAuthKey(
     canonicalDayKey({

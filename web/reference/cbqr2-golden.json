@@ -1,0 +1,32 @@
+{
+  "guard": "CBQR2_BINARY_V1",
+  "magic": "ALB3CB2",
+  "version": 1,
+  "fullKeyBinBytes": 70,
+  "vectors": [
+    {
+      "name": "24h-feb-2026-lcg42",
+      "profile": "DAY_24H",
+      "year": 2026,
+      "month": 2,
+      "keys": 28,
+      "packageSha256": "d48442e940d9b8522b6496dc1ac40f41fa71809f6862fb9ad3e2c2389b4d618c"
+    },
+    {
+      "name": "4h-apr-2026-lcg43",
+      "profile": "HOURS_4",
+      "year": 2026,
+      "month": 4,
+      "keys": 180,
+      "packageSha256": "9100d8ada07c51650826642f60cdb818ab7c18d081e47729c12bcbe54876e346"
+    },
+    {
+      "name": "1h-feb-2026-lcg44",
+      "profile": "HOUR_1",
+      "year": 2026,
+      "month": 2,
+      "keys": 672,
+      "packageSha256": "6cbcf3ce11dbd51153ef2548fa6c7bf191990dd1143debdfa2a19adf96f9b422"
+    }
+  ]
+}

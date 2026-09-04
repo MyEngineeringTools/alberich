@@ -1,11 +1,19 @@
-QR scan — details (Web)
+Hardened V3 — details (Web)
 
-The rear-camera live preview was flipped horizontally. Sheet QRs and courier QRs share the same scanner; aiming from the preview presented a mirrored code to the decoder.
+Alberich Web can now generate and use hardened code sheets. Each time slot holds a complete, independent Modern V3 key. The clock selects that stored key; it does not derive key material.
 
-The flip is gone. The yellow frame is square and fills the camera view. File import and paste were unaffected.
+Profiles: 24 hours, 4 hours (default), or 1 hour. Alberich key time is MEZ (UTC+1) year-round, with no daylight saving, independent of the device time zone.
 
-Unchanged: Modern V3, Traditional, sheets, courier procedure, networks.
+24 hours is the same daily rhythm as “V3 · daily key”, but live QR and CET instead of JSON or a still QR. Print or files: daily key. Same sharing as 4 h: 24 hours. Less traffic under one key: 4 hours.
+
+The Current rotor positions view follows this slot: rotor order, end-rotor wiring (26 letters, not PERM), layout code, filler notches, and plugboard. When the slot changes on the hour (1-hour sheet) or at the slot boundary (4 h / 24 h), the view updates by itself. A message already in progress stays on the slot it started with. New messages use the key that is valid then.
+
+Transfer: hardened sheets via live QR (CBQR2, dynamic) or a `.alb3cb2` binary file (the same canonical CBQR2 package as in the QR). JSON remains for daily-key sheets. Load QR image is greyed out for hardened sheets. Existing daily-key sheets (CBQR1 / JSON) still work.
+
+Unchanged: Modern V3 telegram ALBV | HDR4 | MID8 | BODY | PRUEF20, cipher core, Traditional, courier, networks.
 
 Handbook: https://alberich.pro/manual/
 
-Version 1.0 (Revision 51). Spec: crypto-spec-modern-v3.md
+Networks lists a hardened sheet with month and fingerprint, not the legacy sheet word. A scan without a month label still shows up.
+
+Version 1.0 (Revision 65). Spec: crypto-spec-modern-v3.md

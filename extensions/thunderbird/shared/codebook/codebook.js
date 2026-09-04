@@ -1,6 +1,8 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Import von Alberich-Schlüsseltafeln (JSON aus dem Codebook-Tool).
  * Format: format === "alberich-codebook", formatVersion 1 oder 2.
  */
@@ -15,7 +17,6 @@ import {
 } from '../crypto/cipher-data.js';
 import { applyKeyCode, applyRingCode } from './key-codes.js';
 import { validateEndwalzeWiring, validateLueckenfueller } from '../crypto/modern-v3.js';
-import { LIMITS } from '../crypto/limits.js';
 
 export const ALBERICH_CODEBOOK_FORMAT = 'alberich-codebook';
 export const ALBERICH_CODEBOOK_FORMAT_VERSION = 3;
@@ -62,9 +63,6 @@ const THIN_SET = new Set(THIN_ROTOR_IDS);
  * @returns {{ ok: true, sheet: CodebookSheet } | { ok: false, error: string }}
  */
 export function parseCodebookJson(raw) {
-  if (typeof raw === 'string' && new TextEncoder().encode(raw).length > LIMITS.MAX_CODEBOOK_JSON_BYTES) {
-    return { ok: false, error: 'limits.codebookJson' };
-  }
   let data;
   try {
     data = typeof raw === 'string' ? JSON.parse(raw) : raw;
@@ -176,10 +174,10 @@ function validateDayEntry(entry, version = 1) {
     if (new Set([rotorLeft, rotorMiddle, rotorRight]).size !== 3) {
       return { ok: false, error: 'codebook.err.mainUnique' };
     }
-    const ringCode = String(e.ringCode ?? '').toUpperCase();
-    const keyCode = String(e.keyCode ?? '').toUpperCase();
-    if (!/^[A-Z]{4}$/.test(ringCode)) return { ok: false, error: 'codebook.err.ringsIncomplete' };
-    if (!/^[A-Z]{4}$/.test(keyCode)) return { ok: false, error: 'codebook.err.keyIncomplete' };
+    const ringCode = String(e.ringCode ?? '').toUpperCase().replace(/[^A-Z]/g, '');
+    const keyCode = String(e.keyCode ?? '').toUpperCase().replace(/[^A-Z]/g, '');
+    if (ringCode.length !== 4) return { ok: false, error: 'codebook.err.ringsIncomplete' };
+    if (keyCode.length !== 4) return { ok: false, error: 'codebook.err.keyIncomplete' };
     const wired = validateEndwalzeWiring(e.endwalzeWiring);
     if (!wired.ok) return { ok: false, error: wired.error };
     const notches = validateLueckenfueller(e.lueckenfueller);
@@ -222,10 +220,10 @@ function validateDayEntry(entry, version = 1) {
     return { ok: false, error: 'codebook.err.mainUnique' };
   }
 
-  const ringCode = String(e.ringCode ?? '').toUpperCase();
-  const keyCode = String(e.keyCode ?? '').toUpperCase();
-  if (!/^[A-Z]{4}$/.test(ringCode)) return { ok: false, error: 'codebook.err.ringsIncomplete' };
-  if (!/^[A-Z]{4}$/.test(keyCode)) return { ok: false, error: 'codebook.err.keyIncomplete' };
+  const ringCode = String(e.ringCode ?? '').toUpperCase().replace(/[^A-Z]/g, '');
+  const keyCode = String(e.keyCode ?? '').toUpperCase().replace(/[^A-Z]/g, '');
+  if (ringCode.length !== 4) return { ok: false, error: 'codebook.err.ringsIncomplete' };
+  if (keyCode.length !== 4) return { ok: false, error: 'codebook.err.keyIncomplete' };
 
   const plugboard = String(e.plugboard ?? '').toUpperCase().replace(/[^A-Z ]/g, '').trim();
   let reflectorD = DEFAULT_REFLECTOR_D_PAIRS;

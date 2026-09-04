@@ -1,0 +1,16 @@
+# Canonical product versions. Change here first, then the platform files.
+# Android source is not in this tree; the numbers still live here so
+# studio and this repo stay aligned.
+
+web.display=1.0 (Revision 65)
+web.name=1.0
+web.revision=65
+
+browser.version=1.0.24
+
+thunderbird.version=1.0.15
+
+android.display=1.0 (Revision 29)
+android.name=1.0
+android.revision=29
+android.versionCode=29

@@ -77,7 +77,7 @@ import {
   clearAllNetworkSheets,
   sanitizeNetworkName,
 } from './networks.js';
-import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=1';
+import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=17';
 import {
   getModeProfileId,
   isModern,
@@ -125,9 +125,44 @@ import {
   usesFreeDoraWiring,
   usesPermutationEndwalze,
 } from './endwalze-policy.js';
+import { fullKeyFingerprint } from './full-key-fingerprint.js';
+import { createModernSession } from './modern-session.js';
+import { RESERVE, START, chooseAndReserveMessageKey } from './security-state.js';
+import { TIME_PROFILE, formatSlotHours, getAlberichDateTime, getSlotForTimestamp } from './alberich-key-time.js';
+import { generateTimebook } from './timebook-generate.js';
+import {
+  isTimebook,
+  resolveTimebookSlot,
+  selectDisplayFullKey,
+  validateTimebook,
+} from './timebook.js';
+import {
+  slotSummaryText,
+  timebookDayOutline,
+  timebookKeyDisplayRows,
+} from './timebook-sheet-view.js';
+import { CBQR2_MUR_PROFILE_V1 } from './cbqr2-mur-profile.js';
+import {
+  beginTimebookSendSession,
+  decryptTimebookTelegram,
+  externalizePinnedSlot,
+  MAC_SEARCH,
+} from './timebook-session.js';
+import { freezeShareSession, LabSender, LAB_MODE } from './cbqr2-lab-session.js';
+import { LabReceiver, TRANSFER, classifyCameraError } from './cbqr2-lab-scan.js';
+import { STATIC_TEXT_MAGIC, TRANSPORT_CODEC, decodeStaticText } from './cbqr2-transport.js';
+import { decodeCbqr2, encodeCbqr2, isCbqr2Bytes, timebookBinaryFilename } from './cbqr2-binary.js';
+
+let codebookKind = 'hardened';
+let liveShareSender = null;
+let codebookReceiver = null;
+let pendingTimebookImport = null;
+let slotTickTimer = 0;
+/** Last pin/clock identity painted into Aktuelle Walzenstellung. */
+let lastRotorDisplaySlotId = '';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 51)';
+const VERSION = '1.0 (Revision 65)';
 /** Replaced by scripts/release.sh in the packaged web zip. */
 const BUILD_COMMIT = 'unpublished';
 const PROTOCOL_LABEL = 'Modern V3';
@@ -262,6 +297,7 @@ let lastModernPlugCount = 0;
  * (stabil beim Tippen; neu bei Löschen / Rollenwechsel / Schlüsselwechsel).
  */
 let modernAutoMessageKey = '';
+const modernSession = createModernSession();
 /** Session-Message-ID für Modern V3 (nicht die Walzenlage). */
 let modernAutoMessageId = '';
 /** Letzte 20-Buchstaben-Prüfgruppe (Anzeige). */
@@ -306,6 +342,12 @@ function init() {
   renderAll();
   maybeApplyTodaysCodebookDay();
   applyCodebookDeepLink();
+  if (slotTickTimer) clearInterval(slotTickTimer);
+  slotTickTimer = setInterval(() => {
+    renderTimebookNow();
+    renderHardenedLiveBadge();
+    refreshTimebookRotorView();
+  }, 1000);
   window.addEventListener('hashchange', () => {
     if (wantsCodebookDeepLink()) applyCodebookDeepLink();
   });
@@ -314,12 +356,13 @@ function init() {
 function cacheElements() {
   [
     'inputText', 'outputText', 'inputCount', 'outputCount',
-    'reflectorLabel', 'keyCodeDisplay', 'livePosition', 'editableHint',
+    'reflectorLabel', 'keyCodeDisplay', 'livePosition', 'editableHint', 'rotorNotchHint',
     'rotorGrid', 'plugboardPairs', 'plugboardCount',
     'rotorSection', 'setupModal', 'guideModal', 'infoModal',
     'duplicateRotorHint', 'keyExport', 'toast',
     'messageKeyBar', 'messageKeyInput', 'btnRandomMessageKey',
     'modeSystem', 'modeStatus', 'modeStatusValue',
+    'hardenedLiveBadge', 'hardenedLiveMode', 'hardenedLiveSlot', 'hardenedLiveClock',
     'btnMainTraditional', 'btnMainModern',
     'modeHint', 'modeInfoDetails', 'modeInfoBody',
     'traditionalProcedureBar', 'procedureAutoHint', 'charsetLine',
@@ -339,6 +382,12 @@ function cacheElements() {
     'codebookFileInput', 'codebookQrFileInput', 'btnImportCodebook',
     'btnImportCodebookQr', 'btnScanCodebookQr', 'codebookDaySelect', 'codebookHint',
     'codebookGenMonth', 'codebookGenYear', 'btnGenerateCodebook',
+    'codebookKindBlock', 'codebookProfileBlock', 'btnKindHardened', 'btnKindLegacy',
+    'codebookGenerateStatus',
+    'qrShareCanvas', 'qrSharePaused', 'qrShareLiveHint',
+    'btnPauseQrShare', 'btnResumeQrShare', 'btnStopQrShare',
+    'qrScanProgressWrap', 'qrScanProgress', 'qrScanProgressLabel',
+    'qrScanConfirm', 'qrScanConfirmText', 'qrScanConfirmFp', 'btnConfirmQrImport',
     'codebookEndwalzePolicy',
     'manualSetupGrid',
     'networksList', 'networksCount',
@@ -346,6 +395,7 @@ function cacheElements() {
     'btnNetworkDelete',
     'codebookShareRow', 'btnShowSheet', 'btnExportCodebookJson', 'btnExportCodebookQr', 'btnShareCodebook',
     'sheetViewModal', 'sheetViewTitle', 'sheetViewTafelwort', 'sheetViewMeta', 'sheetViewBody',
+    'timebookSheetView', 'sheetTableScroll', 'sheetViewFooter',
     'btnCopySheet', 'btnPrintSheet',
     'qrShareModal', 'qrShareTitle', 'qrShareTafelwort', 'qrShareMeta', 'qrShareHint', 'qrShareImg',
     'btnDownloadQrShare', 'btnShareQrPng',
@@ -386,7 +436,9 @@ function bindEvents() {
   document.getElementById('btnClearInput').addEventListener('click', () => clearInput());
   document.getElementById('btnCopyInput').addEventListener('click', () => copyText(state.plaintext, t('toast.inputCopied')));
   document.getElementById('btnPasteInput').addEventListener('click', onPasteButtonClick);
-  document.getElementById('btnCopyOutput').addEventListener('click', () => copyText(state.ciphertext, t('toast.outputCopied')));
+  document.getElementById('btnCopyOutput').addEventListener('click', () => {
+    void externalizeThen(() => copyText(state.ciphertext, t('toast.outputCopied')));
+  });
   document.getElementById('btnShareOutput').addEventListener('click', () => shareOutput());
   els.btnShowCourierQr?.addEventListener('click', () => {
     void onShowCourierQr();
@@ -454,7 +506,7 @@ function bindEvents() {
   document.getElementById('btnRandomize').addEventListener('click', randomizeSettings);
   document.getElementById('btnCopyKey').addEventListener('click', () => copyText(formatKeyExport(), t('toast.keyCopied')));
   els.btnCopyModernSession?.addEventListener('click', () => {
-    void copyText(formatModernSessionExport(), t('toast.sessionCopied'));
+    void externalizeThen(() => copyText(formatModernSessionExport(), t('toast.sessionCopied')));
   });
 
   els.btnSourceCodebook?.addEventListener('click', () => setKeySource('codebook'));
@@ -465,6 +517,12 @@ function bindEvents() {
     void startQrScan('codebook');
   });
   els.btnGenerateCodebook?.addEventListener('click', onGenerateCodebook);
+  els.btnKindHardened?.addEventListener('click', () => setCodebookKind('hardened'));
+  els.btnKindLegacy?.addEventListener('click', () => setCodebookKind('legacy'));
+  els.btnPauseQrShare?.addEventListener('click', () => pauseLiveShare());
+  els.btnResumeQrShare?.addEventListener('click', () => resumeLiveShare());
+  els.btnStopQrShare?.addEventListener('click', () => closeModal('qrShareModal'));
+  els.btnConfirmQrImport?.addEventListener('click', () => confirmPendingTimebookImport());
   els.btnMonthBannerKeep?.addEventListener('click', onMonthBannerKeep);
   els.btnMonthBannerNew?.addEventListener('click', onMonthBannerNew);
   document.querySelectorAll('[data-endwalze-policy]').forEach((btn) => {
@@ -517,8 +575,12 @@ function bindEvents() {
     if (event.target === els.qrScanModal) stopCodebookQrScan();
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && qrScanStream) stopCodebookQrScan({ silent: true });
+    if (document.hidden && qrScanStream && qrScanPurpose === 'courier') {
+      stopCodebookQrScan({ silent: true });
+    }
     if (!document.hidden) maybeApplyTodaysCodebookDay();
+    renderTimebookNow();
+    renderHardenedLiveBadge();
   });
 
   document.querySelectorAll('[data-close]').forEach((btn) => {
@@ -688,7 +750,7 @@ function setKeySource(source) {
   showActionFeedback(t('toast.manualSource'));
 }
 
-function onCodebookFileSelected(event) {
+async function onCodebookFileSelected(event) {
   const input = event.target;
   const file = input.files?.[0];
   if (!file) return;
@@ -698,23 +760,37 @@ function onCodebookFileSelected(event) {
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    const text = typeof reader.result === 'string' ? reader.result : '';
+  try {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (isCbqr2Bytes(bytes)) {
+      const decoded = await decodeCbqr2(bytes);
+      if (!decoded.ok) {
+        showToast(localizeError(decoded.error));
+        return;
+      }
+      applyImportedCodebookSheet(decoded.timebook, t('codebook.sourceBinary'));
+      return;
+    }
+    const text = new TextDecoder('utf-8').decode(bytes).trim();
+    if (text.startsWith(`${STATIC_TEXT_MAGIC}|`)) {
+      codebookReceiver = new LabReceiver();
+      const handled = await ingestCodebookScanText(text);
+      if (handled !== 'pending' && handled !== 'imported') {
+        showToast(t('qr.err.invalidSheet'));
+      }
+      return;
+    }
     const result = parseCodebookJson(text);
     if (!result.ok) {
       showToast(localizeError(result.error));
-      input.value = '';
       return;
     }
     applyImportedCodebookSheet(result.sheet, t('codebook.sourceJson'));
+  } catch (err) {
+    showToast(localizeError(err?.message || 'toast.fileReadFailed'));
+  } finally {
     input.value = '';
-  };
-  reader.onerror = () => {
-    showToast(t('toast.fileReadFailed'));
-    input.value = '';
-  };
-  reader.readAsText(file, 'UTF-8');
+  }
 }
 
 async function onCodebookQrFileSelected(event) {
@@ -729,12 +805,15 @@ async function onCodebookQrFileSelected(event) {
 
   try {
     const qrText = await decodeQrTextFromBlob(file);
-    const result = parseCodebookQrPayload(qrText);
-    if (!result.ok) {
-      showToast(localizeError(result.error));
+    if (String(qrText || '').toLowerCase().startsWith('ur:bytes/')) {
+      showToast(t('qr.err.needLiveScan'));
       return;
     }
-    applyImportedCodebookSheet(result.sheet, t('codebook.sourceQrImage'));
+    codebookReceiver = new LabReceiver();
+    const handled = await ingestCodebookScanText(qrText);
+    if (handled === 'continue' || handled === 'error') {
+      if (handled === 'continue') showToast(t('qr.err.needLiveScan'));
+    }
   } catch (err) {
     showToast(localizeError(err?.message || 'toast.qrImageFailed'));
   } finally {
@@ -780,29 +859,122 @@ function fillCodebookGenerateSelects() {
   yearSel.value = String(keepYear);
 }
 
-function onGenerateCodebook() {
+function setCodebookKind(kind) {
+  codebookKind = kind === 'legacy' ? 'legacy' : 'hardened';
+  syncCodebookKindUi();
+}
+
+function selectedTimeProfile() {
+  const picked = document.querySelector('input[name="codebookProfile"]:checked');
+  const v = picked?.value;
+  if (v === TIME_PROFILE.DAY_24H || v === TIME_PROFILE.HOUR_1 || v === TIME_PROFILE.HOURS_4) return v;
+  return TIME_PROFILE.HOURS_4;
+}
+
+function syncCodebookKindUi() {
+  const modern = isModern(state.mainMode);
+  if (els.codebookKindBlock) els.codebookKindBlock.hidden = !modern;
+  const hardened = modern && codebookKind === 'hardened';
+  if (els.codebookProfileBlock) els.codebookProfileBlock.hidden = !hardened;
+  const policy = document.querySelector('.codebook-generate .codebook-endwalze-policy');
+  if (policy) policy.hidden = hardened;
+  els.btnKindHardened?.classList.toggle('active', hardened);
+  els.btnKindLegacy?.classList.toggle('active', modern && !hardened);
+  els.btnKindHardened?.setAttribute('aria-pressed', hardened ? 'true' : 'false');
+  els.btnKindLegacy?.setAttribute('aria-pressed', modern && !hardened ? 'true' : 'false');
+}
+
+function profileLabel(profile) {
+  return t(`codebook.profileNamed.${profile}`) || profile;
+}
+
+function defaultTimebookDay(book) {
+  const alb = getAlberichDateTime();
+  if (book.year === alb.year && book.month === alb.month) {
+    const hit = (book.days || []).find((d) => d.day === alb.day);
+    if (hit) return hit.day;
+  }
+  return book.days?.[0]?.day ?? 1;
+}
+
+function shortFingerprint(hex) {
+  const s = String(hex || '').toUpperCase();
+  if (s.length < 8) return s;
+  return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8, 12)}`;
+}
+
+function formatRemain(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (h > 0) return `${h} h ${String(m).padStart(2, '0')} min`;
+  return `${m} min`;
+}
+
+function slotEndUnixMs(meta) {
+  return Date.UTC(
+    meta.year,
+    meta.month - 1,
+    meta.day,
+    meta.endHour === 24 ? 0 : meta.endHour,
+    0, 0, 0,
+  ) - 60 * 60 * 1000 + (meta.endHour === 24 ? 86400000 : 0);
+}
+
+function formatCountdownClock(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+async function onGenerateCodebook() {
   if (state.courierOn) {
     showToast(t('toast.courierNoKeys'));
     return;
   }
-  if (isModern(state.mainMode)) codebookEndwalzePolicy = ENDWALZE_POLICY.PERMUTATION;
-  else if (!policyFitsMainMode(codebookEndwalzePolicy, state.mainMode)) {
-    codebookEndwalzePolicy = ENDWALZE_POLICY.HISTORIC;
-  }
   const year = Number(els.codebookGenYear?.value);
   const month = Number(els.codebookGenMonth?.value);
+  const hardened = isModern(state.mainMode) && codebookKind === 'hardened';
+  const btn = els.btnGenerateCodebook;
+  const status = els.codebookGenerateStatus;
+  if (btn) btn.disabled = true;
+  if (status) status.hidden = false;
+  if (typeof requestAnimationFrame === 'function') {
+    await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  }
   try {
-    const sheet = generateMonthSheet(year, month, getLocale(), {
-      endwalzePolicy: codebookEndwalzePolicy,
-    });
-    applyImportedCodebookSheet(sheet, t('codebook.sourceGenerated'));
+    if (hardened) {
+      const { timebook } = await generateTimebook(year, month, selectedTimeProfile(), {
+        networkContext: 'ALB',
+      });
+      timebook.generatedAt = new Date().toISOString();
+      timebook.monthLabel = monthLabel(year, month, getLocale());
+      applyImportedCodebookSheet(timebook, t('codebook.sourceGenerated'));
+    } else {
+      if (isModern(state.mainMode)) codebookEndwalzePolicy = ENDWALZE_POLICY.PERMUTATION;
+      else if (!policyFitsMainMode(codebookEndwalzePolicy, state.mainMode)) {
+        codebookEndwalzePolicy = ENDWALZE_POLICY.HISTORIC;
+      }
+      const sheet = await generateMonthSheet(year, month, getLocale(), {
+        endwalzePolicy: codebookEndwalzePolicy,
+      });
+      applyImportedCodebookSheet(sheet, t('codebook.sourceGenerated'));
+    }
   } catch (err) {
     const msg = String(err && err.message ? err.message : err);
     showToast(
-      msg.includes('Unable to generate secure')
+      msg.includes('Unable to generate secure') || msg.includes('Unable to generate unique')
         ? t('modern.endwalzeGenerateFailed')
         : t('toast.codebookGenerateFailed'),
     );
+  } finally {
+    if (btn) btn.disabled = false;
+    if (status) status.hidden = true;
   }
 }
 
@@ -812,6 +984,7 @@ function onGenerateCodebook() {
  * @param {string} [sourceLabel]
  */
 function isModernPermutationSheet(sheet) {
+  if (isTimebook(sheet)) return true;
   return sheetUsesPermutationEndwalze(sheet);
 }
 
@@ -825,6 +998,23 @@ function applyImportedCodebookSheet(sheet, sourceLabel) {
   if (state.courierOn) {
     showToast(t('toast.courierNoKeys'));
     return;
+  }
+  if (isTimebook(sheet)) {
+    const valid = validateTimebook(sheet);
+    if (!valid.ok) {
+      showToast(localizeError(valid.error));
+      return;
+    }
+    if (!sheet.monthLabel) {
+      sheet.monthLabel = monthLabel(sheet.year, sheet.month, getLocale());
+    }
+  } else {
+    const checked = parseCodebookJson(sheet);
+    if (!checked.ok) {
+      showToast(localizeError(checked.error));
+      return;
+    }
+    sheet = checked.sheet;
   }
   if (!sheetFitsMainMode(sheet, state.mainMode)) {
     showToast(t(isModern(state.mainMode)
@@ -842,7 +1032,7 @@ function applyImportedCodebookSheet(sheet, sourceLabel) {
     if (!ok) return;
   }
 
-  const day = defaultCodebookDay(sheet);
+  const day = isTimebook(sheet) ? defaultTimebookDay(sheet) : defaultCodebookDay(sheet);
   const networks = syncActiveIntoNetworks(
     state.networks,
     state.activeNetworkId,
@@ -861,6 +1051,7 @@ function applyImportedCodebookSheet(sheet, sourceLabel) {
   };
   messageReceive = false;
   lastHeaderGroup = '';
+  invalidateModernSessionKey();
   applyCodebookDay(day, { notify: false, skipSave: true });
   saveState();
   renderAll();
@@ -868,9 +1059,9 @@ function applyImportedCodebookSheet(sheet, sourceLabel) {
   showToast(t('toast.codebookImported', {
     source: label,
     network: networkName,
-    month: sheet.monthLabel,
+    month: sheet.monthLabel || monthLabel(sheet.year, sheet.month, getLocale()),
     day: String(day).padStart(2, '0'),
-    word: tafelwort(sheet),
+    word: isTimebook(sheet) ? shortFingerprint(sheet.codebookFingerprint) : tafelwort(sheet),
   }));
 }
 
@@ -934,6 +1125,7 @@ function activateNetwork(id) {
   };
   messageReceive = false;
   lastHeaderGroup = '';
+  invalidateModernSessionKey();
 
   if (exact.sheet && state.keySource === 'codebook') {
     applyCodebookDay(day, { notify: false, skipSave: true });
@@ -1096,9 +1288,23 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-function onExportCodebookJson() {
+async function onExportCodebookJson() {
   const sheet = requireActiveSheet();
   if (!sheet) return;
+  if (isTimebook(sheet)) {
+    const packed = await encodeCbqr2(sheet);
+    if (!packed.ok) {
+      showToast(localizeError(packed.error));
+      return;
+    }
+    const filename = timebookBinaryFilename(sheet);
+    downloadBlob(
+      new Blob([packed.bytes], { type: 'application/octet-stream' }),
+      filename,
+    );
+    showToast(t('toast.shareBinarySaved', { filename }));
+    return;
+  }
   const filename = sheetJsonFilename(sheet);
   const json = sheetToJsonString(sheet);
   downloadBlob(
@@ -1106,6 +1312,89 @@ function onExportCodebookJson() {
     filename,
   );
   showToast(t('toast.shareJsonSaved', { filename }));
+}
+
+function liveShareCssSize() {
+  const vw = Math.min(window.innerWidth || 360, window.innerHeight || 360);
+  const { minCssPx, maxCssPx } = CBQR2_MUR_PROFILE_V1;
+  return Math.max(minCssPx, Math.min(maxCssPx, Math.floor(vw * 0.86)));
+}
+
+function stopLiveShare({ silent = false } = {}) {
+  if (liveShareSender) {
+    liveShareSender.abort();
+    liveShareSender = null;
+  }
+  if (els.qrShareCanvas) els.qrShareCanvas.hidden = true;
+  if (els.qrSharePaused) els.qrSharePaused.hidden = true;
+  if (els.qrShareLiveHint) els.qrShareLiveHint.hidden = true;
+  if (els.btnPauseQrShare) els.btnPauseQrShare.hidden = true;
+  if (els.btnResumeQrShare) els.btnResumeQrShare.hidden = true;
+  if (els.btnStopQrShare) els.btnStopQrShare.hidden = true;
+  if (els.qrShareImg) els.qrShareImg.hidden = false;
+  if (els.btnDownloadQrShare) els.btnDownloadQrShare.hidden = false;
+  if (!silent) clearQrShareExport();
+}
+
+function pauseLiveShare() {
+  liveShareSender?.pause();
+  if (els.qrSharePaused) els.qrSharePaused.hidden = false;
+  if (els.btnPauseQrShare) els.btnPauseQrShare.hidden = true;
+  if (els.btnResumeQrShare) els.btnResumeQrShare.hidden = false;
+}
+
+function resumeLiveShare() {
+  void liveShareSender?.resume();
+  if (els.qrSharePaused) els.qrSharePaused.hidden = true;
+  if (els.btnPauseQrShare) els.btnPauseQrShare.hidden = false;
+  if (els.btnResumeQrShare) els.btnResumeQrShare.hidden = true;
+}
+
+async function startLiveTimebookShare(book) {
+  stopLiveShare({ silent: true });
+  const session = await freezeShareSession({
+    timebook: book,
+    codec: TRANSPORT_CODEC.GZIP,
+    mode: LAB_MODE.DYNAMIC,
+    maxFragmentLen: CBQR2_MUR_PROFILE_V1.maxFragmentLen,
+    minFragmentLen: CBQR2_MUR_PROFILE_V1.minFragmentLen,
+    ecc: CBQR2_MUR_PROFILE_V1.ecc,
+  });
+  if (!session.ok) {
+    showToast(localizeError(session.error || 'toast.shareQrFailed'));
+    return;
+  }
+  if (els.qrShareImg) {
+    els.qrShareImg.hidden = true;
+    els.qrShareImg.removeAttribute('src');
+  }
+  if (els.qrShareHint) els.qrShareHint.hidden = true;
+  if (els.qrShareLiveHint) els.qrShareLiveHint.hidden = false;
+  if (els.btnDownloadQrShare) els.btnDownloadQrShare.hidden = true;
+  if (els.btnShareQrPng) els.btnShareQrPng.hidden = true;
+  if (els.btnPauseQrShare) els.btnPauseQrShare.hidden = false;
+  if (els.btnResumeQrShare) els.btnResumeQrShare.hidden = true;
+  if (els.btnStopQrShare) els.btnStopQrShare.hidden = false;
+  if (els.qrShareCanvas) els.qrShareCanvas.hidden = false;
+  if (els.qrSharePaused) els.qrSharePaused.hidden = true;
+  const network = getActiveNetworkName();
+  const month = book.monthLabel || monthLabel(book.year, book.month, getLocale());
+  if (els.qrShareTitle) els.qrShareTitle.textContent = t('share.qrTitle');
+  if (els.qrShareMeta) {
+    els.qrShareMeta.textContent = t('share.hardenedMeta', {
+      network,
+      month,
+      profile: profileLabel(book.timeProfile),
+    });
+  }
+  fillTafelwortLine(els.qrShareTafelwort, book);
+  liveShareSender = new LabSender();
+  liveShareSender.attach(els.qrShareCanvas);
+  await liveShareSender.start(session, {
+    fps: CBQR2_MUR_PROFILE_V1.fps,
+    cssSize: liveShareCssSize(),
+  });
+  openModal('qrShareModal');
 }
 
 function clearQrShareExport() {
@@ -1122,6 +1411,10 @@ function clearQrShareExport() {
 async function onExportCodebookQr() {
   const sheet = requireActiveSheet();
   if (!sheet) return;
+  if (isTimebook(sheet)) {
+    await startLiveTimebookShare(sheet);
+    return;
+  }
 
   const btn = els.btnExportCodebookQr;
   if (btn) btn.disabled = true;
@@ -1170,7 +1463,7 @@ async function onExportCodebookQr() {
     openModal('qrShareModal');
     showActionFeedback(t('toast.shareQrReady'));
   } catch (err) {
-    console.error(err);
+    logAppError('share-qr', err);
     showToast(localizeError(err?.message || 'toast.shareQrFailed'));
   } finally {
     if (btn) btn.disabled = false;
@@ -1217,6 +1510,10 @@ async function onShareQrPng() {
 async function onShareCodebook() {
   const sheet = requireActiveSheet();
   if (!sheet) return;
+  if (isTimebook(sheet)) {
+    await startLiveTimebookShare(sheet);
+    return;
+  }
 
   const network = getActiveNetworkName();
   const month = sheet.monthLabel || '';
@@ -1266,9 +1563,107 @@ function addSheetCell(tr, className, text) {
   tr.appendChild(td);
 }
 
+function setSheetViewMode(mode) {
+  const timebook = mode === 'timebook';
+  if (els.timebookSheetView) els.timebookSheetView.hidden = !timebook;
+  if (els.sheetTableScroll) els.sheetTableScroll.hidden = timebook;
+  if (els.sheetViewFooter) els.sheetViewFooter.hidden = timebook;
+  if (!timebook && els.timebookSheetView) els.timebookSheetView.replaceChildren();
+}
+
+function fillTimebookKeyDetail(host, key) {
+  const dl = document.createElement('dl');
+  dl.className = 'timebook-key-dl';
+  for (const row of timebookKeyDisplayRows(key)) {
+    const dt = document.createElement('dt');
+    dt.textContent = t(row.labelKey, row.count != null ? { count: String(row.count) } : undefined);
+    const dd = document.createElement('dd');
+    dd.className = 'mono';
+    dd.dataset.field = row.id;
+    dd.textContent = row.value;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+  }
+  host.replaceChildren(dl);
+}
+
+function fillTimebookDaySlots(slotHost, book, dayNum, current) {
+  const dayEntry = (book.days || []).find((d) => d.day === dayNum);
+  if (!dayEntry) return;
+  const outline = timebookDayOutline({ ...book, days: [dayEntry] }, current);
+  const day = outline.days[0];
+  if (!day) return;
+  for (const header of day.slots) {
+    const slotEl = document.createElement('details');
+    slotEl.className = 'timebook-slot' + (header.current ? ' timebook-slot-current' : '');
+    const ssum = document.createElement('summary');
+    ssum.textContent = slotSummaryText(header.hours, header.current, t('codebook.slotCurrent'));
+    slotEl.appendChild(ssum);
+    const body = document.createElement('div');
+    body.className = 'timebook-key-detail';
+    slotEl.appendChild(body);
+    const slotKey = dayEntry.slots[header.slotIndex]?.key;
+    slotEl.addEventListener('toggle', () => {
+      if (!slotEl.open || body.dataset.filled === '1' || !slotKey) return;
+      body.dataset.filled = '1';
+      fillTimebookKeyDetail(body, slotKey);
+    });
+    slotHost.appendChild(slotEl);
+  }
+}
+
+function renderTimebookSheetView(book) {
+  setSheetViewMode('timebook');
+  const month = book.monthLabel || monthLabel(book.year, book.month, getLocale());
+  if (els.sheetViewTitle) {
+    els.sheetViewTitle.textContent = t('sheet.title', { month });
+  }
+  fillTafelwortLine(els.sheetViewTafelwort, book);
+  if (els.sheetViewMeta) {
+    els.sheetViewMeta.textContent = `${t('codebook.hardenedLabel')} · ${profileLabel(book.timeProfile)} · ${t('codebook.keyTimeMez')}`;
+  }
+  const host = els.timebookSheetView;
+  if (!host) return;
+  host.replaceChildren();
+  const current = resolveTimebookSlot(book, Date.now());
+  const outline = timebookDayOutline(book, current);
+  for (const day of outline.days) {
+    const details = document.createElement('details');
+    details.className = 'timebook-day';
+    const sum = document.createElement('summary');
+    sum.textContent = t('timebook.daySummary', {
+      day: String(day.day).padStart(2, '0'),
+      month,
+      count: String(day.slotCount),
+    });
+    details.appendChild(sum);
+    const slotHost = document.createElement('div');
+    slotHost.className = 'timebook-slots';
+    details.appendChild(slotHost);
+    const fillSlots = () => {
+      if (slotHost.dataset.filled === '1') return;
+      slotHost.dataset.filled = '1';
+      fillTimebookDaySlots(slotHost, book, day.day, current);
+    };
+    details.addEventListener('toggle', () => {
+      if (details.open) fillSlots();
+    });
+    if (current.ok && current.meta.day === day.day) {
+      details.open = true;
+      fillSlots();
+    }
+    host.appendChild(details);
+  }
+}
+
 function renderSheetView() {
   const sheet = state.codebookSheet;
   if (!els.sheetViewBody) return;
+  if (isTimebook(sheet)) {
+    renderTimebookSheetView(sheet);
+    return;
+  }
+  setSheetViewMode('legacy');
   if (!sheet) {
     els.sheetViewBody.replaceChildren();
     if (els.sheetViewTitle) els.sheetViewTitle.textContent = t('sheet.title', { month: '' });
@@ -1354,6 +1749,16 @@ function onShowSheet() {
 function onCopySheet() {
   const sheet = requireActiveSheet();
   if (!sheet) return;
+  if (isTimebook(sheet)) {
+    const text = [
+      t('codebook.hardenedLabel'),
+      profileLabel(sheet.timeProfile),
+      monthLabel(sheet.year, sheet.month, getLocale()),
+      shortFingerprint(sheet.codebookFingerprint),
+    ].join('\n');
+    void copyText(text, t('toast.sheetCopied'));
+    return;
+  }
   const text = sheetToPlainText(sheet, t, getLocaleTag());
   void copyText(text, t('toast.sheetCopied'));
 }
@@ -1368,14 +1773,49 @@ function onPrintSheet() {
   window.setTimeout(() => window.print(), 50);
 }
 
+function setButtonUnavailable(el, disabled, reason) {
+  if (!el) return;
+  el.hidden = false;
+  el.disabled = disabled;
+  if (disabled && reason) {
+    el.title = reason;
+    el.setAttribute('aria-description', reason);
+  } else {
+    el.removeAttribute('title');
+    el.removeAttribute('aria-description');
+  }
+}
+
 function updateShareButtonsEnabled() {
   const hasSheet = !!state.codebookSheet;
+  const hardened = isTimebook(state.codebookSheet);
   if (els.codebookShareRow) {
-    // Zeile immer sichtbar im Tafel-Modus; Buttons deaktiviert ohne Tafel
     els.codebookShareRow.hidden = false;
   }
-  for (const id of ['btnShowSheet', 'btnExportCodebookJson', 'btnExportCodebookQr', 'btnShareCodebook']) {
+  for (const id of ['btnShowSheet', 'btnExportCodebookQr', 'btnShareCodebook']) {
     if (els[id]) els[id].disabled = !hasSheet;
+  }
+  setButtonUnavailable(els.btnExportCodebookJson, !hasSheet, '');
+  if (els.btnExportCodebookJson) {
+    els.btnExportCodebookJson.textContent = hardened
+      ? t('share.exportBinary')
+      : t('share.exportJson');
+  }
+  setButtonUnavailable(els.btnImportCodebook, false, '');
+  if (els.btnImportCodebook) {
+    els.btnImportCodebook.textContent = hardened
+      ? t('codebook.importBinary')
+      : t('codebook.importFile');
+  }
+  setButtonUnavailable(
+    els.btnImportCodebookQr,
+    hardened,
+    hardened ? t('codebook.hardenedNoFileImport') : '',
+  );
+  if (els.codebookHint) {
+    els.codebookHint.textContent = hardened
+      ? t('codebook.formatHintHardened')
+      : t('codebook.formatHint');
   }
 }
 
@@ -1450,8 +1890,33 @@ async function requestCodebookCameraStream() {
     throw err;
   }
 
-  // Rückkamera bevorzugen, aber ohne harte Auflösung — sonst oft OverconstrainedError.
+  // Rückkamera bevorzugen. Der erste Versuch bittet nur mit "ideal"-Werten
+  // um ein detailreiches 4:3-Bild; alle Angaben bleiben weich, damit ältere
+  // Safari-Versionen nicht an OverconstrainedError scheitern.
   const attempts = [
+    {
+      // Wenn verfügbar, echtes 4:3 ab mindestens 1024×768 verwenden. Das
+      // erhält mehr Sensorfläche als ein 16:9-Videocrop. Scheitert diese
+      // Kombination, folgt direkt der vollständig weiche High-Res-Versuch.
+      audio: false,
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { min: 1024, ideal: 1600 },
+        height: { min: 768, ideal: 1200 },
+        aspectRatio: { exact: 4 / 3 },
+        frameRate: { ideal: 30 },
+      },
+    },
+    {
+      audio: false,
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 1920 },
+        height: { ideal: 1440 },
+        aspectRatio: { ideal: 4 / 3 },
+        frameRate: { ideal: 30 },
+      },
+    },
     { audio: false, video: { facingMode: { ideal: 'environment' } } },
     { audio: false, video: { facingMode: 'environment' } },
     { audio: false, video: true },
@@ -1481,6 +1946,60 @@ async function requestCodebookCameraStream() {
   throw lastError instanceof Error
     ? lastError
     : new Error('camera.startFailed');
+}
+
+/**
+ * Unterstützte Kamerafunktionen vorsichtig optimieren. Keine Capability wird
+ * vorausgesetzt; ein Fehler darf den Scanner niemals unbenutzbar machen.
+ * Zoom wird auf den kleinsten verfügbaren Wert gesetzt, damit insbesondere
+ * ältere Geräte den größtmöglichen Bildausschnitt behalten.
+ *
+ * @param {MediaStream} stream
+ */
+async function optimizeQrCameraTrack(stream) {
+  const track = stream?.getVideoTracks?.()[0];
+  if (!track || typeof track.applyConstraints !== 'function') return;
+
+  let capabilities = {};
+  try {
+    capabilities = typeof track.getCapabilities === 'function'
+      ? track.getCapabilities()
+      : {};
+  } catch {
+    capabilities = {};
+  }
+
+  const candidates = [];
+
+  if (Array.isArray(capabilities.focusMode) && capabilities.focusMode.includes('continuous')) {
+    candidates.push({ focusMode: 'continuous' });
+  }
+  if (Array.isArray(capabilities.exposureMode) && capabilities.exposureMode.includes('continuous')) {
+    candidates.push({ exposureMode: 'continuous' });
+  }
+  if (Array.isArray(capabilities.whiteBalanceMode) && capabilities.whiteBalanceMode.includes('continuous')) {
+    candidates.push({ whiteBalanceMode: 'continuous' });
+  }
+
+  const zoom = capabilities.zoom;
+  if (
+    zoom
+    && Number.isFinite(zoom.min)
+    && Number.isFinite(zoom.max)
+    && zoom.min <= zoom.max
+  ) {
+    candidates.push({ zoom: zoom.min });
+  }
+
+  // Ein nicht akzeptierter optionaler Parameter soll die übrigen nicht
+  // verhindern. Darum jede Capability separat und fehlertolerant anwenden.
+  for (const constraint of candidates) {
+    try {
+      await track.applyConstraints({ advanced: [constraint] });
+    } catch {
+      /* optionales Tuning überspringen */
+    }
+  }
 }
 
 /**
@@ -1568,6 +2087,7 @@ function setCourierOn(on) {
   courierLetters = '';
   messageReceive = false;
   lastHeaderGroup = '';
+  invalidateModernSessionKey();
   if (on) closeModal('setupModal');
   saveState();
   renderAll();
@@ -1599,8 +2119,97 @@ async function shareCourierLetters() {
   copyText(courierLetters, t('toast.outputCopied'));
 }
 
+function resetQrScanConfirm() {
+  pendingTimebookImport = null;
+  if (els.qrScanConfirm) els.qrScanConfirm.hidden = true;
+  if (els.btnConfirmQrImport) els.btnConfirmQrImport.hidden = true;
+  if (els.qrScanProgressWrap) els.qrScanProgressWrap.hidden = true;
+}
+
+function showQrScanProgress(progress) {
+  if (!els.qrScanProgressWrap) return;
+  if (!progress?.seqLen) {
+    els.qrScanProgressWrap.hidden = true;
+    return;
+  }
+  els.qrScanProgressWrap.hidden = false;
+  if (els.qrScanProgress) {
+    els.qrScanProgress.max = progress.seqLen;
+    els.qrScanProgress.value = progress.reconstructed;
+  }
+  if (els.qrScanProgressLabel) {
+    els.qrScanProgressLabel.textContent = t('qr.fragments', {
+      have: String(progress.reconstructed),
+      need: String(progress.seqLen),
+    });
+  }
+  if (els.qrScanStatus) els.qrScanStatus.textContent = t('qr.receiving');
+}
+
+async function ingestCodebookScanText(text) {
+  const raw = String(text || '').trim();
+  if (raw.includes('ALBERICH-CBQR1')) {
+    const result = parseCodebookQrPayload(raw);
+    if (!result.ok) {
+      const errMsg = localizeError(result.error);
+      if (els.qrScanStatus) els.qrScanStatus.textContent = errMsg;
+      showToast(errMsg);
+      return 'error';
+    }
+    stopCodebookQrScan({ silent: true });
+    applyImportedCodebookSheet(result.sheet, t('codebook.sourceQrScan'));
+    return 'imported';
+  }
+  if (!codebookReceiver) codebookReceiver = new LabReceiver();
+  const got = await codebookReceiver.ingest(raw);
+  if (got.kind === 'ignored' || got.kind === 'empty' || got.kind === 'duplicate') {
+    if (got.kind !== 'ignored') showQrScanProgress(codebookReceiver.progress());
+    return 'continue';
+  }
+  if (got.kind === 'accepted') {
+    showQrScanProgress(codebookReceiver.progress());
+    return 'continue';
+  }
+  if (got.kind === 'invalid') {
+    if (els.qrScanStatus) els.qrScanStatus.textContent = t('qr.err.transferBroken');
+    showToast(t('qr.err.transferBroken'));
+    codebookReceiver = new LabReceiver();
+    return 'error';
+  }
+  if ((got.status === TRANSFER.VALID || got.kind === 'valid') && codebookReceiver.timebook) {
+    const book = codebookReceiver.timebook;
+    stopCodebookQrScan({ silent: true, keepPending: true });
+    pendingTimebookImport = book;
+    openModal('qrScanModal');
+    if (els.qrScanTitle) els.qrScanTitle.textContent = t('qr.receivedTitle');
+    if (els.qrScanStatus) els.qrScanStatus.textContent = '';
+    if (els.qrScanConfirm) els.qrScanConfirm.hidden = false;
+    const month = book.monthLabel || monthLabel(book.year, book.month, getLocale());
+    if (els.qrScanConfirmText) {
+      els.qrScanConfirmText.textContent = `${month}\n${t('codebook.hardenedLabel')} · ${profileLabel(book.timeProfile)}`;
+    }
+    if (els.qrScanConfirmFp) {
+      els.qrScanConfirmFp.textContent = `${t('codebook.fingerprint')} ${shortFingerprint(book.codebookFingerprint)}`;
+    }
+    if (els.btnConfirmQrImport) els.btnConfirmQrImport.hidden = false;
+    if (els.qrScanProgressWrap) els.qrScanProgressWrap.hidden = true;
+    return 'pending';
+  }
+  return 'continue';
+}
+
+function confirmPendingTimebookImport() {
+  const book = pendingTimebookImport;
+  pendingTimebookImport = null;
+  codebookReceiver = null;
+  closeModal('qrScanModal');
+  if (book) applyImportedCodebookSheet(book, t('codebook.sourceQrScan'));
+}
+
 async function startQrScan(purpose = 'codebook') {
   qrScanPurpose = purpose === 'courier' ? 'courier' : 'codebook';
+  codebookReceiver = qrScanPurpose === 'codebook' ? new LabReceiver() : null;
+  resetQrScanConfirm();
   // Laufenden Scan beenden, Modal aber nicht schließen (wird gleich wieder genutzt)
   if (qrScanRaf) {
     cancelAnimationFrame(qrScanRaf);
@@ -1634,6 +2243,7 @@ async function startQrScan(purpose = 'codebook') {
   try {
     // Direkt aus dem Klick-Handler (erster await) → User-Activation bleibt erhalten
     qrScanStream = await requestCodebookCameraStream();
+    await optimizeQrCameraTrack(qrScanStream);
   } catch (err) {
     const msg = describeCameraError(err);
     if (els.qrScanStatus) els.qrScanStatus.textContent = msg;
@@ -1666,6 +2276,7 @@ async function startQrScan(purpose = 'codebook') {
   setQrScanRetryVisible(false);
 
   let lastScanAt = 0;
+  let scanAttempt = 0;
   const tick = async () => {
     if (!qrScanStream) return;
     if (qrScanBusy) {
@@ -1674,11 +2285,27 @@ async function startQrScan(purpose = 'codebook') {
     }
 
     const now = performance.now();
-    if (now - lastScanAt >= 280) {
+    const receivingMur = qrScanPurpose === 'codebook'
+      && codebookReceiver
+      && codebookReceiver.status === TRANSFER.PENDING
+      && codebookReceiver.uniqueQr > 0;
+    const scanGapMs = receivingMur ? 90 : 180;
+    if (now - lastScanAt >= scanGapMs) {
       lastScanAt = now;
       try {
-        const text = await decodeQrTextFromVideoFrame(video);
-        if (!text) {
+        // Pro Versuch nur einen jsQR-Pass ausführen. Das rotiert zwischen
+        // enger ROI, sichtbarem Quadrat und Full-Frame-Fallback, statt auf
+        // älteren Geräten drei teure Decoderläufe direkt hintereinander zu machen.
+        // Live-MUR (gehärtete Tafel): voller Frame, kürzerer Takt — sonst fehlen
+        // zu viele Fountain-Fragmente, vor allem bei 1-Stunden-Tafeln.
+        const text = await decodeQrTextFromVideoFrame(video, {
+          scanPass: receivingMur ? 2 : (scanAttempt % 3),
+          preferFullFrame: receivingMur,
+        });
+        scanAttempt += 1;
+        if (document.hidden) {
+          /* decode paused */
+        } else if (!text) {
           /* next frame */
         } else if (qrScanPurpose === 'courier' && isCourierScanTarget(text)) {
           qrScanBusy = true;
@@ -1686,20 +2313,11 @@ async function startQrScan(purpose = 'codebook') {
           stopCodebookQrScan({ silent: true });
           applyCourierScanText(text);
           return;
-        } else if (qrScanPurpose === 'codebook' && text.includes('ALBERICH-CBQR1')) {
+        } else if (qrScanPurpose === 'codebook') {
           qrScanBusy = true;
-          if (els.qrScanStatus) els.qrScanStatus.textContent = t('qr.statusFound');
-          const result = parseCodebookQrPayload(text);
-          if (!result.ok) {
-            qrScanBusy = false;
-            const errMsg = localizeError(result.error);
-            if (els.qrScanStatus) els.qrScanStatus.textContent = errMsg;
-            showToast(errMsg);
-          } else {
-            stopCodebookQrScan({ silent: true });
-            applyImportedCodebookSheet(result.sheet, t('codebook.sourceQrScan'));
-            return;
-          }
+          const handled = await ingestCodebookScanText(text);
+          qrScanBusy = false;
+          if (handled === 'imported' || handled === 'pending') return;
         }
       } catch {
         /* Frame überspringen */
@@ -1715,7 +2333,7 @@ async function startQrScan(purpose = 'codebook') {
 /**
  * @param {{ silent?: boolean }} [opts]
  */
-function stopCodebookQrScan({ silent = false } = {}) {
+function stopCodebookQrScan({ silent = false, keepPending = false } = {}) {
   if (qrScanRaf) {
     cancelAnimationFrame(qrScanRaf);
     qrScanRaf = 0;
@@ -1731,6 +2349,13 @@ function stopCodebookQrScan({ silent = false } = {}) {
   }
   qrScanBusy = false;
   setQrScanRetryVisible(false);
+  if (!keepPending) {
+    if (codebookReceiver && typeof codebookReceiver.abort === 'function') {
+      codebookReceiver.abort();
+    }
+    codebookReceiver = null;
+    resetQrScanConfirm();
+  }
   closeModal('qrScanModal');
   if (!silent && els.qrScanStatus) {
     els.qrScanStatus.textContent = t('qr.statusStarting');
@@ -1747,9 +2372,12 @@ function maybeApplyTodaysCodebookDay() {
   const sheet = state.codebookSheet;
   if (!sheet) return;
 
-  const now = new Date();
-  const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  const todayDay = todayOnSheet(sheet, now.getFullYear(), now.getMonth() + 1, now.getDate());
+  const alb = isTimebook(sheet) ? getAlberichDateTime() : null;
+  const year = alb ? alb.year : new Date().getFullYear();
+  const month = alb ? alb.month : new Date().getMonth() + 1;
+  const dayOfMonth = alb ? alb.day : new Date().getDate();
+  const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayOfMonth).padStart(2, '0')}`;
+  const todayDay = todayOnSheet(sheet, year, month, dayOfMonth);
   if (todayDay == null) {
     lastAutoDayApplyDate = dateKey;
     return;
@@ -1781,6 +2409,30 @@ function applyCodebookDay(dayNum, { notify = true, skipSave = false } = {}) {
   if (!sheet) {
     if (notify) showToast(t('toast.noCodebook'));
     return false;
+  }
+
+  if (isTimebook(sheet)) {
+    const day = sheet.days.find((d) => d.day === Number(dayNum));
+    if (!day) {
+      if (notify) showToast(t('toast.dayMissing'));
+      return false;
+    }
+    state = {
+      ...state,
+      keySource: 'codebook',
+      codebookDay: Number(dayNum),
+      networks: syncActiveIntoNetworks(
+        state.networks,
+        state.activeNetworkId,
+        state.codebookSheet,
+        Number(dayNum),
+      ),
+    };
+    if (!skipSave) saveState();
+    renderTimebookNow();
+    renderAll();
+    renderSetupForm();
+    return true;
   }
 
   const entry = findCodebookDay(sheet, dayNum);
@@ -1821,6 +2473,7 @@ function applyCodebookDay(dayNum, { notify = true, skipSave = false } = {}) {
     };
     messageReceive = false;
     lastHeaderGroup = '';
+    invalidateModernSessionKey();
     if (!skipSave) saveState();
     resetMachineFromPanel();
     renderAll();
@@ -1874,7 +2527,9 @@ function updateKeyExportDisplay() {
 }
 
 function updatePlugboardDisplay() {
-  const pairs = parsePlugboardPairs(state.plugboard);
+  const sel = activeTimebookDisplayKey();
+  const plugboard = sel?.key?.plugboard ?? state.plugboard;
+  const pairs = parsePlugboardPairs(plugboard);
   els.plugboardCount.textContent = `(${pairs.length}/13)`;
   els.plugboardPairs.innerHTML = pairs.length
     ? pairs.map((pair) => `<span class="plug-pair">${pair}</span>`).join('')
@@ -1922,7 +2577,7 @@ function loadState() {
     if (merged.mainMode === MAIN_MODE.MODERN) {
       merged.modernProtocol = 'v3';
       const leftoverLegacy = merged.codebookSheet
-        && !sheetUsesPermutationEndwalze(merged.codebookSheet);
+        && !isModernPermutationSheet(merged.codebookSheet);
       const modernReady = validateEndwalzeWiring(merged.endwalzeWiring).ok
         && validateLueckenfueller(merged.lueckenfueller).ok;
       if (leftoverLegacy || !modernReady) {
@@ -1961,7 +2616,12 @@ function saveState() {
     state = { ...state, networks };
   }
   const { plaintext, ciphertext, ...settings } = state;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  } catch (err) {
+    logAppError('saveState', err);
+    showToast(t('toast.saveFailed'));
+  }
 }
 
 function canEditRotorSetup() {
@@ -2033,6 +2693,10 @@ function applyConfigToEngine() {
 }
 
 function resetMachineFromPanel() {
+  const sel = activeTimebookDisplayKey();
+  if (sel?.key?.keyCode && configureEngineFromFullKey(sel.key, sel.key.keyCode)) {
+    return;
+  }
   applyConfigToEngine();
 }
 
@@ -2078,11 +2742,39 @@ function formatLetterGroups4(letters) {
   return clean.match(/.{1,4}/g)?.join(' ') ?? clean;
 }
 
+function logAppError(scope, err) {
+  const name = err && typeof err === 'object' && typeof err.name === 'string'
+    ? err.name
+    : 'Error';
+  console.error(`[alberich] ${scope}: ${name}`);
+}
+
 function invalidateModernSessionKey() {
   modernAutoMessageKey = '';
+  modernSession.invalidate();
   lastModernPruefgruppe = '';
   modernAutoMessageId = '';
   lastModernResolvedKey = '';
+}
+
+function markModernCipherExposed() {
+  if (!isModern(state.mainMode) || state.inputRole !== 'plain') return;
+  if (!state.ciphertext) return;
+  modernSession.markExposed(state.plaintext);
+}
+
+async function externalizeThen(fn) {
+  if (!state.ciphertext) return;
+  const pin = modernSession.pinnedSlot();
+  if (pin?.codebookFingerprint) {
+    const out = await externalizePinnedSlot(pin);
+    if (!out.ok) {
+      showToast(t(out.error || 'modern.externalizeFailed'));
+      return;
+    }
+  }
+  markModernCipherExposed();
+  await fn();
 }
 
 function usesModernV3() {
@@ -2135,7 +2827,108 @@ function currentDayConfig() {
  * @param {string} plainText UTF-8
  * @returns {string} Cipher-Buchstaben (ohne Gruppierung)
  */
+function configureEngineFromFullKey(key, code) {
+  const positions = applyKeyCode(code);
+  if (!positions || !key) return false;
+  const rings = applyRingCode(key.ringCode);
+  if (!rings) return false;
+  engine.setRotors(
+    key.rotorLeft,
+    key.rotorMiddle,
+    key.rotorRight,
+    key.rotorThin,
+    positions[1],
+    positions[2],
+    positions[3],
+    positions[0],
+    rings.left,
+    rings.middle,
+    rings.right,
+    rings.thin,
+  );
+  engine.setPlugboard(key.plugboard);
+  engine.setThinRing(rings.thin);
+  lastModernPlugCount = normalizePlugPairsCanonical(key.plugboard).length;
+  lastModernCryptoError = null;
+  engine.setCryptoMode('modern');
+  engine.setModernProtocol('v3');
+  engine.setEndwalze(key.endwalzeWiring);
+  engine.setLueckenfuellerNotches(key.lueckenfueller);
+  return true;
+}
+
+function timebookDayConfig(key, epoch, networkContext) {
+  return {
+    rotorThin: key.rotorThin,
+    rotorLeft: key.rotorLeft,
+    rotorMiddle: key.rotorMiddle,
+    rotorRight: key.rotorRight,
+    ringCode: key.ringCode,
+    plugboard: key.plugboard,
+    endwalzeWiring: key.endwalzeWiring,
+    notches: key.lueckenfueller,
+    networkContext: networkContext || 'ALB',
+    epoch,
+  };
+}
+
+async function processTextModernEncryptTimebook(plainText) {
+  const book = state.codebookSheet;
+  if (modernSession.shouldRotateForPlain(plainText)) {
+    invalidateModernSessionKey();
+  }
+  let pin = modernSession.pinnedSlot();
+  if (!pin || !pin.fullKey || !pin.epoch) {
+    const started = await beginTimebookSendSession({
+      timebook: book,
+      timestampMs: Date.now(),
+      nextMessageKey: randomMessageKey4,
+      preferredMessageKey: isValidFourKey(modernAutoMessageKey) ? modernAutoMessageKey : undefined,
+    });
+    if (!started.ok) {
+      lastModernCryptoError = started.error;
+      modernAutoMessageKey = '';
+      modernSession.invalidate();
+      return '';
+    }
+    modernAutoMessageKey = started.messageKey;
+    modernSession.noteAuthorized({
+      ...started.pin,
+      messageKey: started.messageKey,
+    });
+    pin = modernSession.pinnedSlot();
+  }
+  if (!/^[A-Z]{8}$/.test(modernAutoMessageId)) {
+    modernAutoMessageId = randomMessageId();
+  }
+  const key = pin.fullKey;
+  const result = await modernV3EncryptPayload({
+    engine,
+    configure: (code) => configureEngineFromFullKey(key, code),
+    groundKey: key.keyCode,
+    plainText: String(plainText ?? ''),
+    messageKey: modernAutoMessageKey,
+    messageId: modernAutoMessageId,
+    dayConfig: timebookDayConfig(key, pin.epoch, book.networkContext),
+  });
+  if (!result.ok) {
+    if (result.error !== 'modern.configureFailed') lastModernCryptoError = result.error;
+    return '';
+  }
+  lastHeaderGroup = result.header;
+  lastModernResolvedKey = result.messageKey;
+  modernAutoMessageKey = result.messageKey;
+  modernAutoMessageId = result.messageId;
+  lastOutgoingCipher = result.cipher;
+  lastModernPruefgruppe = result.pruefgruppe || '';
+  lastModernCryptoError = null;
+  return result.cipher;
+}
+
 async function processTextModernEncrypt(plainText) {
+  if (isTimebook(state.codebookSheet) && state.keySource === 'codebook') {
+    return processTextModernEncryptTimebook(plainText);
+  }
   if (!isValidFourKey(state.keyCode)) {
     lastModernCryptoError = 'modern.groundIncomplete';
     return '';
@@ -2144,9 +2937,45 @@ async function processTextModernEncrypt(plainText) {
     lastModernCryptoError = 'modern.needPermutation';
     return '';
   }
-  if (!isValidFourKey(modernAutoMessageKey)) {
-    modernAutoMessageKey = randomMessageKey4();
+  let fingerprint;
+  try {
+    fingerprint = await fullKeyFingerprint({
+      ...currentDayConfig(),
+      keyCode: state.keyCode,
+    });
+  } catch {
+    lastModernCryptoError = 'modern.securityStateFailed';
+    return '';
   }
+
+  if (modernSession.shouldInvalidateForFingerprint(fingerprint)) {
+    invalidateModernSessionKey();
+  }
+  if (modernSession.shouldRotateForPlain(plainText)) {
+    invalidateModernSessionKey();
+  }
+
+  const alreadyReserved = modernSession.isReservedFor(fingerprint, modernAutoMessageKey)
+    && isValidFourKey(modernAutoMessageKey);
+
+  if (!alreadyReserved) {
+    const picked = await chooseAndReserveMessageKey({
+      fullKeyFingerprint: fingerprint,
+      preferredMessageKey: isValidFourKey(modernAutoMessageKey)
+        ? modernAutoMessageKey
+        : undefined,
+      nextMessageKey: randomMessageKey4,
+    });
+    if (picked.status !== RESERVE.RESERVED) {
+      lastModernCryptoError = 'modern.securityStateFailed';
+      modernAutoMessageKey = '';
+      modernSession.invalidate();
+      return '';
+    }
+    modernAutoMessageKey = picked.messageKey;
+    modernSession.noteReserved(fingerprint, picked.messageKey);
+  }
+
   if (!/^[A-Z]{8}$/.test(modernAutoMessageId)) {
     modernAutoMessageId = randomMessageId();
   }
@@ -2180,7 +3009,47 @@ async function processTextModernEncrypt(plainText) {
  * @param {string} cipherLetters nur A–Z
  * @returns {string} UTF-8-Klartext
  */
+async function processTextModernDecryptTimebook(cipherLetters) {
+  const book = state.codebookSheet;
+  const current = getSlotForTimestamp(Date.now(), book.timeProfile);
+  const found = await decryptTimebookTelegram({
+    timebook: book,
+    cipherLetters,
+    currentSlot: current,
+    networkContext: book.networkContext,
+    engine,
+    configure: (code, key) => configureEngineFromFullKey(key, code),
+  });
+  if (found.status === MAC_SEARCH.AMBIGUOUS_KEY_MATCH) {
+    lastModernCryptoError = 'modern.ambiguousKey';
+    return '';
+  }
+  if (found.status !== MAC_SEARCH.MATCH || !found.result?.ok) {
+    lastModernCryptoError = found.error === 'modern.v3TooShort' ? null : 'modern.noKeyMatch';
+    return '';
+  }
+  lastModernCryptoError = null;
+  lastDecryptedCipher = cipherLetters;
+  lastHeaderGroup = found.result.header;
+  lastModernResolvedKey = found.result.messageKey;
+  modernAutoMessageId = found.result.messageId || '';
+  lastModernPruefgruppe = found.result.pruefgruppe || '';
+  return found.result.plainText;
+}
+
 async function processTextModernDecrypt(cipherLetters) {
+  if (isTimebook(state.codebookSheet) && state.keySource === 'codebook') {
+    const clean = String(cipherLetters ?? '').toUpperCase().replace(/[^A-Z]/g, '');
+    if (clean.length < 4) {
+      lastModernCryptoError = null;
+      return '';
+    }
+    if (!isV3Telegram(clean)) {
+      lastModernCryptoError = clean.length < 36 ? null : 'modern.notV3';
+      return '';
+    }
+    return processTextModernDecryptTimebook(clean);
+  }
   if (!isValidFourKey(state.keyCode)) {
     lastModernCryptoError = 'modern.groundIncomplete';
     return '';
@@ -2714,6 +3583,7 @@ function openModal(id) {
 }
 
 function closeModal(id) {
+  if (id === 'qrShareModal') stopLiveShare({ silent: true });
   document.getElementById(id).classList.remove('open');
 }
 
@@ -3136,15 +4006,17 @@ async function ingestCiphertext(raw) {
 
 async function shareOutput() {
   if (!state.ciphertext) return;
-  if (navigator.share) {
-    try {
-      await navigator.share({ text: state.ciphertext });
-      return;
-    } catch {
-      /* fall through */
+  await externalizeThen(async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: state.ciphertext });
+        return;
+      } catch {
+        /* fall through */
+      }
     }
-  }
-  copyText(state.ciphertext, t('toast.outputCopied'));
+    await copyText(state.ciphertext, t('toast.outputCopied'));
+  });
 }
 
 let toastHideTimer = null;
@@ -3167,6 +4039,11 @@ function showToast(message, durationMs = 2200) {
 
 async function onShowCourierQr(sourceText) {
   const text = typeof sourceText === 'string' ? sourceText : state.ciphertext;
+  if (!state.courierOn && text === state.ciphertext) {
+    let released = !modernSession.pinnedSlot()?.codebookFingerprint;
+    await externalizeThen(async () => { released = true; });
+    if (!released) return;
+  }
   if (!canShowCourierQr(text)) {
     showToast(t('courier.qrTooLong'));
     return;
@@ -3202,7 +4079,7 @@ async function onShowCourierQr(sourceText) {
     }
     openModal('qrShareModal');
   } catch (err) {
-    console.error(err);
+    logAppError('courier-qr', err);
     showToast(t('courier.qrFailed'));
   } finally {
     if (btn) btn.disabled = false;
@@ -3312,12 +4189,87 @@ function renderTextFields() {
   renderCourierUi();
 }
 
-/**
- * Kerbenzeile: „II · 7 Kerben · A F L R X“ (Anzahl tagesabhängig)
- * @param {string} rotorId
- * @param {string} notchLetters
- * @param {number} [count]
- */
+function activeTimebookDisplayKey() {
+  return selectDisplayFullKey({
+    book: state.codebookSheet,
+    keySource: state.keySource,
+    isModernMode: isModern(state.mainMode),
+    pin: modernSession.pinnedSlot(),
+    timestampMs: Date.now(),
+  });
+}
+
+function rotorDisplayIdentity() {
+  const sel = activeTimebookDisplayKey();
+  if (!sel) return '';
+  return `${sel.source}:${sel.slotId}`;
+}
+
+function refreshTimebookRotorView() {
+  const id = rotorDisplayIdentity();
+  const livePinned = Boolean(modernSession.pinnedSlot()?.fullKey && state.plaintext);
+  if (id && id !== lastRotorDisplaySlotId && !livePinned) {
+    renderRotorSection();
+    return;
+  }
+  updateRotorNotchHint();
+  updateReflectorKindLabel();
+}
+
+function activeLueckenfueller() {
+  const checked = (raw) => {
+    const v = validateLueckenfueller(raw);
+    return v.ok ? v.notches : null;
+  };
+  const sel = activeTimebookDisplayKey();
+  if (sel) return checked(sel.key?.lueckenfueller);
+  if (isModern(state.mainMode) && usesModernV3()) return checked(state.lueckenfueller);
+  return null;
+}
+
+function activeEndwalzeWiring() {
+  const checked = (raw) => {
+    const v = validateEndwalzeWiring(raw);
+    return v.ok ? v.wiring : '';
+  };
+  const sel = activeTimebookDisplayKey();
+  if (sel) return checked(sel.key?.endwalzeWiring);
+  if (isModern(state.mainMode)) return checked(state.endwalzeWiring);
+  return '';
+}
+
+function updateReflectorKindLabel() {
+  if (!els.reflectorLabel) return;
+  const modern = isModern(state.mainMode);
+  const kindLabel = modern ? t('rotor.endwalze') : t('rotor.umkehrwalze');
+  const rotors = activeTimebookDisplayKey()?.key || state;
+  const kindName = modern
+    ? (activeEndwalzeWiring() || t('rotor.perm'))
+    : reflectorLabel(state.reflectorId);
+  els.reflectorLabel.textContent =
+    `${kindLabel} ${kindName} · ${t('rotor.layoutCode')} ${layoutCode(rotors.rotorThin, rotors.rotorLeft, rotors.rotorMiddle, rotors.rotorRight)}`;
+}
+
+function updateRotorNotchHint() {
+  const el = els.rotorNotchHint;
+  if (!el) return;
+  const notches = activeLueckenfueller();
+  if (!notches) {
+    el.hidden = true;
+    el.textContent = '';
+    return;
+  }
+  el.hidden = false;
+  el.textContent = t('rotor.notchHint', {
+    left: notches.left,
+    lc: String(notches.left.length),
+    middle: notches.middle,
+    mc: String(notches.middle.length),
+    right: notches.right,
+    rc: String(notches.right.length),
+  });
+}
+
 function formatNotchDisplay(rotorId, notchLetters, count) {
   const letters = String(notchLetters || '');
   const n = count ?? letters.length;
@@ -3435,6 +4387,7 @@ function renderModeUi() {
   if (els.modeStatusValue) {
     els.modeStatusValue.textContent = modeStatusLabel();
   }
+  renderHardenedLiveBadge();
 
   els.btnMainTraditional?.classList.toggle('active', traditional);
   els.btnMainModern?.classList.toggle('active', modern);
@@ -3640,10 +4593,7 @@ function renderRotorSection({ useCurrentEngine = false } = {}) {
     : (modern && resolvedMk ? resolvedMk : state.keyCode);
   const isAtStart = live === startKey;
 
-  const kindLabel = modern ? t('rotor.endwalze') : t('rotor.umkehrwalze');
-  const kindName = modern ? t('rotor.perm') : reflectorLabel(state.reflectorId);
-  els.reflectorLabel.textContent =
-    `${kindLabel} ${kindName} · ${t('rotor.layoutCode')} ${layoutCode(state.rotorThin, state.rotorLeft, state.rotorMiddle, state.rotorRight)}`;
+  updateReflectorKindLabel();
   if (els.endwalzeHint) {
     els.endwalzeHint.hidden = !modern;
     if (modern) els.endwalzeHint.textContent = t('modern.endwalzeNote');
@@ -3680,6 +4630,8 @@ function renderRotorSection({ useCurrentEngine = false } = {}) {
 
   paintRotorGrid();
   updatePlugboardDisplay();
+  updateRotorNotchHint();
+  lastRotorDisplaySlotId = rotorDisplayIdentity();
   // Kerben ändern sich mit Ringen/Stecker/Walzen
   if (isModern(state.mainMode)) renderModernFeaturePanel();
 }
@@ -3689,6 +4641,72 @@ function renderRotorSection({ useCurrentEngine = false } = {}) {
  * Ohne Tafel: bisheriger Leer-Text.
  * @param {import('./codebook.js').CodebookSheet | null | undefined} sheet
  */
+function renderTimebookNow() {
+  const book = state.codebookSheet;
+  const el = document.getElementById('codebookSlotNow');
+  if (!el || !isTimebook(book)) return;
+  const resolved = resolveTimebookSlot(book, Date.now());
+  el.replaceChildren();
+  const title = document.createElement('div');
+  title.textContent = t('codebook.currentKey');
+  el.appendChild(title);
+  if (!resolved.ok) {
+    const miss = document.createElement('div');
+    miss.textContent = t('codebook.outOfMonth');
+    el.appendChild(miss);
+    return;
+  }
+  const hours = formatSlotHours(resolved.meta);
+  const line = document.createElement('div');
+  line.textContent = hours;
+  el.appendChild(line);
+  const until = document.createElement('div');
+  until.className = 'muted';
+  const endHour = resolved.meta.endHour === 24 ? 24 : resolved.meta.endHour;
+  until.textContent = t('codebook.forNewUntil', { time: String(endHour).padStart(2, '0') + ':00' });
+  el.appendChild(until);
+  const endMs = slotEndUnixMs(resolved.meta);
+  const remain = document.createElement('div');
+  remain.className = 'muted';
+  remain.textContent = t('codebook.nextChange', { remain: formatRemain(endMs - Date.now()) });
+  el.appendChild(remain);
+  const hint = document.createElement('div');
+  hint.className = 'muted';
+  hint.textContent = t('codebook.keyTimeHint');
+  el.appendChild(hint);
+}
+
+function renderHardenedLiveBadge() {
+  const badge = els.hardenedLiveBadge;
+  if (!badge) return;
+  const book = state.codebookSheet;
+  const show = isModern(state.mainMode)
+    && state.keySource === 'codebook'
+    && isTimebook(book)
+    && !state.courierOn;
+  badge.hidden = !show;
+  if (!show) return;
+  if (els.hardenedLiveMode) {
+    els.hardenedLiveMode.textContent = `${t('codebook.hardenedLabel')} · ${profileLabel(book.timeProfile)}`;
+  }
+  const resolved = resolveTimebookSlot(book, Date.now());
+  if (!resolved.ok) {
+    if (els.hardenedLiveSlot) els.hardenedLiveSlot.textContent = t('codebook.outOfMonth');
+    if (els.hardenedLiveClock) els.hardenedLiveClock.textContent = '—';
+    badge.removeAttribute('title');
+    return;
+  }
+  const hours = formatSlotHours(resolved.meta);
+  if (els.hardenedLiveSlot) els.hardenedLiveSlot.textContent = hours;
+  const clock = formatCountdownClock(slotEndUnixMs(resolved.meta) - Date.now());
+  if (els.hardenedLiveClock) els.hardenedLiveClock.textContent = clock;
+  badge.title = t('codebook.liveBadgeTitle', {
+    profile: profileLabel(book.timeProfile),
+    hours,
+    clock,
+  });
+}
+
 function renderCodebookStatus(sheet) {
   const el = els.codebookStatus;
   if (!el) return;
@@ -3710,11 +4728,19 @@ function renderCodebookStatus(sheet) {
 
   const wordLine = document.createElement('div');
   wordLine.className = 'codebook-status-word';
-  wordLine.append(t('codebook.statusTafelwort'), ' ');
-  const word = document.createElement('span');
-  word.className = 'mono';
-  word.textContent = tafelwort(sheet);
-  wordLine.appendChild(word);
+  if (isTimebook(sheet)) {
+    wordLine.append(`${t('codebook.hardenedLabel')} · ${profileLabel(sheet.timeProfile)}`);
+    const now = document.createElement('div');
+    now.className = 'codebook-slot-now';
+    now.id = 'codebookSlotNow';
+    wordLine.appendChild(now);
+  } else {
+    wordLine.append(t('codebook.statusTafelwort'), ' ');
+    const word = document.createElement('span');
+    word.className = 'mono';
+    word.textContent = tafelwort(sheet);
+    wordLine.appendChild(word);
+  }
 
   const hint = document.createElement('div');
   hint.className = 'codebook-status-hint';
@@ -3734,6 +4760,7 @@ function renderCodebookStatus(sheet) {
   meta.textContent = metaText;
 
   el.append(monthLine, wordLine, hint, meta);
+  if (isTimebook(sheet)) renderTimebookNow();
 }
 
 function sheetMonthKey(sheet) {
@@ -3745,8 +4772,9 @@ function renderMonthMismatchBanner(sheet) {
   if (!banner) return;
 
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
+  const alb = isTimebook(sheet) ? getAlberichDateTime() : null;
+  const year = alb ? alb.year : now.getFullYear();
+  const month = alb ? alb.month : now.getMonth() + 1;
   const show = !!sheet
     && state.keySource === 'codebook'
     && !state.courierOn
@@ -3804,12 +4832,15 @@ function fillTafelwortLine(el, sheet) {
   el.append(t('codebook.statusTafelwort'), ' ');
   const word = document.createElement('span');
   word.className = 'mono';
-  word.textContent = tafelwort(sheet);
+  word.textContent = isTimebook(sheet)
+    ? shortFingerprint(sheet.codebookFingerprint)
+    : tafelwort(sheet);
   el.appendChild(word);
 }
 
 function renderCodebookUi() {
   syncCodebookEndwalzePolicyUi();
+  syncCodebookKindUi();
   const isCodebook = state.keySource === 'codebook';
   const sheet = state.codebookSheet;
 
@@ -3886,8 +4917,14 @@ function renderNetworksUi() {
       const sheet = net.id === state.activeNetworkId && state.codebookSheet
         ? state.codebookSheet
         : net.sheet;
-      const word = sheet ? tafelwort(sheet) : '';
-      const month = sheet?.monthLabel || '';
+      const month = sheet
+        ? (sheet.monthLabel || monthLabel(sheet.year, sheet.month, getLocale()))
+        : '';
+      const word = !sheet
+        ? ''
+        : (isTimebook(sheet)
+          ? shortFingerprint(sheet.codebookFingerprint)
+          : tafelwort(sheet));
       if (month && word) {
         const monthSpan = document.createElement('span');
         monthSpan.textContent = month;
@@ -3902,6 +4939,12 @@ function renderNetworksUi() {
         });
       } else if (month) {
         badge.textContent = t('network.badgeMonth', { month });
+        btn.title = displayNetworkName(net);
+      } else if (word) {
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'mono';
+        wordSpan.textContent = word;
+        badge.appendChild(wordSpan);
         btn.title = displayNetworkName(net);
       } else {
         badge.textContent = '·';
@@ -4084,7 +5127,6 @@ function renderAll() {
     versionLabel.textContent = t('info.version', {
       version: VERSION,
       protocol: PROTOCOL_LABEL,
-      commit: BUILD_COMMIT,
     });
   }
 }

@@ -1,6 +1,8 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Thunderbird-spezifisch: Compose-Body lesen/schreiben.
  * Nutzt messenger.compose / browser.compose — nicht im shared Core.
  */

@@ -1,6 +1,6 @@
-# Third-party notices — Alberich Thunderbird
+# Third-party notices — Alberich Mail Companion
 
-Alberich is licensed under **AGPL-3.0-only**.
+Alberich itself is not published under an open-source license in this package.
 The following libraries are bundled under `shared/vendor/` and keep their own terms.
 
 ## qrcode-generator

@@ -75,6 +75,9 @@ HKDF trennt die Schlüssel. Replay ist nur Sitzung.
 
 ## Griechenwalze
 
-Sitzt immer im Stromweg. Traditionell: dreht nicht, Ringstellung gilt
-(historische M4). Modern: läuft mit, wenn die linke Walze an einer Kerbe
-steht; selbst keine Kerben. Die Ringstellung gilt in beiden Modi.
+Die Griechenwalze ist die dünne Beta-/Gamma-Walze. Sie sitzt immer im
+Stromweg. Die Griechenwalze wurde bei der historischen M4 nicht
+fortgeschaltet (Traditionell: dreht nicht, Ringstellung gilt). In
+Alberich Modern V3 kann sie durch die Fortschaltungslogik
+weitergeschaltet werden: sie läuft mit, wenn die linke Walze an einer
+Kerbe steht; selbst keine Kerben. Die Ringstellung gilt in beiden Modi.

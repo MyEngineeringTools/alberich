@@ -1,1 +1,1 @@
-Rear-camera QR scan is not mirrored; yellow frame is square (sheets and courier). Modern V3 unchanged.
+Hardened V3: a full independent key per time slot (24 h / 4 h / 1 h, MEZ year-round). Rotor positions follow the clock; a started message stays. 24 h matches the daily-key interval. Hardened sheets: binary file (.alb3cb2) like JSON, plus live QR. Networks show month and fingerprint. ALBV telegram unchanged.

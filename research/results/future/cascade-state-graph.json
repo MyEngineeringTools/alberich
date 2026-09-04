@@ -1,6 +1,6 @@
 {
   "protocol": "V3 cascade (future option)",
-  "algorithmRevision": "modern-v3-rev51-double-step",
+  "algorithmRevision": "modern-v3-rev65-double-step",
   "stepRule": "cascade",
   "current": false,
   "status": "NOT CURRENT MODERN V3",

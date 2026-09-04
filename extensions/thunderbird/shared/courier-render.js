@@ -1,6 +1,8 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Kurier-QR als PNG-Data-URL (reine Canvas-Zeichnung).
  */
 

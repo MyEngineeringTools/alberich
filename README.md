@@ -1,12 +1,12 @@
 # Alberich
 
 Enigma-M4 machine in the browser: **Traditional** (historical, involutory) and
-**Modern** (experimental rotor protocol). Daily keys, networks, month
+**Modern V3** and **V3 gehärtet** (time slots, CBQR2). Daily keys, networks, month
 sheets, courier QR.
 
 - Live instance: [https://alberich.pro/](https://alberich.pro/)
 - Versions: see [VERSIONS](VERSIONS) — the same numbers as the live apps:
-  web `1.0 (Revision 51)`, browser `1.0.24`, Thunderbird `1.0.14`,
+  web `1.0 (Revision 65)`, browser `1.0.24`, Thunderbird `1.0.16`,
   Android `1.0 (Revision 30)` / code 30. Not a separate GitHub count.
 - Platforms here: static **web** app, **browser companion** (Chrome / Edge /
   Firefox), and **Thunderbird** MailExtension

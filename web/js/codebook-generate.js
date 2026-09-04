@@ -25,6 +25,7 @@ import {
 } from './endwalze-policy.js';
 import { cryptoRandomInt } from './secure-random.js';
 import { generateEndwalzeWiring, generateLueckenfueller } from './modern-v3.js';
+import { takeUniqueFullKey } from './full-key-fingerprint.js';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -165,10 +166,10 @@ function generateDay(year, month, day, draw, policy) {
  * @param {number} year
  * @param {number} month 1–12
  * @param {'de' | 'en'} [locale]
- * @param {{ rng?: (maxExclusive: number) => number, generatedAt?: string, endwalzePolicy?: string }} [opts]
- * @returns {import('./codebook.js').CodebookSheet}
+ * @param {{ rng?: (maxExclusive: number) => number, generatedAt?: string, endwalzePolicy?: string, networkContext?: string }} [opts]
+ * @returns {Promise<import('./codebook.js').CodebookSheet>}
  */
-export function generateMonthSheet(year, month, locale = 'de', opts = {}) {
+export async function generateMonthSheet(year, month, locale = 'de', opts = {}) {
   const y = Number(year);
   const m = Number(month);
   if (!Number.isInteger(y) || y < 1900 || y > 2100) {
@@ -180,9 +181,19 @@ export function generateMonthSheet(year, month, locale = 'de', opts = {}) {
   const policy = normalizeEndwalzePolicy(opts.endwalzePolicy);
   const draw = makeDraw(opts.rng);
   const n = daysInMonth(y, m);
+  const uniqueV3 = usesPermutationEndwalze(policy);
+  const seen = new Set();
   const days = [];
   for (let day = 1; day <= n; day++) {
-    days.push(generateDay(y, m, day, draw, policy));
+    if (uniqueV3) {
+      const { key } = await takeUniqueFullKey(
+        seen,
+        () => generateDay(y, m, day, draw, policy),
+      );
+      days.push(key);
+    } else {
+      days.push(generateDay(y, m, day, draw, policy));
+    }
   }
   return {
     format: ALBERICH_CODEBOOK_FORMAT,

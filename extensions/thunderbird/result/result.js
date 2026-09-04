@@ -1,6 +1,8 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
+ */
+/**
  * Anzeige des entschlüsselten Klartexts (neues Tab).
  * Nur textContent — kein innerHTML mit Mailinhalt.
  */

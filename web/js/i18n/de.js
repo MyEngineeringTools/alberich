@@ -2,9 +2,9 @@
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only @type {Record<string, string>} */
 export default {
-  'meta.title': 'Alberich – Enigma M4 Simulator online | kostenlos',
+  'meta.title': 'Alberich – Moderne Enigma-Verschlüsselung | M4 & Modern V3',
   'meta.description':
-    'Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.',
+    'Alberich verbindet eine historische Enigma-M4-Simulation mit Modern V3, moderner Rotor-Verschlüsselung, Base-26, Schlüsseltafeln und Kurier-Modus direkt im Browser.',
   'meta.ogLocale': 'de_DE',
 
   'seo.linkManual': 'Handbuch',
@@ -15,7 +15,7 @@ export default {
   'seo.linkSource': 'Quellcode',
   'seo.footerCopy': '© My Engineering Tools · AGPL-3.0-only · alberich.pro',
 
-  'brand.tagline': 'Vier-Walzen-Chiffre',
+  'brand.tagline': 'Klassische Enigma. Moderne Verschlüsselung.',
   'brand.taglineCourier': 'Kurier-Brücke — nur Geheimtext',
 
   'header.guide': 'Anleitung',
@@ -92,6 +92,16 @@ export default {
   'modern.endwalzeInvolutory': 'Endwalze darf in V3 nicht involutorisch sein.',
   'modern.endwalzeGenerateFailed':
     'Sichere nicht-involutorische Endwalze konnte nicht erzeugt werden. Kein Schlüsselmaterial übernommen.',
+  'modern.securityStateFailed':
+    'Verschlüsselung nicht möglich. Der lokale Sicherheitsstatus konnte nicht zuverlässig gespeichert werden.',
+  'modern.timeRollbackBlocked':
+    'Neue Nachricht blockiert: die Gerätezeit liegt hinter dem zuletzt gesendeten Zeitslot.',
+  'modern.watermarkFailed':
+    'Ausgabe nicht möglich. Der Sende-Watermark konnte nicht gespeichert werden.',
+  'timebook.err.noCbqr1Export':
+    'Internes Zeitschlüssel-Timebook kann nicht als CBQR1/JSON-Tafel exportiert werden.',
+  'timebook.err.notLegacyFormat':
+    'Internes Timebook ist kein alberich-codebook-JSON.',
   'modern.base26InvalidLength': 'Base-26-V2: ungültige Länge.',
   'modern.base26Range': 'Base-26-V2: Wert passt nicht zur Länge.',
   'modern.base26Utf8': 'Base-26-V2: kein gültiges UTF-8.',
@@ -107,6 +117,7 @@ export default {
   'rotor.endwalze': 'Endwalze',
   'rotor.perm': 'PERM',
   'rotor.hintModern': 'Tippen: Endwalze, Walzen, Grundstellung und Steckerbrett anpassen',
+  'rotor.notchHint': 'Aktive Kerben · L {left} ({lc}) · M {middle} ({mc}) · R {right} ({rc})',
 
   'message.keyLabel': 'Spruchschlüssel (4)',
   'message.keyNote': 'Jede Nachricht mit einem neuen, zufällig erzeugten Spruchschlüssel senden.',
@@ -210,7 +221,7 @@ export default {
   'message.trafficHint.plain': 'Klartext: tippen, STRG+V oder Einfügen — Funkspruch mit Kopfgruppe.',
   'message.trafficHint.cipher': 'Geheimtext: Einfügen — Split in Kopfgruppe und Textkörper.',
 
-  'info.version': 'Version {version} · {protocol} · {commit}',
+  'info.version': 'Version {version} · {protocol}',
 
   'setup.title': 'Walzenkonfiguration',
   'setup.source': 'Schlüsselquelle',
@@ -274,7 +285,87 @@ export default {
   'codebook.generateHint': 'Gleicher Algorithmus wie die Android-App. Bleibt in diesem Browser; QR nur mit dem Offline-Gerät des Partners teilen — nicht über den Messenger.',
   'codebook.generateMonth': 'Monat',
   'codebook.generateYear': 'Jahr',
-  'codebook.generateButton': 'Monatstafel erzeugen',
+  'codebook.generateButton': 'Schlüsseltafel erzeugen',
+  'codebook.generating': 'Schlüsseltafel wird erzeugt …',
+  'codebook.kindLabel': 'Tafeltyp',
+  'codebook.kindHardened': 'V3 gehärtet',
+  'codebook.kindLegacy': 'V3 · Tagesschlüssel',
+  'codebook.profileLegend': 'Schlüsselgültigkeit',
+  'codebook.profileHelp':
+    'Die Schlüsselgültigkeit bestimmt, wie lange Alberich denselben vollständigen V3-Schlüssel für neue Nachrichten verwendet. Kürzere Intervalle begrenzen die unter einem Schlüssel entstehende Nachrichtenmenge. Alle Teilnehmer eines Netzes müssen dieselbe Schlüsseltafel verwenden.',
+  'codebook.profile.4h': '4 Stunden',
+  'codebook.profile.4hHint': 'Empfohlen',
+  'codebook.profile.24h': '24 Stunden',
+  'codebook.profile.24hHint': 'Einfach',
+  'codebook.profile.1h': '1 Stunde',
+  'codebook.profile.1hHint': 'Hoher Schutz',
+  'codebook.hardened.info.body':
+    '<p>V3 gehärtet ist Modern V3 mit automatisch wechselndem vollständigem Schlüssel: Endwalze und Lückenfüller stehen auf der Tafel, Telegramm <code>ALBV</code>. Die Uhr wählt den Zeitraum; sie erzeugt den Schlüssel nicht.</p>'
+    + '<p>Alberich wechselt nach der <strong>Alberich-Schlüsselzeit</strong> (ganzjährig MEZ, UTC+1, ohne Sommerzeit). Die Anzeige „Aktueller Schlüssel“ folgt der Uhr. Eine schon begonnene Nachricht bleibt auf ihrem Schlüssel. Die nächste neue Nachricht nutzt den dann aktuellen Zeitraum.</p>'
+    + '<p><strong>24 Stunden · Einfach</strong> — ein vollständiger V3-Schlüssel pro Kalendertag. Gleicher Takt wie „V3 · Tagesschlüssel“, aber Live-QR und MEZ statt JSON oder Standbild. Druck oder Datei: Tagesschlüssel; gleiches Teilen wie 4&nbsp;h: 24 Stunden; weniger Nachrichten unter einem Schlüssel: 4 Stunden.</p>'
+    + '<p><strong>4 Stunden · Empfohlen</strong> — sechs Zeitschlüssel am Tag. Weniger Nachrichten unter demselben Schlüssel als bei 24 Stunden.</p>'
+    + '<p><strong>1 Stunde · Hoher Schutz</strong> — 24 Zeitschlüssel am Tag, kürzeste gemeinsame Schlüsselzeit.</p>'
+    + '<p>Alle Teilnehmer eines Netzes brauchen dieselbe Tafel. Teilen über den laufenden QR-Code; empfangen mit der Kamera, ohne einen Zeitraum zu wählen.</p>',
+  'codebook.hardenedLabel': 'V3 gehärtet',
+  'codebook.legacyLabel': 'V3 · Tagesschlüssel',
+  'codebook.profileNamed.DAY_24H': '24 Stunden',
+  'codebook.profileNamed.HOURS_4': '4 Stunden',
+  'codebook.profileNamed.HOUR_1': '1 Stunde',
+  'codebook.keyTimeMez': 'Alberich-Schlüsselzeit: MEZ',
+  'codebook.keyTimeHint':
+    'Alberich verwendet für den Schlüsselwechsel ganzjährig MEZ (UTC+1), unabhängig vom Standort des Geräts.',
+  'codebook.currentKey': 'Aktueller Schlüssel',
+  'codebook.forNewUntil': 'Für neue Nachrichten bis {time} Uhr',
+  'codebook.nextChange': 'Nächster Wechsel in {remain}',
+  'codebook.liveRemainLabel': 'Wechsel in',
+  'codebook.liveBadgeTitle':
+    'V3 gehärtet · {profile} · aktueller Schlüssel {hours} · Wechsel in {clock} (Alberich-Schlüsselzeit MEZ)',
+  'codebook.slotKeys': '{count} Zeitschlüssel',
+  'codebook.slotDetails': 'Details',
+  'codebook.showKey': 'Schlüssel anzeigen',
+  'codebook.slotCurrent': 'Aktuell',
+  'timebook.daySummary': '{day}. {month} · {count} Zeitschlüssel',
+  'timebook.field.rotorThin': 'Griechenwalze',
+  'timebook.field.rotorLeft': 'Bewegliche Walze links',
+  'timebook.field.rotorMiddle': 'Bewegliche Walze Mitte',
+  'timebook.field.rotorRight': 'Bewegliche Walze rechts',
+  'timebook.field.ringCode': 'Ringstellung',
+  'timebook.field.keyCode': 'Grundstellung',
+  'timebook.field.plugboard': 'Steckerbrett',
+  'timebook.field.endwalze': 'Endwalze',
+  'timebook.field.notchLeft': 'Lückenfüller links ({count})',
+  'timebook.field.notchMiddle': 'Lückenfüller Mitte ({count})',
+  'timebook.field.notchRight': 'Lückenfüller rechts ({count})',
+  'codebook.outOfMonth': 'Diese Tafel gilt nicht für den aktuellen Alberich-Monat.',
+  'codebook.fingerprint': 'Fingerprint',
+  'modern.timeRollback':
+    'Die Gerätezeit liegt vor einem bereits verwendeten Alberich-Schlüsselzeitraum. Bitte prüfe Datum und Uhrzeit.',
+  'modern.externalizeFailed':
+    'Nachricht konnte nicht sicher freigegeben werden. Der lokale Sicherheitsstatus konnte nicht gespeichert werden.',
+  'modern.decrypting': 'Nachricht wird entschlüsselt …',
+  'modern.noKeyMatch':
+    'Für diese Nachricht wurde in der ausgewählten Schlüsseltafel kein passender Schlüssel gefunden.',
+  'modern.ambiguousKey':
+    'Die Nachricht konnte nicht eindeutig einem Schlüssel zugeordnet werden.',
+  'share.liveHint': 'Der Empfänger hält die Kamera auf den QR-Code.',
+  'share.paused': 'Übertragung pausiert',
+  'share.pause': 'Pause',
+  'share.resume': 'Weiter',
+  'share.stopLive': 'Teilen beenden',
+  'share.hardenedMeta': '{network} · {month} · V3 gehärtet · {profile}',
+  'qr.receiving': 'Schlüsseltafel wird empfangen',
+  'qr.fragments': '{have} / {need} Fragmente rekonstruiert',
+  'qr.importConfirm': 'Importieren',
+  'qr.receivedTitle': 'Schlüsseltafel empfangen',
+  'qr.err.invalidSheet': 'Ungültige Schlüsseltafel',
+  'qr.err.transferBroken': 'Übertragung unvollständig oder beschädigt',
+  'qr.err.needLiveScan': 'Animierte Tafeln bitte mit der Kamera scannen, nicht als Einzelbild.',
+  'timebook.err.noCbqr1Export': 'Gehärtete Tafeln können nicht als CBQR1 exportiert werden.',
+  'codebook.hardenedNoJsonExport':
+    'Gehärtete Tafeln speichern als Binärdatei (.alb3cb2), nicht als JSON.',
+  'codebook.hardenedNoFileImport':
+    'QR-Standbilder tragen keine gehärtete Tafel. Bitte Live-QR oder Binärdatei verwenden.',
+  'timebook.err.outOfMonth': 'Die Tafel gilt nicht für den aktuellen Monat der Alberich-Schlüsselzeit.',
   'codebook.endwalzePolicy': 'Endwalze',
   'codebook.endwalzePolicyAria': 'Endwalzen-Auswahl für die Tafel',
   'codebook.policy.permutation': 'Freie Permutation',
@@ -301,11 +392,16 @@ export default {
   'sheet.export.notches': 'Kerben L/M/R: {left} / {middle} / {right}',
   'codebook.importTitle': 'Import',
   'codebook.importJson': 'JSON importieren',
+  'codebook.importFile': 'Datei importieren',
+  'codebook.importBinary': 'Binärdatei importieren',
   'codebook.importQr': 'QR-Bild laden',
   'codebook.scanQr': 'Kamera scannen',
   'codebook.dayLabel': 'Tag der Tafel',
-  'codebook.formatHint': 'Gilt für das aktive Netz. Hier erzeugen oder alberich-codebook / QR ALBERICH-CBQR1|gzip|… importieren. Nach dem Laden Tafelwort mit dem Partner vergleichen.',
+  'codebook.formatHint': 'Gilt für das aktive Netz. Hier erzeugen oder JSON/QR importieren. Die Kamera erkennt bestehende und gehärtete Tafeln automatisch. Nach dem Laden Tafelwort oder Fingerprint mit dem Partner vergleichen.',
+  'codebook.formatHintHardened':
+    'Gehärtete Tafel: Binärdatei (.alb3cb2) speichern oder importieren, analog zum JSON beim Tagesschlüssel. Teilen per Live-QR bleibt. QR-Standbild nicht verwenden.',
   'codebook.sourceJson': 'JSON',
+  'codebook.sourceBinary': 'Binärdatei',
   'codebook.sourceQrImage': 'QR-Bild',
   'codebook.sourceQrScan': 'QR-Scan',
   'codebook.sourceImport': 'Import',
@@ -388,6 +484,7 @@ export default {
   'toast.codebookImportPrompt': 'JSON-Tafel in dieses Netz importieren',
   'toast.codebookActive': 'Schlüsseltafel aktiv',
   'toast.manualSource': 'Manuelle / zufällige Eingabe',
+  'toast.saveFailed': 'Tafel konnte nicht gespeichert werden (Speicherplatz im Browser).',
   'toast.fileTooLarge': 'Datei zu groß',
   'toast.fileReadFailed': 'Datei konnte nicht gelesen werden',
   'limits.plaintext': 'Klartext überschreitet das technische Maximum. Nichts verschlüsselt.',
@@ -415,6 +512,7 @@ export default {
   'toast.networkMax': 'Maximal {max} Netze',
   'toast.networkNameEmpty': 'Bitte einen Namen eingeben',
   'toast.shareJsonSaved': 'JSON gespeichert: {filename}',
+  'toast.shareBinarySaved': 'Binärdatei gespeichert: {filename}',
   'toast.shareQrReady': 'QR-Code bereit',
   'toast.shareQrFailed': 'QR-Code konnte nicht erzeugt werden',
   'toast.sharePngSaved': 'PNG gespeichert: {filename}',
@@ -425,6 +523,7 @@ export default {
 
   'share.section': 'Tafel teilen',
   'share.exportJson': 'JSON speichern',
+  'share.exportBinary': 'Binärdatei speichern',
   'share.showQr': 'QR anzeigen',
   'share.share': 'Teilen',
   'share.qrTitle': 'QR-Code der Tafel',
@@ -493,6 +592,15 @@ export default {
   'codebook.err.mainUnique': 'Hauptwalzen müssen eindeutig sein',
   'codebook.err.ringsIncomplete': 'Ringstellung unvollständig',
   'codebook.err.keyIncomplete': 'Grundstellung unvollständig',
+  'codebook.err.plugsInvalid': 'Steckerbrett ungültig (V3: genau 10 Paare A–Z)',
+  'codebook.err.plugSelf': 'Steckerbrett: Selbststeckung ist nicht erlaubt',
+  'codebook.err.plugDuplicate': 'Steckerbrett: Buchstabe mehrfach belegt',
+  'codebook.err.v3Policy': 'V3-Tafel erfordert Endwalzen-Politik „permutation“',
+  'codebook.err.networkContext': 'Netzkontext ungültig (A–Z/0–9, 1–16 Zeichen)',
+  'codebook.err.dayOutOfMonth': 'Tag liegt nicht in diesem Monat',
+  'codebook.err.duplicateDay': 'Doppelter Tag auf der Tafel',
+  'codebook.err.dateMismatch': 'Datumsfeld passt nicht zu Jahr/Monat/Tag',
+  'codebook.err.monthIndexMismatch': 'monthIndex0 widerspricht dem Monat',
 
   'qr.err.decompress': 'QR-Inhalt konnte nicht dekomprimiert werden',
   'qr.err.badFormat': 'Ungültiges QR-Format (erwartet ALBERICH-CBQR1|gzip|…)',
@@ -512,7 +620,7 @@ export default {
   'guide.title': 'Alberich – Kurzanleitung',
   'guide.s1.title': '1. Was ist Alberich?',
   'guide.s1.body':
-    'Alberich ist ein kostenloser Enigma-M4-Simulator im Browser (Deutsch/Englisch), ohne Account. Vier-Walzen-Chiffre mit Walzen, Ringen, Steckerbrett und Tagesschlüssel – plus Schlüsseltafeln und Netze. Monatstafeln erzeugt die Web-App oder die Android-App.',
+    'Alberich ist eine browserbasierte Rotor-Verschlüsselung mit zwei Welten: einer historisch orientierten Simulation der Enigma M4 und dem modernen Alberich-Verfahren Modern V3. Dazu gehören Base-26, automatische Spruchschlüssel, Schlüsseltafeln, Netze und der Kurier-Modus. Die Verarbeitung erfolgt lokal im Browser (Deutsch/Englisch), ohne Account. Monatstafeln erzeugt die Web-App oder die Android-App.',
 
   'guide.s2.title': '2. Zwei Hauptmodi',
   'guide.s2.traditional':
@@ -566,7 +674,7 @@ export default {
 
   'guide.s5.title': '5. Schlüssel & Netze',
   'guide.s5.walzenlage':
-    '<strong>Walzenlage:</strong> Dünne Walze / Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Traditionell: sie dreht nicht, ihre Ringstellung gilt. Modern: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Die Ringstellung der Griechenwalze gilt in beiden Modi.',
+    '<strong>Walzenlage:</strong> Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Die Griechenwalze wurde bei der historischen M4 nicht fortgeschaltet (Traditionell: sie dreht nicht, ihre Ringstellung gilt). In Alberich Modern V3 kann sie durch die Fortschaltungslogik weitergeschaltet werden: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Die Ringstellung der Griechenwalze gilt in beiden Modi.',
   'guide.s5.rings':
     '<strong>Ringstellung:</strong> 4 Buchstaben, gilt für die ganze Nachricht / den Tag.',
   'guide.s5.ground':
@@ -608,9 +716,17 @@ export default {
     'Android: <a href="/fdroid/">Play Store oder F-Droid unter alberich.pro/fdroid</a>.',
 
   'about.title': 'Über Alberich',
+  'about.claim': 'Klassische Enigma. Moderne Verschlüsselung.',
+  'about.subclaim': 'Enigma M4 · Modern V3 · Kurier',
   'about.p1':
-    'Alberich ist ein Enigma-M4-Simulator im Browser: Traditionell (historisch, involutorisch) und Modern (Endwalze, Lückenfüller, Base-26, Auto-Spruchschlüssel). Walzenlage, Ringe, Steckerbrett, Tagesschlüssel, Netze und Schlüsseltafeln.',
+    'Alberich ist eine browserbasierte Rotor-Verschlüsselung mit zwei Welten: einer historisch orientierten Simulation der Enigma M4 und dem modernen Alberich-Verfahren Modern V3.',
   'about.p2':
+    'Der klassische Modus bildet das Funktionsprinzip der Enigma M4 für historische, technische und experimentelle Anwendungen nach. Modern V3 entwickelt das Rotorprinzip dagegen weiter und verbindet es mit Funktionen für heutige Texte und moderne Arbeitsabläufe.',
+  'about.p3':
+    'Dazu gehören unter anderem Base-26-Kodierung, automatische Spruchschlüssel, Schlüsseltafeln, Netze und der Kurier-Modus für die Übertragung verschlüsselter Nachrichten zwischen getrennten Geräten.',
+  'about.p4':
+    'Die Verarbeitung erfolgt grundsätzlich lokal im Browser. Klartext und Schlüsselmaterial sollen das verwendete Gerät nicht unnötig verlassen.',
+  'about.origin':
     'Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.',
   'about.handbook':
     'Handbuch: <a href="/manual/">alberich.pro/manual</a>.',
@@ -619,7 +735,7 @@ export default {
   'about.imprint': 'Impressum',
   'about.emailLabel': 'E-Mail:',
   'about.license':
-    'Alberich steht unter der <strong>GNU Affero General Public License 3.0 only</strong> (AGPL-3.0-only). <a href="LICENSE">Lizenztext</a>. Entsprechender Quellcode: <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">github.com/MyEngineeringTools/alberich</a>. Name und Markenzeichen sind nicht unter der AGPL lizenziert.',
+    'Lizenz: <a href="LICENSE">AGPL-3.0-only</a> · <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">Quellcode</a>. Name und Marke sind nicht unter der AGPL lizenziert.',
   'about.thirdParty':
     'QR und Kompression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Hinweise Dritter</a>. „QR Code“ ist eine Marke von DENSO WAVE.',
 };

@@ -23,7 +23,7 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-5CuIaWM/kS3I6urXtmlut1Qv4ZaXSlvz4vy+YkQEasY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-SzNMjjJ8hehQg3v9D+heb8LfEEJX1GDFQYsl9nm6FPI='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "no-referrer"
   Header set Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=(), usb=()"

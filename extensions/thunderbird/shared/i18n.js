@@ -1,7 +1,9 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- * UI-Sprachen DE / EN für Alberich Companion.
+ */
+/**
+ * UI-Sprachen DE / EN für Alberich Mail Companion.
  */
 
 /** @typedef {'de'|'en'} Locale */
@@ -9,7 +11,7 @@
 /** @type {Record<Locale, Record<string, string>>} */
 export const STRINGS = {
   de: {
-    'ui.tagline': 'Modern · Thunderbird',
+    'ui.tagline': 'Alberich Mail Companion',
     'ui.info': 'Info',
     'ui.infoTitle': 'Kurzhilfe',
     'ui.infoHeading': 'Kurzhilfe',
@@ -108,6 +110,9 @@ export const STRINGS = {
 
     'status.noSheet': 'Keine Tafel — bitte JSON laden',
     'status.loaded': 'Tafel {ym} · Tag {day} · {plugs} Stecker · {layout}',
+    'status.tafelwort': 'Tafelwort: {word}',
+    'status.monthMismatch': 'Tafel ist {sheetMonth} – heute ist {todayMonth}.',
+    'status.monthKeep': 'Trotzdem diesen Tag nutzen',
     'status.dayLabel': 'Tag {day}',
     'session.summaryBoth': '{mk} · Kopf {hd}',
 
@@ -160,7 +165,7 @@ export const STRINGS = {
     emptyInput: 'Kein Text.',
   },
   en: {
-    'ui.tagline': 'Modern · Thunderbird',
+    'ui.tagline': 'Alberich Mail Companion',
     'ui.info': 'Info',
     'ui.infoTitle': 'Quick help',
     'ui.infoHeading': 'Quick help',
@@ -259,6 +264,9 @@ export const STRINGS = {
 
     'status.noSheet': 'No sheet — please load JSON',
     'status.loaded': 'Sheet {ym} · day {day} · {plugs} plugs · {layout}',
+    'status.tafelwort': 'Sheet word: {word}',
+    'status.monthMismatch': 'Sheet is {sheetMonth} — today is {todayMonth}.',
+    'status.monthKeep': 'Keep this day',
     'status.dayLabel': 'Day {day}',
     'session.summaryBoth': '{mk} · header {hd}',
 

@@ -7,7 +7,7 @@ Alberich is a small solo project. Patches are welcome if they stay focused.
 - Read [docs/crypto-spec/overview.md](docs/crypto-spec/overview.md). Behaviour
   that disagrees with the spec or the golden vectors is a bug.
 - Product versions live in [VERSIONS](VERSIONS). They are the same numbers
-  as the shipped apps (web Revision 51 is Revision 51, not a GitHub-only
+  as the shipped apps (web Revision 65 is Revision 65, not a GitHub-only
   0.x). Bump that file first, then `web/js/app.js`, `web/index.html`, the
   extension manifests, and (outside this tree) Android `version.properties`.
   Do not let studio copies drift. Sync studio → this tree, never the reverse.

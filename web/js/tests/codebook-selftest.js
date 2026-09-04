@@ -4,7 +4,16 @@
  * Selbsttest Tafel-Tag / Not-Aus / Generator (Parity Android).
  * Ausführen: node js/tests/codebook-selftest.js
  */
-import { parseCodebookJson, todayOnSheet, sheetDiffersFromCalendar } from '../codebook.js';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  parseCodebookJson,
+  todayOnSheet,
+  sheetDiffersFromCalendar,
+  IMPORT_REJECTED,
+} from '../codebook.js';
+import { parseCodebookQrPayload } from '../codebook-qr.js';
 import { generateMonthSheet, daysInMonth, monthLabel } from '../codebook-generate.js';
 import {
   buildCompressedQrPayload,
@@ -107,7 +116,7 @@ assert(daysInMonth(2026, 4) === 30, 'days Apr 2026');
 assert(monthLabel(2026, 8, 'en') === 'August 2026', 'month label en');
 assert(monthLabel(2026, 7, 'de') === 'Juli 2026', 'month label de');
 
-const generated = generateMonthSheet(2026, 8, 'de');
+const generated = await generateMonthSheet(2026, 8, 'de');
 assert(generated.days.length === 31, 'generated August has 31 days');
 assert(generated.format === 'alberich-codebook', 'generated format');
 assert(generated.formatVersion === 1, 'generated formatVersion mix');
@@ -124,7 +133,7 @@ if (parsedGen.ok) {
   assert(parsedGen.sheet.days[0].keyCode === generated.days[0].keyCode, 'parsed keyCode');
 }
 
-const march = generateMonthSheet(2026, 3, 'en');
+const march = await generateMonthSheet(2026, 3, 'en');
 for (const d of march.days) {
   assert(['B', 'C', 'D'].includes(d.reflectorId), `reflector ${d.day}`);
   assert(THIN_ROTOR_IDS.includes(d.rotorThin), `thin ${d.day}`);
@@ -150,8 +159,8 @@ for (const d of march.days) {
 }
 
 const zero = () => 0;
-const detA = generateMonthSheet(2026, 1, 'de', { rng: zero, generatedAt: 't' });
-const detB = generateMonthSheet(2026, 1, 'de', { rng: zero, generatedAt: 't' });
+const detA = await generateMonthSheet(2026, 1, 'de', { rng: zero, generatedAt: 't' });
+const detB = await generateMonthSheet(2026, 1, 'de', { rng: zero, generatedAt: 't' });
 assert(
   detA.days.map((d) => d.keyCode).join() === detB.days.map((d) => d.keyCode).join(),
   'deterministic rng stable',
@@ -162,7 +171,7 @@ assert(detA.days[0].ringCode === 'AAAA', 'zero rng rings = AAAA');
 
 let threw = false;
 try {
-  generateMonthSheet(1899, 1);
+  await generateMonthSheet(1899, 1);
 } catch {
   threw = true;
 }
@@ -181,7 +190,7 @@ assert(pickReflectorIdForPolicy('permutation', (ids) => ids[0]) === null, 'permu
 assert(pickReflectorIdForPolicy('dora', (ids) => ids[0]) === 'D', 'dora policy picks Dora');
 assert(pickReflectorIdForPolicy('historic', (ids) => ids[1]) === 'C', 'historic policy uses Bruno/Caesar');
 
-const onlyDora = generateMonthSheet(2026, 4, 'de', { endwalzePolicy: 'dora' });
+const onlyDora = await generateMonthSheet(2026, 4, 'de', { endwalzePolicy: 'dora' });
 assert(onlyDora.formatVersion === 2, 'dora sheet version 2');
 assert(onlyDora.endwalzePolicy === 'dora', 'dora sheet policy');
 assert(onlyDora.days.every((d) => d.reflectorId === 'D'), 'dora sheet all Dora');
@@ -189,13 +198,13 @@ assert(onlyDora.days.every((d) => isFreeDoraPairs(d.reflectorD)), 'dora sheet 13
 const parsedDora = parseCodebookJson(onlyDora);
 assert(parsedDora.ok && parsedDora.sheet.endwalzePolicy === 'dora', 'dora sheet parses with policy');
 
-const historic = generateMonthSheet(2026, 5, 'de', { endwalzePolicy: 'historic' });
+const historic = await generateMonthSheet(2026, 5, 'de', { endwalzePolicy: 'historic' });
 assert(historic.formatVersion === 1, 'historic sheet version 1');
 assert(historic.endwalzePolicy === 'historic', 'historic sheet policy');
 assert(historic.days.every((d) => d.reflectorId === 'B' || d.reflectorId === 'C'), 'historic only B/C');
 assert(historic.days.every((d) => d.reflectorD == null), 'historic no dora pairs');
 
-const mixForced = generateMonthSheet(2026, 6, 'en', { endwalzePolicy: 'mix' });
+const mixForced = await generateMonthSheet(2026, 6, 'en', { endwalzePolicy: 'mix' });
 assert(mixForced.endwalzePolicy === 'mix', 'explicit mix policy');
 const mixDoraDays = mixForced.days.filter((d) => d.reflectorId === 'D');
 assert(
@@ -245,7 +254,7 @@ const rejected = parseCodebookJson({
 });
 assert(!rejected.ok, 'formatVersion 3 without V3 day fields rejected');
 
-const v3sheet = generateMonthSheet(2026, 9, 'de', { endwalzePolicy: 'permutation' });
+const v3sheet = await generateMonthSheet(2026, 9, 'de', { endwalzePolicy: 'permutation' });
 assert(v3sheet.formatVersion === 3, 'permutation sheet is v3');
 assert(parseCodebookJson(v3sheet).ok, 'permutation sheet parses');
 const v3slim = sheetToSlimExportObject(v3sheet);
@@ -383,6 +392,65 @@ assert(
   assert(!parseCodebookJson({ ...base, networkContext: 'Mein Netz!!' }).ok, 'network punctuation not repaired');
   assert(parseCodebookJson({ ...base, networkContext: 'ALB' }).ok, 'strict network ALB ok');
   assert(!parseCodebookJson({ ...base, days: [{ ...v3day, date: '2026-07-01' }] }).ok, 'date/month mismatch rejected');
+
+  function rejected(raw, msg) {
+    const r = parseCodebookJson(raw);
+    assert(!r.ok && r.rejected === IMPORT_REJECTED && !r.sheet, msg);
+    return r;
+  }
+
+  const snapshot = JSON.stringify(base);
+  rejected({ ...base, days: [{ ...v3day, rotorLeft: undefined }] }, 'W4: missing main rotor rejected');
+  rejected({ ...base, days: [{ ...v3day, rotorThin: 'I' }] }, 'W4: thin slot with main ID rejected');
+  rejected({ ...base, days: [{ ...v3day, rotorLeft: 'I', rotorMiddle: 'I', rotorRight: 'II' }] }, 'W4: duplicate main rotor rejected');
+  rejected({ ...base, days: [{ ...v3day, ringCode: 'ABC' }] }, 'W4: short ring setting rejected');
+  rejected({ ...base, days: [{ ...v3day, ringCode: 'A1CD' }] }, 'W4: ring digit rejected, not repaired');
+  rejected({ ...base, days: [{ ...v3day, plugboard: 'AB AC CD EF GH IJ KL MN OP QR' }] }, 'W4: contradictory plugboard rejected');
+  rejected({ ...base, days: [{ ...v3day, endwalzeWiring: 'QWERTYUIOPASDFGHJKLZXCVBNB' }] }, 'W4: non-bijective endwalze rejected');
+  rejected({ ...base, days: [{ ...v3day, endwalzeWiring: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' }] }, 'W4: involutory endwalze rejected');
+  rejected({ ...base, days: [{ ...v3day, lueckenfueller: { left: 'AFLRA', middle: 'BEIMQUY', right: 'CDHKNPSVZ' } }] }, 'W4: duplicate notch rejected');
+  rejected({ ...base, days: [{ ...v3day, lueckenfueller: { left: 'XRFAL', middle: 'BEIMQUY', right: 'CDHKNPSVZ' } }] }, 'W4: unsorted notches not silently sorted');
+  rejected({ ...base, formatVersion: '3' }, 'W4: string formatVersion rejected');
+  rejected('{"format":"alberich-codebook","formatVersion":3', 'W4: truncated JSON rejected');
+  rejected({ ...base, days: [v3day, { ...v3day, day: 32 }] }, 'W4: day 32 rejected');
+  rejected({ ...base, monthIndex0: 0 }, 'W4: contradictory monthIndex0 rejected');
+  rejected({
+    ...base,
+    days: [v3day, { ...v3day, day: 2, rotorLeft: 'I', rotorMiddle: 'I', rotorRight: 'II' }],
+  }, 'W4: second-day fault rejects whole sheet');
+  assert(JSON.stringify(base) === snapshot, 'W4: failed parse does not mutate input');
+  assert(parseCodebookJson(base).ok && parseCodebookJson(base).sheet.days.length === 1, 'W4: valid sheet still imports after a failed sibling');
+
+  const mixed = parseCodebookJson({
+    ...base,
+    days: [v3day, { ...v3day, day: 2, rotorLeft: 'IX' }],
+  });
+  assert(!mixed.sheet, 'W4: no partial sheet object on failure');
+}
+
+{
+  const demoPath = join(dirname(fileURLToPath(import.meta.url)), '../../examples/demo-codebook-v3.json');
+  const demo = JSON.parse(readFileSync(demoPath, 'utf8'));
+  const parsedDemo = parseCodebookJson(demo);
+  assert(parsedDemo.ok, 'W4: demo V3 month sheet still imports');
+  assert(parsedDemo.sheet.days.length === demo.days.length, 'W4: demo day count kept');
+}
+
+{
+  const qr = buildCompressedQrPayload(v3sheet);
+  const fromQr = parseCodebookQrPayload(qr.payload);
+  assert(fromQr.ok, 'W4: generated V3 CBQR1 still imports');
+  assert(fromQr.sheet.days.length === v3sheet.days.length, 'W4: CBQR1 day count');
+  const badMagic = parseCodebookQrPayload('ALBERICH-CBQR9|gzip|xxxx');
+  assert(!badMagic.ok, 'W4: unknown CBQR magic rejected');
+  const tamperedSlim = sheetToSlimExportObject(v3sheet);
+  tamperedSlim.days = [
+    typeof tamperedSlim.days[0] === 'string'
+      ? `${tamperedSlim.days[0].slice(0, -4)}XXXX`
+      : tamperedSlim.days[0],
+  ];
+  const tampered = parseCodebookJson(expandSlimQrObject(tamperedSlim));
+  assert(!tampered.ok && tampered.rejected === IMPORT_REJECTED, 'W4: tampered CBQR1 day rejected, no partial import');
 }
 
 if (failed > 0) {

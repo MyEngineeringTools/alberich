@@ -1,0 +1,90 @@
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR layout preview</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { margin: 0; background: #0f172a; }
+    .row { display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; align-items: flex-start; }
+    .lab { color: #94a3b8; font: 12px sans-serif; margin: 0 0 8px; }
+    .fake-qr {
+      width: 320px; height: 320px; max-width: 100%;
+      background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 16px 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div>
+      <p class="lab">A live share (img hidden)</p>
+      <div class="modal-card qr-share-card" style="width: min(640px, 100%)">
+        <h2>QR-Code der Tafel</h2>
+        <p class="qr-share-tafelwort">Tafelwort: C13E-5BA7-A7C8</p>
+        <p class="muted" id="qrShareMeta">Testnetz · September 2026 · V3 gehärtet · 1 Stunde</p>
+        <div class="qr-preview-wrap">
+          <img id="liveImg" alt="" width="560" height="560" hidden>
+          <canvas id="qrShareCanvas" width="320" height="320"></canvas>
+          <p class="qr-share-paused" hidden>Übertragung pausiert</p>
+        </div>
+        <p class="muted" id="qrShareLiveHint">Der Empfänger hält die Kamera auf den QR-Code.</p>
+      </div>
+    </div>
+    <div>
+      <p class="lab">B live pause</p>
+      <div class="modal-card qr-share-card" style="width: min(640px, 100%)">
+        <h2>QR-Code der Tafel</h2>
+        <p class="qr-share-tafelwort">Tafelwort: C13E-5BA7-A7C8</p>
+        <p class="muted">Testnetz · September 2026 · V3 gehärtet · 1 Stunde</p>
+        <div class="qr-preview-wrap">
+          <img alt="" width="560" height="560" hidden>
+          <canvas class="fake-pause-canvas" width="320" height="320" style="width:320px;height:320px;background:#fff"></canvas>
+          <p class="qr-share-paused">Übertragung pausiert</p>
+        </div>
+        <p class="muted">Der Empfänger hält die Kamera auf den QR-Code.</p>
+      </div>
+    </div>
+    <div>
+      <p class="lab">C CBQR1 static</p>
+      <div class="modal-card qr-share-card">
+        <h2>QR-Code der Tafel</h2>
+        <p class="qr-share-tafelwort">Tafelwort: ABCD-1234</p>
+        <p class="muted">Komprimierte Monatstafel</p>
+        <div class="qr-preview-wrap">
+          <img alt="static" width="560" height="560" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><rect width='280' height='280' fill='white'/><rect x='20' y='20' width='240' height='240' fill='black'/></svg>">
+          <canvas hidden></canvas>
+          <p class="qr-share-paused" hidden>Übertragung pausiert</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="lab">D scanner</p>
+      <div class="modal-card qr-scan-card">
+        <h2>Schlüsseltafel scannen</h2>
+        <p class="muted">QR-Code vollständig im Rahmen halten.</p>
+        <div class="qr-scan-viewport">
+          <video muted></video>
+          <div class="qr-scan-frame" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const c = document.getElementById('qrShareCanvas');
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, 320, 320);
+    ctx.fillStyle = '#000';
+    for (let y = 0; y < 320; y += 16) {
+      for (let x = 0; x < 320; x += 16) {
+        if (((x + y) / 16) % 2) ctx.fillRect(x, y, 16, 16);
+      }
+    }
+    c.style.width = '320px';
+    c.style.height = '320px';
+  </script>
+</body>
+</html>

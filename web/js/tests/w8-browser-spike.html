@@ -1,0 +1,57 @@
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>W8 browser spike</title>
+</head>
+<body>
+  <pre id="out">running…</pre>
+  <script type="module">
+    import { encodeCbqr2Transport, decodeCbqr2Transport, TRANSPORT_CODEC } from '../cbqr2-transport.js';
+    import { UrBytesDecoder, UrBytesEncoder } from '../ur-bytes.js';
+
+    const out = document.getElementById('out');
+    function report(payload) {
+      out.textContent = JSON.stringify(payload, null, 2);
+      document.title = payload.ok ? 'W8_SPIKE_PASS' : 'W8_SPIKE_FAIL';
+    }
+
+    try {
+      const payload = new Uint8Array(64);
+      crypto.getRandomValues(payload);
+      const env = await encodeCbqr2Transport(payload, TRANSPORT_CODEC.GZIP);
+      if (!env.ok) throw new Error(env.error);
+      const enc = new UrBytesEncoder(env.bytes, { maxFragmentLen: 40, minFragmentLen: 10 });
+      const dec = new UrBytesDecoder();
+      let frames = 0;
+      while (!dec.isComplete && frames < enc.seqLen * 10) {
+        const frame = await enc.nextPart();
+        if (typeof Buffer !== 'undefined' && frames === 0) {
+          report({ ok: false, error: 'unexpected Buffer in browser spike' });
+          throw new Error('Buffer');
+        }
+        await dec.receive(frame);
+        frames += 1;
+      }
+      if (!dec.isSuccess) throw new Error('incomplete');
+      const back = await decodeCbqr2Transport(dec.result);
+      if (!back.ok || back.bytes.length !== payload.length) throw new Error(back.error || 'roundtrip');
+      let d = 0;
+      for (let i = 0; i < payload.length; i++) d |= payload[i] ^ back.bytes[i];
+      if (d !== 0) throw new Error('payload mismatch');
+      report({
+        ok: true,
+        codec: env.codec,
+        seqLen: enc.seqLen,
+        frames,
+        nativeGzip: typeof CompressionStream === 'function',
+        hasBuffer: typeof Buffer !== 'undefined',
+      });
+    } catch (err) {
+      report({ ok: false, error: String(err?.message || err) });
+    }
+  </script>
+</body>
+</html>

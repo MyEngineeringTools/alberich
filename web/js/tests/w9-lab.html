@@ -1,0 +1,240 @@
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>W9 Labor — CBQR2 QR-Kanal</title>
+  <style>
+    :root { color-scheme: light; }
+    body { font: 14px/1.4 system-ui, sans-serif; margin: 0; background: #f4f1ea; color: #1a1a1a; }
+    header { background: #3d2b1f; color: #f4f1ea; padding: 12px 16px; }
+    header strong { display: block; font-size: 16px; }
+    header span { opacity: .8; font-size: 12px; }
+    main { display: grid; gap: 16px; padding: 16px; max-width: 1100px; margin: 0 auto; }
+    @media (min-width: 900px) { main { grid-template-columns: 1fr 1fr; } }
+    section { background: #fff; border: 1px solid #d7cfc4; padding: 12px; }
+    h2 { margin: 0 0 8px; font-size: 15px; }
+    label { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0; }
+    input, select { min-width: 8rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    button { padding: 6px 10px; }
+    canvas { display: block; margin: 8px auto; background: #fff; image-rendering: pixelated; }
+    video { width: 100%; max-height: 240px; background: #111; object-fit: cover; }
+    pre { white-space: pre-wrap; font-size: 12px; background: #faf8f4; padding: 8px; min-height: 4em; }
+    .warn { color: #7a2e0e; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>W9 Labor — nicht der normale Alberich-Share</strong>
+    <span>Kein Netzwerk, keine Telemetrie, keine URL-Payloads. Lokal: <code>./start.sh</code> → http://localhost:8765/js/tests/w9-lab.html</span>
+  </header>
+  <main>
+    <section>
+      <h2>Sender</h2>
+      <label>Profil
+        <select id="profile">
+          <option value="DAY_24H">DAY_24H</option>
+          <option value="HOURS_4" selected>HOURS_4</option>
+          <option value="HOUR_1">HOUR_1</option>
+        </select>
+      </label>
+      <label>Jahr / Monat / Seed
+        <span>
+          <input id="year" type="number" value="2026" style="width:4.5rem">
+          <input id="month" type="number" value="8" min="1" max="12" style="width:3rem">
+          <input id="seed" type="number" value="4" style="width:4rem">
+        </span>
+      </label>
+      <label>Modus
+        <select id="mode">
+          <option value="DYNAMIC" selected>DYNAMIC (MUR)</option>
+          <option value="STATIC">STATIC (Base64url)</option>
+        </select>
+      </label>
+      <label>Codec
+        <select id="codec">
+          <option value="1" selected>GZIP</option>
+          <option value="0">RAW</option>
+        </select>
+      </label>
+      <label>Fragment (Byte)
+        <select id="frag">
+          <option>150</option>
+          <option>200</option>
+          <option selected>250</option>
+          <option>300</option>
+          <option>350</option>
+        </select>
+      </label>
+      <label>fps
+        <select id="fps">
+          <option>2</option>
+          <option>3</option>
+          <option selected>4</option>
+          <option>5</option>
+          <option>6</option>
+        </select>
+      </label>
+      <label>ECC
+        <select id="ecc"><option selected>M</option><option>L</option><option>Q</option><option>H</option></select>
+      </label>
+      <label>QR-Größe
+        <select id="size">
+          <option value="180">klein 180</option>
+          <option value="320" selected>mittel 320</option>
+          <option value="512">groß 512</option>
+        </select>
+      </label>
+      <div class="row">
+        <button id="startSend" type="button">Start</button>
+        <button id="pauseSend" type="button">Pause</button>
+        <button id="resumeSend" type="button">Weiter</button>
+        <button id="stopSend" type="button">Abbruch</button>
+      </div>
+      <canvas id="qr" width="320" height="320"></canvas>
+      <pre id="sendMeta">kein Stream</pre>
+    </section>
+    <section>
+      <h2>Scanner</h2>
+      <p class="warn">Kamera nur im sicheren Kontext (localhost/https). BarcodeDetector wenn <code>qr_code</code> unterstützt, sonst jsQR.</p>
+      <div class="row">
+        <button id="startScan" type="button">Kamera start</button>
+        <button id="stopScan" type="button">Kamera stop</button>
+        <button id="loopback" type="button">Canvas→jsQR (ohne Kamera)</button>
+      </div>
+      <video id="cam" playsinline muted></video>
+      <pre id="scanMeta">kein Scan</pre>
+    </section>
+  </main>
+  <script type="module">
+    import { TIME_PROFILE } from '../alberich-key-time.js';
+    import { generateTimebook } from '../timebook-generate.js';
+    import { freezeShareSession, LabSender, LAB_MODE } from '../cbqr2-lab-session.js';
+    import {
+      LabScanLoop,
+      LabReceiver,
+      decodeJsQrFromRgba,
+      detectLabCapabilities,
+      classifyCameraError,
+      TRANSFER,
+    } from '../cbqr2-lab-scan.js';
+
+    const $ = (id) => document.getElementById(id);
+    const sender = new LabSender();
+    sender.attach($('qr'));
+    const scan = new LabScanLoop();
+    let loopbackTimer = 0;
+
+    function lcg(seed) {
+      let s = seed >>> 0;
+      return (max) => {
+        s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+        return s % max;
+      };
+    }
+
+    function sendInfo(extra) {
+      const s = sender.session;
+      const m = sender.lastMetrics;
+      $('sendMeta').textContent = s
+        ? [
+            `mode=${s.mode} codec=${s.codec === 1 ? 'GZIP' : 'RAW'} seqLen=${s.seqLen}`,
+            `cbqr2=${s.cbqr2Length} env=${s.envelopeLength} frag=${s.maxFragmentLen}`,
+            `fp=${s.codebookFingerprint.slice(0, 16)}…`,
+            m ? `QR v${m.type} modules=${m.modules} mode=${m.mode} canvas=${m.canvasPx}px module=${m.moduleCssPx}css/${m.moduleDevicePx.toFixed(2)}dev frames=${sender.framesShown}` : '',
+            extra || '',
+          ].filter(Boolean).join('\n')
+        : extra || 'kein Stream';
+    }
+
+    $('startSend').onclick = async () => {
+      try {
+        const profile = TIME_PROFILE[$('profile').value];
+        const { timebook } = await generateTimebook(
+          Number($('year').value),
+          Number($('month').value),
+          profile,
+          { rng: lcg(Number($('seed').value)) },
+        );
+        const session = await freezeShareSession({
+          timebook,
+          codec: Number($('codec').value),
+          mode: $('mode').value === 'STATIC' ? LAB_MODE.STATIC : LAB_MODE.DYNAMIC,
+          maxFragmentLen: Number($('frag').value),
+          ecc: $('ecc').value,
+        });
+        if (!session.ok) throw new Error(session.error);
+        await sender.start(session, {
+          fps: Number($('fps').value),
+          cssSize: Number($('size').value),
+        });
+        sendInfo('gestartet');
+      } catch (err) {
+        $('sendMeta').textContent = String(err?.message || err);
+      }
+    };
+    $('pauseSend').onclick = () => { sender.pause(); sendInfo('pause'); };
+    $('resumeSend').onclick = () => { sender.resume(); sendInfo('weiter'); };
+    $('stopSend').onclick = () => { sender.abort(); sendInfo('abbruch'); };
+
+    function showScan(result, progress) {
+      const p = progress || scan.receiver.progress();
+      $('scanMeta').textContent = [
+        `status=${p.status} ${p.label}`,
+        `unique=${p.uniqueQr} dups=${p.duplicates} decodes=${p.qrDecodes}`,
+        scan.receiver.codebookFingerprint ? `fp=${scan.receiver.codebookFingerprint.slice(0, 16)}…` : '',
+        scan.receiver.error ? `error=${scan.receiver.error}` : '',
+        result?.kind ? `last=${result.kind}` : '',
+      ].filter(Boolean).join('\n');
+    }
+
+    $('startScan').onclick = async () => {
+      try {
+        const caps = await detectLabCapabilities();
+        $('scanMeta').textContent = JSON.stringify(caps);
+        await scan.start({
+          video: $('cam'),
+          onText: showScan,
+          onError: (err) => {
+            $('scanMeta').textContent = `${classifyCameraError(err)} ${err?.name || ''}`.trim();
+          },
+        });
+      } catch (err) {
+        $('scanMeta').textContent = `${classifyCameraError(err)} (${err?.name || err})`;
+      }
+    };
+    $('stopScan').onclick = () => {
+      scan.abort();
+      $('scanMeta').textContent = 'kamera stop';
+    };
+
+    $('loopback').onclick = () => {
+      const rec = new LabReceiver();
+      const canvas = $('qr');
+      if (loopbackTimer) clearInterval(loopbackTimer);
+      loopbackTimer = setInterval(async () => {
+        if (!sender.running || rec.status === TRANSFER.VALID) {
+          clearInterval(loopbackTimer);
+          loopbackTimer = 0;
+          showScan({ kind: rec.status }, rec.progress());
+          return;
+        }
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx || !canvas.width) return;
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const text = decodeJsQrFromRgba(img.data, img.width, img.height);
+        if (text) await rec.ingest(text);
+        showScan({ kind: rec.status }, rec.progress());
+      }, 80);
+    };
+
+    detectLabCapabilities().then((c) => {
+      $('scanMeta').textContent = `caps: camera=${c.getUserMedia} BarcodeDetector=${c.useBarcodeDetector} jsQR=${c.jsQR} secure=${c.secureContext}`;
+    });
+  </script>
+</body>
+</html>

@@ -136,20 +136,48 @@ export async function decodeQrTextFromImageSource(source) {
 }
 
 /**
+ * Live-Video wird absichtlich anders behandelt als Bildimporte:
+ * - BarcodeDetector (falls vorhanden) bekommt weiterhin den kompletten Frame.
+ * - jsQR dekodiert pro Versuch nur eine Region. So bleibt die CPU-Last auf
+ *   älteren Geräten niedrig und der sichtbare quadratische Scanbereich wird
+ *   gegenüber irrelevanten Bildrändern priorisiert.
+ *
+ * scanPass:
+ *   0 = mittlere 78 % des sichtbaren Quadrats (schnellster/typischer Fall)
+ *   1 = 96 % des sichtbaren Quadrats
+ *   2 = kompletter Sensorframe als Fallback
+ *
  * @param {HTMLVideoElement} video
+ * @param {{ scanPass?: number }} [options]
  * @returns {Promise<string|null>}
  */
-export async function decodeQrTextFromVideoFrame(video) {
+export async function decodeQrTextFromVideoFrame(video, { scanPass = 0, preferFullFrame = false } = {}) {
   if (!video.videoWidth || !video.videoHeight) return null;
-  return decodeQrTextFromImageSource(video);
+
+  const native = await tryBarcodeDetector(video);
+  if (native) return native;
+
+  return decodeVideoWithJsQr(video, preferFullFrame ? 2 : scanPass);
 }
+
+let nativeQrDetector = null;
 
 /** @param {CanvasImageSource} source */
 async function tryBarcodeDetector(source) {
   if (typeof BarcodeDetector === 'undefined') return null;
   try {
-    const detector = new BarcodeDetector({ formats: ['qr_code'] });
-    const codes = await detector.detect(source);
+    if (nativeQrDetector === false) return null;
+    if (!nativeQrDetector) {
+      if (typeof BarcodeDetector.getSupportedFormats === 'function') {
+        const formats = await BarcodeDetector.getSupportedFormats();
+        if (!Array.isArray(formats) || !formats.includes('qr_code')) {
+          nativeQrDetector = false;
+          return null;
+        }
+      }
+      nativeQrDetector = new BarcodeDetector({ formats: ['qr_code'] });
+    }
+    const codes = await nativeQrDetector.detect(source);
     const raw = codes?.[0]?.rawValue;
     return typeof raw === 'string' && raw.length ? raw : null;
   } catch {
@@ -157,7 +185,13 @@ async function tryBarcodeDetector(source) {
   }
 }
 
+let scanCanvas = null;
+
 /**
+ * Statischer Bildimport: hier ist ein etwas größerer Decode-Puffer vertretbar,
+ * weil nur einmal dekodiert wird. Kein Upscaling - künstliche Pixel verbessern
+ * die Information nicht und kosten auf älteren iPads unnötig CPU.
+ *
  * @param {CanvasImageSource} source
  * @returns {string|null}
  */
@@ -165,21 +199,96 @@ function decodeWithJsQr(source) {
   const { width: sw, height: sh } = getSourceSize(source);
   if (!sw || !sh) return null;
 
-  const maxSide = 1400;
-  const scale = Math.min(1, maxSide / Math.max(sw, sh));
-  const w = Math.max(1, Math.round(sw * scale));
-  const h = Math.max(1, Math.round(sh * scale));
+  return decodeRegionWithJsQr(source, {
+    sx: 0,
+    sy: 0,
+    sw,
+    sh,
+    maxSide: 1800,
+    inversionAttempts: 'attemptBoth',
+  });
+}
 
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+/**
+ * @param {HTMLVideoElement} video
+ * @param {number} scanPass
+ * @returns {string|null}
+ */
+function decodeVideoWithJsQr(video, scanPass) {
+  const sw = video.videoWidth;
+  const sh = video.videoHeight;
+  const pass = ((Number(scanPass) % 3) + 3) % 3;
+
+  if (pass === 2) {
+    return decodeRegionWithJsQr(video, {
+      sx: 0,
+      sy: 0,
+      sw,
+      sh,
+      maxSide: 1536,
+      inversionAttempts: 'dontInvert',
+    });
+  }
+
+  // Die Vorschau ist quadratisch und nutzt object-fit: cover.
+  // Deshalb entspricht das sichtbare Sensorfenster dem mittigen Quadrat
+  // des nativen Videoframes.
+  const visibleSide = Math.min(sw, sh);
+  const visibleX = (sw - visibleSide) / 2;
+  const visibleY = (sh - visibleSide) / 2;
+  const fraction = pass === 0 ? 0.78 : 0.96;
+  const side = visibleSide * fraction;
+
+  return decodeRegionWithJsQr(video, {
+    sx: visibleX + (visibleSide - side) / 2,
+    sy: visibleY + (visibleSide - side) / 2,
+    sw: side,
+    sh: side,
+    maxSide: 1536,
+    inversionAttempts: 'dontInvert',
+  });
+}
+
+/**
+ * @param {CanvasImageSource} source
+ * @param {{
+ *   sx: number, sy: number, sw: number, sh: number,
+ *   maxSide: number,
+ *   inversionAttempts: 'dontInvert'|'onlyInvert'|'attemptBoth'|'invertFirst'
+ * }} region
+ * @returns {string|null}
+ */
+function decodeRegionWithJsQr(source, region) {
+  const cropW = Math.max(1, Math.round(region.sw));
+  const cropH = Math.max(1, Math.round(region.sh));
+  const scale = Math.min(1, region.maxSide / Math.max(cropW, cropH));
+  const w = Math.max(1, Math.round(cropW * scale));
+  const h = Math.max(1, Math.round(cropH * scale));
+
+  if (!scanCanvas) scanCanvas = document.createElement('canvas');
+  if (scanCanvas.width !== w) scanCanvas.width = w;
+  if (scanCanvas.height !== h) scanCanvas.height = h;
+
+  const ctx = scanCanvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return null;
 
-  ctx.drawImage(source, 0, 0, w, h);
+  // Bei eventueller Skalierung keine zusätzliche Glättung erzeugen.
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(
+    source,
+    Math.round(region.sx),
+    Math.round(region.sy),
+    cropW,
+    cropH,
+    0,
+    0,
+    w,
+    h,
+  );
+
   const imageData = ctx.getImageData(0, 0, w, h);
   const code = jsQR(imageData.data, imageData.width, imageData.height, {
-    inversionAttempts: 'attemptBoth',
+    inversionAttempts: region.inversionAttempts,
   });
   return code?.data || null;
 }

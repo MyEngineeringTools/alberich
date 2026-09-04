@@ -3,6 +3,36 @@
 Versions in this repository are the same as the shipped apps. There is no
 separate GitHub 0.x line.
 
+## 1.0 (Revision 65) — web
+
+Folgt **1.0 (Revision 52)** in this tree (53–64 were local Web revisions).
+Web V3 gehärtet: Zeitslots 24 h / 4 h / 1 h, CBQR2/MUR-Live-QR, Binärdatei
+`.alb3cb2`, Alberich-Schlüsselzeit MEZ, MAC-first-Suche. Cipher-Kern und
+Telegramm `ALBV` unverändert.
+
+Research fingerprint moves because `codebook.js` / `codebook-generate.js`
+now reject timebook JSON and enforce unique V3 full keys on daily sheets.
+
+- Web app under `web/` — version `1.0 (Revision 65)`.
+- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.16`.
+- Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
+
+## 1.0 (Revision 52) — web
+
+Folgt **1.0 (Revision 51)**. QR-Live-Scan für ältere Mobilgeräte/iPads
+optimiert: 4:3/High-Res-Kameraauswahl, capability-basiertes Kameratuning
+und mehrstufige ROI-Erkennung für Schlüsseltafeln und Kurier.
+Modern V3 unverändert.
+
+Research stamp bleibt unverändert; die Scanneränderungen betreffen keine
+Algorithmus-JavaScript-Dateien des Research-Fingerprints.
+
+- Web app under `web/` — version `1.0 (Revision 52)`.
+- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
+- Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
+
 ## 1.0 (Revision 51) — web
 
 Folgt **1.0 (Revision 50)**. Rear-camera QR preview is no longer

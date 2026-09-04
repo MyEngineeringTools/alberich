@@ -11,6 +11,7 @@ import {
   ALBERICH_CODEBOOK_FORMAT,
   ALBERICH_CODEBOOK_FORMAT_VERSION,
 } from './codebook.js';
+import { rejectTimebookExport } from './timebook.js';
 
 export const QR_PAYLOAD_MAGIC = 'ALBERICH-CBQR1';
 export const QR_COMPRESSION = 'gzip';
@@ -28,6 +29,7 @@ const QR_ECC_ORDER = ['M', 'Q', 'L', 'H'];
  * @returns {object}
  */
 export function sheetToExportObject(sheet) {
+  rejectTimebookExport(sheet);
   const month = Number(sheet.month);
   const year = Number(sheet.year);
   const monthIndex0 =
@@ -63,6 +65,7 @@ export function sheetToExportObject(sheet) {
  * @param {CodebookSheet} sheet
  */
 export function sheetToSlimExportObject(sheet) {
+  rejectTimebookExport(sheet);
   const full = sheetToExportObject(sheet);
   const v3 = Number(full.formatVersion) >= 3;
   /** @type {Record<string, unknown>} */

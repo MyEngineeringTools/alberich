@@ -1,4 +1,19 @@
-# Changelog – Alberich Thunderbird
+# Changelog – Alberich Mail Companion
+
+## 1.0.16
+
+- Add-on-Name vollständig auf **Alberich Mail Companion** vereinheitlicht.
+- Alte Thunderbird-Nennung aus der Produktbezeichnung, UI-Tagline, Store- und Reviewer-Texten entfernt.
+- Build-/Paketname auf `alberich-mail-companion-1.0.16.xpi` umgestellt.
+
+## 1.0.15
+
+- Add-on-Name: Alberich Mail Companion (Mozilla-Markenformat)
+- XPI ohne ungenutzte Dateien (`shared/tests/`, `messages-de.js`, Legacy-`demo-codebook.json`)
+- Permission `clipboardRead` entfernt; Einfügen bleibt ein Textfeld. `clipboardWrite` bleibt (Kopieren im Klartext-Tab)
+- Statuszeile: Tafelwort und Monatsabweichung (fehlende i18n-Keys)
+
+Folgt der auf ATN abgelehnten **1.0.14**.
 
 ## 1.0.14
 

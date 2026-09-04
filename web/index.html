@@ -5,14 +5,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alberich – Enigma M4 Simulator online | kostenlos</title>
-  <meta name="description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.">
-  <meta name="keywords" content="Enigma M4, Enigma Simulator, Vier-Walzen-Chiffre, Kriegsmarine, Spruchschlüssel, Schlüsseltafel, Alberich, online cipher">
+  <title>Alberich – Moderne Enigma-Verschlüsselung | M4 &amp; Modern V3</title>
+  <meta name="description" content="Alberich verbindet eine historische Enigma-M4-Simulation mit Modern V3, moderner Rotor-Verschlüsselung, Base-26, Schlüsseltafeln und Kurier-Modus direkt im Browser.">
+  <meta name="keywords" content="Alberich, Enigma M4, Modern V3, Rotor-Verschlüsselung, Schlüsseltafel, Kurier, Base-26, Enigma Simulation">
   <meta name="author" content="My Engineering Tools – Christian Peter Kaiser">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0f172a">
   <meta name="color-scheme" content="dark">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5CuIaWM/kS3I6urXtmlut1Qv4ZaXSlvz4vy+YkQEasY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-SzNMjjJ8hehQg3v9D+heb8LfEEJX1GDFQYsl9nm6FPI='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer">
   <meta http-equiv="Permissions-Policy" content="camera=(self), microphone=(), geolocation=(), payment=(), usb=()">
@@ -29,32 +29,32 @@
   <meta property="og:url" content="https://alberich.pro/">
   <meta property="og:locale" content="de_DE">
   <meta property="og:locale:alternate" content="en_GB">
-  <meta property="og:title" content="Alberich – Enigma M4 Simulator online | kostenlos">
-  <meta property="og:description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch.">
+  <meta property="og:title" content="Alberich – Moderne Enigma-Verschlüsselung | M4 &amp; Modern V3">
+  <meta property="og:description" content="Alberich verbindet eine historische Enigma-M4-Simulation mit Modern V3, moderner Rotor-Verschlüsselung, Base-26, Schlüsseltafeln und Kurier-Modus direkt im Browser.">
   <meta property="og:image" content="https://alberich.pro/assets/og-image.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Alberich – Enigma M4 Simulator">
+  <meta property="og:image:alt" content="Alberich – Klassische Enigma. Moderne Verschlüsselung.">
 
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Alberich – Enigma M4 Simulator online | kostenlos">
-  <meta name="twitter:description" content="Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos – DE/EN.">
+  <meta name="twitter:title" content="Alberich – Moderne Enigma-Verschlüsselung | M4 &amp; Modern V3">
+  <meta name="twitter:description" content="Alberich verbindet eine historische Enigma-M4-Simulation mit Modern V3, Schlüsseltafeln und Kurier-Modus direkt im Browser.">
   <meta name="twitter:image" content="https://alberich.pro/assets/og-image.png">
 
   <link rel="icon" href="assets/icon.png" type="image/png" sizes="any">
   <link rel="apple-touch-icon" href="assets/icon.png">
-  <link rel="stylesheet" href="styles.css?v=51">
+  <link rel="stylesheet" href="styles.css?v=65">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Alberich",
-    "alternateName": "Alberich Enigma M4 Simulator",
+    "alternateName": "Alberich – Enigma M4 & Modern V3",
     "url": "https://alberich.pro/",
-    "description": "Enigma-M4-Simulator im Browser: Walzen, Steckerbrett, Spruchschlüssel und Schlüsseltafeln. Kostenlos, ohne Account – Deutsch und Englisch. Auch als Android-App.",
+    "description": "Alberich verbindet eine historische Enigma-M4-Simulation mit Modern V3, moderner Rotor-Verschlüsselung, Base-26, Schlüsseltafeln und Kurier-Modus direkt im Browser.",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web, Android",
     "browserRequirements": "Requires JavaScript",
@@ -117,9 +117,17 @@
           <span class="mode-status-label" data-i18n="mode.active">Aktiver Modus</span>
           <span class="mode-status-value" id="modeStatusValue">Modern · Spruchschlüssel</span>
         </div>
+        <div class="hardened-live-badge" id="hardenedLiveBadge" hidden>
+          <span class="hardened-live-mode" id="hardenedLiveMode"></span>
+          <span class="hardened-live-slot" id="hardenedLiveSlot"></span>
+          <span class="hardened-live-remain">
+            <span class="hardened-live-remain-label" data-i18n="codebook.liveRemainLabel">Wechsel in</span>
+            <span class="hardened-live-clock mono" id="hardenedLiveClock"></span>
+          </span>
+        </div>
 
         <div class="mode-bar mode-bar-main">
-          <div class="section-title section-title-flush" data-i18n="mode.main">Hauptmodus</div>
+          <div class="section-title" style="margin:0;" data-i18n="mode.main">Hauptmodus</div>
           <div class="mode-toggle" role="group" data-i18n-aria="mode.mainAria" aria-label="Hauptmodus">
             <button type="button" class="mode-btn" id="btnMainTraditional" data-main-mode="traditional" data-i18n="mode.traditional">Traditionell</button>
             <button type="button" class="mode-btn mode-btn-modern active" id="btnMainModern" data-main-mode="modern" data-i18n="mode.modern">Modern</button>
@@ -138,7 +146,7 @@
         </details>
 
         <div class="mode-bar mode-bar-procedure procedure-locked" id="traditionalProcedureBar">
-          <div class="section-title section-title-flush" data-i18n="mode.procedure">Verfahren</div>
+          <div class="section-title" style="margin:0;" data-i18n="mode.procedure">Verfahren</div>
           <div class="mode-toggle" role="group" data-i18n-aria="mode.procedureAria" aria-label="Schlüsselverfahren">
             <button type="button" class="mode-btn" id="btnModeSimple" data-mode="simple" data-i18n="mode.simple" disabled aria-disabled="true">Einfach</button>
             <button type="button" class="mode-btn active" id="btnModeMessage" data-mode="message" data-i18n="mode.message" disabled aria-disabled="true">Spruchschlüssel</button>
@@ -199,7 +207,7 @@
 
       <div class="message-key-bar direction-bar" id="directionBar" hidden>
         <div class="traffic-bar">
-          <div class="section-title section-title-flush" data-i18n="message.trafficType">Eingabe-Art</div>
+          <div class="section-title" style="margin:0;" data-i18n="message.trafficType">Eingabe-Art</div>
           <div class="mode-toggle" role="group" data-i18n-aria="message.trafficTypeAria" aria-label="Klartext oder Geheimtext">
             <button type="button" class="mode-btn active" id="btnRolePlain" data-role="plain" data-i18n="role.plain">Klartext</button>
             <button type="button" class="mode-btn" id="btnRoleCipher" data-role="cipher" data-i18n="role.cipher">Geheimtext</button>
@@ -291,7 +299,7 @@
 
       <div class="rotor-section" id="rotorSection">
         <div class="section-title" data-i18n="rotor.sectionTitle">Aktuelle Walzenstellung</div>
-        <div class="mono-line" id="reflectorLabel">Endwalze PERM · Lagecode B568</div>
+        <div class="mono-line" id="reflectorLabel">Endwalze QWERTYUIOPASDFGHJKLZXCVBNM · Lagecode B568</div>
         <p class="muted endwalze-hint" id="endwalzeHint" hidden data-i18n="modern.endwalzeNote">
           Endwalze: nicht-involutorisch – Entschlüsselung wird automatisch invertiert.
         </p>
@@ -300,6 +308,7 @@
         </div>
         <div class="hint" id="editableHint" hidden data-i18n="rotor.hintSimple">Tippen: Umkehrwalze, Walzen, Startlage und Steckerbrett anpassen</div>
         <div class="rotor-grid" id="rotorGrid"></div>
+        <p class="muted rotor-notch-hint" id="rotorNotchHint" hidden></p>
         <div class="plugboard-head"><span data-i18n="rotor.plugboard">Steckerbrett</span> <span id="plugboardCount">(0/13)</span></div>
         <div class="plugboard-pairs" id="plugboardPairs"></div>
       </div>
@@ -370,7 +379,7 @@
       <p class="muted" id="setupModalIntro">Spruchschlüssel = Startlage der Walzen. Änderungen gelten sofort.</p>
 
       <div class="setup-source-bar">
-        <div class="section-title section-title-flush" data-i18n="setup.source">Schlüsselquelle</div>
+        <div class="section-title" style="margin:0;" data-i18n="setup.source">Schlüsselquelle</div>
         <div class="mode-toggle" role="group" data-i18n-aria="setup.sourceAria" aria-label="Schlüsselquelle">
           <button type="button" class="mode-btn" id="btnSourceCodebook" data-source="codebook" data-i18n="setup.sourceCodebook">Schlüsseltafel</button>
           <button type="button" class="mode-btn active" id="btnSourceManual" data-source="manual" data-i18n="setup.sourceManual">Zufällig / Manuell</button>
@@ -414,6 +423,47 @@
               <select id="codebookGenYear"></select>
             </div>
           </div>
+          <div class="codebook-kind" id="codebookKindBlock" hidden>
+            <span class="codebook-endwalze-label" id="codebookKindLabel" data-i18n="codebook.kindLabel">Tafeltyp</span>
+            <div class="mode-toggle mode-toggle-compact" id="codebookKindToggle" role="radiogroup" aria-labelledby="codebookKindLabel">
+              <button type="button" class="mode-btn mode-btn-modern active" id="btnKindHardened" data-codebook-kind="hardened" aria-pressed="true" data-i18n="codebook.kindHardened">V3 gehärtet</button>
+              <button type="button" class="mode-btn" id="btnKindLegacy" data-codebook-kind="legacy" aria-pressed="false" data-i18n="codebook.kindLegacy">V3 · Tagesschlüssel</button>
+            </div>
+          </div>
+          <fieldset class="codebook-profile" id="codebookProfileBlock" hidden>
+            <legend id="codebookProfileLegend" data-i18n="codebook.profileLegend">Schlüsselgültigkeit</legend>
+            <p class="muted codebook-profile-help" data-i18n="codebook.profileHelp">Die Schlüsselgültigkeit bestimmt, wie lange Alberich denselben vollständigen V3-Schlüssel für neue Nachrichten verwendet. Kürzere Intervalle begrenzen die unter einem Schlüssel entstehende Nachrichtenmenge. Alle Teilnehmer eines Netzes müssen dieselbe Schlüsseltafel verwenden.</p>
+            <div class="codebook-profile-options">
+              <label class="codebook-profile-option">
+                <input type="radio" name="codebookProfile" value="DAY_24H">
+                <span class="codebook-profile-copy">
+                  <span class="codebook-profile-title" data-i18n="codebook.profile.24h">24 Stunden</span>
+                  <span class="codebook-profile-hint" data-i18n="codebook.profile.24hHint">Einfach</span>
+                </span>
+              </label>
+              <label class="codebook-profile-option">
+                <input type="radio" name="codebookProfile" value="HOURS_4" checked>
+                <span class="codebook-profile-copy">
+                  <span class="codebook-profile-title" data-i18n="codebook.profile.4h">4 Stunden</span>
+                  <span class="codebook-profile-hint" data-i18n="codebook.profile.4hHint">Empfohlen</span>
+                </span>
+              </label>
+              <label class="codebook-profile-option">
+                <input type="radio" name="codebookProfile" value="HOUR_1">
+                <span class="codebook-profile-copy">
+                  <span class="codebook-profile-title" data-i18n="codebook.profile.1h">1 Stunde</span>
+                  <span class="codebook-profile-hint" data-i18n="codebook.profile.1hHint">Hoher Schutz</span>
+                </span>
+              </label>
+            </div>
+            <details class="mode-info-details codebook-policy-info codebook-profile-info" id="codebookProfileInfo">
+              <summary class="mode-info-summary">
+                <span class="mode-info-icon codebook-policy-info-icon" aria-hidden="true">i</span>
+                <span data-i18n="codebook.policy.info.summary">Kurz erklärt</span>
+              </summary>
+              <div class="mode-info-body codebook-policy-info-body" data-i18n-html="codebook.hardened.info.body"></div>
+            </details>
+          </fieldset>
           <div class="codebook-endwalze-policy">
             <span class="codebook-endwalze-label" data-i18n="codebook.endwalzePolicy">Endwalze</span>
             <div class="mode-toggle mode-toggle-compact" id="codebookEndwalzePolicy" role="group" data-i18n-aria="codebook.endwalzePolicyAria" aria-label="Endwalzen-Auswahl">
@@ -431,13 +481,14 @@
           </div>
           <p class="muted codebook-policy-hint" data-i18n="codebook.policy.hint">Vorauswahl folgt dem Hauptmodus. Du kannst die Option ändern.</p>
           <p class="codebook-policy-mismatch" data-policy-mismatch hidden></p>
-          <button class="btn btn-primary" id="btnGenerateCodebook" type="button" data-i18n="codebook.generateButton">Monatstafel erzeugen</button>
+          <p class="muted" id="codebookGenerateStatus" hidden data-i18n="codebook.generating">Schlüsseltafel wird erzeugt …</p>
+          <button class="btn btn-primary" id="btnGenerateCodebook" type="button" data-i18n="codebook.generateButton">Schlüsseltafel erzeugen</button>
         </div>
         <div class="section-title codebook-import-title" data-i18n="codebook.importTitle">Import</div>
         <div class="codebook-actions">
-          <input type="file" id="codebookFileInput" accept="application/json,.json" hidden>
+          <input type="file" id="codebookFileInput" accept="application/json,.json,.alb3cb2,application/octet-stream" hidden>
           <input type="file" id="codebookQrFileInput" accept="image/*,.png,.jpg,.jpeg,.gif,.webp" hidden>
-          <button class="btn btn-secondary" id="btnImportCodebook" type="button" data-i18n="codebook.importJson">JSON importieren</button>
+          <button class="btn btn-secondary" id="btnImportCodebook" type="button" data-i18n="codebook.importFile">Datei importieren</button>
           <button class="btn btn-secondary" id="btnImportCodebookQr" type="button" data-i18n="codebook.importQr">QR-Bild laden</button>
           <button class="btn btn-secondary" id="btnScanCodebookQr" type="button" data-i18n="codebook.scanQr">Kamera scannen</button>
           <div class="codebook-day-field">
@@ -459,7 +510,7 @@
         </p>
       </div>
 
-      <div class="form-grid" id="manualSetupGrid">
+      <div class="form-grid" id="manualSetupGrid" style="margin-top: 12px;">
         <div class="codebook-endwalze-policy" id="manualEndwalzePolicyBlock">
           <span class="codebook-endwalze-label" data-i18n="codebook.endwalzePolicy">Endwalze</span>
           <div class="mode-toggle mode-toggle-compact" id="manualEndwalzePolicy" role="group" data-i18n-aria="codebook.endwalzePolicyAria" aria-label="Endwalzen-Auswahl">
@@ -502,7 +553,7 @@
           <div>
             <label for="keyCodeInput" id="keyCodeInputLabel">Spruchschlüssel (4)</label>
             <input id="keyCodeInput" maxlength="4" value="CDSZ">
-            <p class="muted hint-tight" id="keyCodeInputHint">
+            <p class="muted" id="keyCodeInputHint" style="margin:6px 0 0;font-size:0.78rem;">
               Startlage der Walzen (pro Nachricht).
             </p>
           </div>
@@ -514,7 +565,7 @@
             <option value="Gamma" data-i18n="setup.rotorThinGamma">Walze γ</option>
           </select>
         </div>
-        <p class="muted muted-flush" data-i18n="setup.mainRotorsHint">Hauptwalzen (I–VIII): Jede Walze darf nur einmal in der Walzenlage vorkommen.</p>
+        <p class="muted" style="margin:0;" data-i18n="setup.mainRotorsHint">Hauptwalzen (I–VIII): Jede Walze darf nur einmal in der Walzenlage vorkommen.</p>
         <p class="duplicate-hint" id="duplicateRotorHint" hidden></p>
         <div>
           <label for="rotorLeft" data-i18n="setup.rotorLeft">Linke Walze</label>
@@ -540,7 +591,7 @@
           <p class="muted" data-i18n="setup.plugboardHint">Buchstabenpaare getrennt durch Leerzeichen, z. B. AB CD EF</p>
         </div>
         <div>
-          <p class="section-title" data-i18n="setup.exportTitle">Schlüsseleinstellung exportieren</p>
+          <p class="section-title" style="margin-bottom:8px;" data-i18n="setup.exportTitle">Schlüsseleinstellung exportieren</p>
           <pre class="key-export" id="keyExport"></pre>
           <button class="text-btn" id="btnCopyKey" type="button" data-i18n="setup.copyKey">Schlüssel kopieren</button>
         </div>
@@ -642,8 +693,13 @@
   <div class="modal" id="infoModal">
     <div class="modal-card">
       <h2 data-i18n="about.title">Über Alberich</h2>
-      <p data-i18n="about.p1">Alberich ist ein Enigma-M4-Simulator im Browser: Traditionell (historisch, involutorisch) und Modern (Endwalze, Lückenfüller, Base-26, Auto-Spruchschlüssel). Walzenlage, Ringe, Steckerbrett, Tagesschlüssel, Netze und Schlüsseltafeln.</p>
-      <p data-i18n="about.p2">Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.</p>
+      <p><strong data-i18n="about.claim">Klassische Enigma. Moderne Verschlüsselung.</strong></p>
+      <p class="muted" data-i18n="about.subclaim">Enigma M4 · Modern V3 · Kurier</p>
+      <p data-i18n="about.p1">Alberich ist eine browserbasierte Rotor-Verschlüsselung mit zwei Welten: einer historisch orientierten Simulation der Enigma M4 und dem modernen Alberich-Verfahren Modern V3.</p>
+      <p data-i18n="about.p2">Der klassische Modus bildet das Funktionsprinzip der Enigma M4 für historische, technische und experimentelle Anwendungen nach. Modern V3 entwickelt das Rotorprinzip dagegen weiter und verbindet es mit Funktionen für heutige Texte und moderne Arbeitsabläufe.</p>
+      <p data-i18n="about.p3">Dazu gehören unter anderem Base-26-Kodierung, automatische Spruchschlüssel, Schlüsseltafeln, Netze und der Kurier-Modus für die Übertragung verschlüsselter Nachrichten zwischen getrennten Geräten.</p>
+      <p data-i18n="about.p4">Die Verarbeitung erfolgt grundsätzlich lokal im Browser. Klartext und Schlüsselmaterial sollen das verwendete Gerät nicht unnötig verlassen.</p>
+      <p data-i18n="about.origin">Der Name Alberich verweist auf den Zwerg Alberich aus der germanischen Mythologie — Hüter des Nibelungenschatzes und Meister der Schmiedekunst. Seine Tarnkappe macht den Träger unsichtbar: Geheimnisse bleiben nur dem zugänglich, der das Geheimnis kennt.</p>
       <p><strong data-i18n="about.imprint">Impressum</strong><br>
       Dipl.-Ing.(FH) Christian Peter Kaiser<br>
       My Engineering Tools<br>
@@ -653,9 +709,9 @@
       <p><span data-i18n="about.emailLabel">E-Mail:</span> <a href="mailto:alberich@posteo.de?subject=App%3A%20Alberich%20-%20Anfrage">alberich@posteo.de</a></p>
       <p data-i18n-html="about.handbook"></p>
       <p data-i18n-html="about.android">Android: <a href="/fdroid/">Play Store oder F-Droid unter alberich.pro/fdroid</a>.</p>
-      <p data-i18n-html="about.license">Alberich steht unter der <strong>GNU Affero General Public License 3.0 only</strong> (AGPL-3.0-only). <a href="LICENSE">Lizenztext</a>. Entsprechender Quellcode: <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">github.com/MyEngineeringTools/alberich</a>. Name und Markenzeichen sind nicht unter der AGPL lizenziert.</p>
+      <p data-i18n-html="about.license">Lizenz: <a href="LICENSE">AGPL-3.0-only</a> · <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">Quellcode</a>. Name und Marke sind nicht unter der AGPL lizenziert.</p>
       <p class="muted" data-i18n-html="about.thirdParty">QR und Kompression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Hinweise Dritter</a>. „QR Code“ ist eine Marke von DENSO WAVE.</p>
-      <p id="versionLabel">Version 1.0 (Revision 51)</p>
+      <p id="versionLabel">Version 1.0 (Revision 65) · Modern V3</p>
       <div class="modal-actions">
         <button class="text-btn" data-close="infoModal" type="button" data-i18n="common.close">Schließen</button>
       </div>
@@ -666,15 +722,23 @@
     <div class="modal-card qr-scan-card">
       <h2 id="qrScanTitle" data-i18n="qr.title">Schlüsseltafel scannen</h2>
       <p class="muted" id="qrScanStatus" data-i18n="qr.statusStarting">Kamera wird gestartet…</p>
+      <div class="qr-scan-progress" id="qrScanProgressWrap" hidden>
+        <progress id="qrScanProgress" max="1" value="0" aria-labelledby="qrScanProgressLabel"></progress>
+        <span id="qrScanProgressLabel"></span>
+      </div>
       <div class="qr-scan-viewport">
         <video id="qrScanVideo" playsinline webkit-playsinline muted autoplay></video>
         <div class="qr-scan-frame" aria-hidden="true"></div>
       </div>
       <p class="muted qr-scan-hint" id="qrScanHint" data-i18n="qr.hint">
-        QR-Code aus dem Codebook-Tool in den Rahmen halten.
-        Beim ersten Mal die Kamera-Berechtigung im Browser erlauben.
+        QR-Code vollständig im Rahmen halten.
       </p>
+      <div id="qrScanConfirm" hidden>
+        <p id="qrScanConfirmText"></p>
+        <p class="mono muted" id="qrScanConfirmFp"></p>
+      </div>
       <div class="modal-actions">
+        <button class="btn btn-primary" id="btnConfirmQrImport" type="button" hidden data-i18n="qr.importConfirm">Importieren</button>
         <button class="text-btn" id="btnRetryQrScan" type="button" hidden data-i18n="qr.retry">Erneut versuchen</button>
         <button class="text-btn" id="btnCloseQrScan" type="button" data-i18n="qr.cancel">Abbrechen</button>
       </div>
@@ -689,7 +753,8 @@
           <p class="sheet-view-tafelwort" id="sheetViewTafelwort" hidden></p>
           <p class="sheet-view-meta" id="sheetViewMeta"></p>
         </div>
-        <div class="table-scroll">
+        <div id="timebookSheetView" class="timebook-sheet" hidden></div>
+        <div class="table-scroll" id="sheetTableScroll">
           <table class="key-table">
             <thead>
               <tr>
@@ -706,7 +771,7 @@
             <tbody id="sheetViewBody"></tbody>
           </table>
         </div>
-        <p class="sheet-view-footer" data-i18n="sheet.footer">
+        <p class="sheet-view-footer" id="sheetViewFooter" data-i18n="sheet.footer">
           Lage = Alberich-Lagecode · Ring = Ringstellung · Grund = Grundstellung / Spruchschlüssel ·
           Dora nur bei UKW Dora (inkl. festem Paar BO)
         </p>
@@ -726,14 +791,20 @@
       <p class="muted" id="qrShareMeta" data-i18n="share.qrMetaDefault">Komprimierte Monatstafel</p>
       <div class="qr-preview-wrap">
         <img id="qrShareImg" alt="" width="560" height="560">
+        <canvas id="qrShareCanvas" hidden></canvas>
+        <p class="qr-share-paused" id="qrSharePaused" hidden data-i18n="share.paused">Übertragung pausiert</p>
       </div>
       <p class="muted qr-share-hint" id="qrShareHint" data-i18n-html="share.qrHint">
         Andere Geräte können den Code scannen oder das PNG speichern.
         Envelope: <code>ALBERICH-CBQR1|gzip|…</code>
       </p>
+      <p class="muted" id="qrShareLiveHint" hidden data-i18n="share.liveHint">Der Empfänger hält die Kamera auf den QR-Code.</p>
       <div class="modal-actions qr-share-actions">
         <button class="btn btn-secondary" id="btnDownloadQrShare" type="button" data-i18n="share.downloadPng">PNG speichern</button>
         <button class="btn btn-secondary" id="btnShareQrPng" type="button" data-i18n="share.sharePng">PNG teilen</button>
+        <button class="btn btn-secondary" id="btnPauseQrShare" type="button" hidden data-i18n="share.pause">Pause</button>
+        <button class="btn btn-secondary" id="btnResumeQrShare" type="button" hidden data-i18n="share.resume">Weiter</button>
+        <button class="btn btn-secondary" id="btnStopQrShare" type="button" hidden data-i18n="share.stopLive">Teilen beenden</button>
         <button class="text-btn" data-close="qrShareModal" type="button" data-i18n="common.close">Schließen</button>
       </div>
     </div>
@@ -741,7 +812,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script type="module" src="js/rotor-selects.js?v=51"></script>
-  <script type="module" src="js/app.js?v=51"></script>
+  <script type="module" src="js/rotor-selects.js?v=65"></script>
+  <script type="module" src="js/app.js?v=65"></script>
 </body>
 </html>

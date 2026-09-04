@@ -6,6 +6,7 @@
  */
 
 import { parseCodebookJson, findCodebookDay, defaultCodebookDay } from './codebook.js';
+import { isTimebook, validateTimebook } from './timebook.js';
 
 export const MAX_NETWORKS = 5;
 export const DEFAULT_NETWORK_NAME = 'My network';
@@ -85,6 +86,24 @@ export function canAddNetwork(networks) {
 }
 
 /**
+ * Persistierte Tafel nach Reload: Legacy-JSON oder vollständiges Timebook.
+ * Partielles / fingerprint-loses Timebook wird verworfen (fail closed).
+ * @param {unknown} raw
+ * @returns {CodebookSheet | object | null}
+ */
+export function acceptStoredSheet(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (isTimebook(raw)) {
+    const checked = validateTimebook(raw);
+    if (!checked.ok) return null;
+    if (!/^[0-9a-f]{64}$/.test(raw.codebookFingerprint || '')) return null;
+    return raw;
+  }
+  const checked = parseCodebookJson(raw);
+  return checked.ok ? checked.sheet : null;
+}
+
+/**
  * Tafel eines Netzes parsen/validieren (nach localStorage-Load).
  * @param {Network} network
  * @returns {Network}
@@ -97,9 +116,8 @@ export function normalizeNetwork(network) {
   let source = typeof network?.source === 'string' ? network.source : '';
 
   if (network?.sheet) {
-    const checked = parseCodebookJson(network.sheet);
-    if (checked.ok) {
-      sheet = checked.sheet;
+    sheet = acceptStoredSheet(network.sheet);
+    if (sheet) {
       selectedDay = Number(network.selectedDay);
       if (!findCodebookDay(sheet, selectedDay)) {
         selectedDay = defaultCodebookDay(sheet);
@@ -132,9 +150,8 @@ export function migrateNetworksState(merged) {
     let sheet = null;
     let day = 1;
     if (merged.codebookSheet) {
-      const checked = parseCodebookJson(merged.codebookSheet);
-      if (checked.ok) {
-        sheet = checked.sheet;
+      sheet = acceptStoredSheet(merged.codebookSheet);
+      if (sheet) {
         day = Number(merged.codebookDay);
         if (!findCodebookDay(sheet, day)) day = defaultCodebookDay(sheet);
       }

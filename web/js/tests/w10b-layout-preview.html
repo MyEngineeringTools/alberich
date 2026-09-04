@@ -1,0 +1,61 @@
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>W10b layout preview</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    body { min-height: auto; padding: 24px; }
+    .preview-wrap { max-width: 860px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="preview-wrap">
+    <div class="codebook-panel">
+      <div class="codebook-kind" id="codebookKindBlock">
+        <span class="codebook-endwalze-label">Tafeltyp</span>
+        <div class="mode-toggle mode-toggle-compact">
+          <button type="button" class="mode-btn mode-btn-modern active">V3 gehärtet</button>
+          <button type="button" class="mode-btn">V3 · Tagesschlüssel</button>
+        </div>
+      </div>
+      <fieldset class="codebook-profile" id="codebookProfileBlock">
+        <legend>Schlüsselgültigkeit</legend>
+        <p class="muted codebook-profile-help">Die Schlüsselgültigkeit bestimmt, wie lange Alberich denselben vollständigen V3-Schlüssel für neue Nachrichten verwendet. Kürzere Intervalle begrenzen die unter einem Schlüssel entstehende Nachrichtenmenge. Alle Teilnehmer eines Netzes müssen dieselbe Schlüsseltafel verwenden.</p>
+        <div class="codebook-profile-options">
+          <label class="codebook-profile-option">
+            <input type="radio" name="codebookProfile" value="DAY_24H">
+            <span class="codebook-profile-copy">
+              <span class="codebook-profile-title">24 Stunden</span>
+              <span class="codebook-profile-hint">Einfach</span>
+            </span>
+          </label>
+          <label class="codebook-profile-option">
+            <input type="radio" name="codebookProfile" value="HOURS_4" checked>
+            <span class="codebook-profile-copy">
+              <span class="codebook-profile-title">4 Stunden</span>
+              <span class="codebook-profile-hint">Empfohlen</span>
+            </span>
+          </label>
+          <label class="codebook-profile-option">
+            <input type="radio" name="codebookProfile" value="HOUR_1">
+            <span class="codebook-profile-copy">
+              <span class="codebook-profile-title">1 Stunde</span>
+              <span class="codebook-profile-hint">Hoher Schutz</span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="codebook-endwalze-policy">
+        <span class="codebook-endwalze-label">Endwalze</span>
+        <div class="mode-toggle mode-toggle-compact">
+          <button type="button" class="mode-btn mode-btn-modern active">Freie Permutation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,3 @@
+Hardened V3 in Alberich Web: a full key per time slot (24 h / 4 h / 1 h, MEZ). 24 h like the daily key, but live QR. Rotor positions follow the clock. ALBV telegram unchanged. Local, no account.
+
+https://alberich.pro

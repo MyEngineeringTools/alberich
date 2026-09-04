@@ -428,11 +428,28 @@ def main(argv: list[str]) -> int:
     for item in data.get("vectors", []):
         name = item["name"]
         try:
-            if item["kind"] == "v3-roundtrip":
+            if item["kind"] in {"v3-roundtrip", "v3-protocol-golden"}:
                 got = encrypt_v3(item["day"], item["plain"], item["messageKey"], item["messageId"])
                 if got != item["cipher"]:
                     raise AssertionError(f"cipher mismatch\n got {got}\n exp {item['cipher']}")
-                back = decrypt_v3(item["day"], got)
+                stamp = got[:4]
+                header = got[4:8]
+                message_id = got[8:16]
+                pruef = got[-PRUEF_LEN:]
+                body = got[16:-PRUEF_LEN]
+                if item.get("stamp") is not None and stamp != item["stamp"]:
+                    raise AssertionError(f"stamp {stamp} != {item['stamp']}")
+                if item.get("header") is not None and header != item["header"]:
+                    raise AssertionError(f"HDR4 {header} != {item['header']}")
+                if item.get("messageId") is not None and message_id != item["messageId"]:
+                    raise AssertionError(f"MID8 {message_id} != {item['messageId']}")
+                if item.get("body") is not None and body != item["body"]:
+                    raise AssertionError("BODY mismatch")
+                if item.get("pruefgruppe") is not None and pruef != item["pruefgruppe"]:
+                    raise AssertionError(f"PRUEF20 {pruef} != {item['pruefgruppe']}")
+                if stamp + header + message_id + body + pruef != got:
+                    raise AssertionError("telegram layout ALBV|HDR4|MID8|BODY|PRUEF20")
+                back = decrypt_v3(item["day"], item["cipher"])
                 if back != item["plain"]:
                     raise AssertionError(f"plain mismatch {back!r}")
             elif item["kind"] == "traditional":

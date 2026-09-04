@@ -1,0 +1,71 @@
+<!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>W4 browser smoke</title>
+</head>
+<body>
+  <pre id="out">running…</pre>
+  <script type="module">
+    import {
+      RESERVE,
+      inspectStoragePersistence,
+      reserveMessageKey,
+    } from '../security-state.js';
+
+    const FP = '752a32bdcd340561985d0f11f75a6bc000ebc650498e7e2d96a93e64610f8a66';
+    const MK = 'WASM';
+    const RACE = 'WRCE';
+    const out = document.getElementById('out');
+
+    function report(payload) {
+      out.textContent = JSON.stringify(payload, null, 2);
+      document.title = payload.ok ? 'W4_SMOKE_PASS' : 'W4_SMOKE_FAIL';
+      return fetch('/__w4_report', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+    }
+
+    const persist = await inspectStoragePersistence();
+    if (persist.calledPersist) {
+      await report({ ok: false, error: 'persist-called' });
+      throw new Error('persist must not be called');
+    }
+
+    const phase = sessionStorage.getItem('w4phase') || 'first';
+    if (phase === 'first') {
+      const first = await reserveMessageKey(FP, MK);
+      if (first.status !== RESERVE.RESERVED) {
+        await report({ ok: false, error: 'first-not-reserved', first });
+        throw new Error('first reserve failed');
+      }
+      sessionStorage.setItem('w4phase', 'reload');
+      location.reload();
+    } else {
+      const again = await reserveMessageKey(FP, MK);
+      const [a, b] = await Promise.all([
+        reserveMessageKey(FP, RACE),
+        reserveMessageKey(FP, RACE),
+      ]);
+      const race = [a.status, b.status].sort();
+      const ok = again.status === RESERVE.ALREADY_USED
+        && race[0] === RESERVE.ALREADY_USED
+        && race[1] === RESERVE.RESERVED;
+      await report({
+        ok,
+        idb: true,
+        reload: again.status,
+        race,
+        locks: Boolean(navigator.locks?.request),
+        persistFn: persist.persistFn === true,
+        calledPersist: persist.calledPersist === true,
+        userAgent: navigator.userAgent,
+      });
+    }
+  </script>
+</body>
+</html>

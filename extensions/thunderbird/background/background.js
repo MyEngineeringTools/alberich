@@ -1,8 +1,6 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- */
-/**
  * Alberich Mail Companion – Background
  *
  * Badge am Compose-Button: gültiger Tagesschlüssel geladen oder nicht.

@@ -1,19 +1,20 @@
-# Alberich Companion (Thunderbird)
+# Alberich Mail Companion
 
 Schlanke **MailExtension** für [Thunderbird](https://www.thunderbird.net/) – **nur Modern-Modus**, lokal, ohne Upload.
 
-Begleitet [alberich.pro](https://alberich.pro) und denselben JSON-Codebook-Export wie die Browser-Companions.
+Begleitet [alberich.pro](https://alberich.pro): JSON-Tagesschlüssel und V3 gehärtet (`.alb3cb2`), wie die Browser-Companions.
 
 | | |
 |---|---|
-| **Version** | 1.0.14 |
+| **Version** | 1.0.17 |
+| **Add-on-Name** | Alberich Mail Companion |
 | **Extension-Ordner** | `thunderbird/` |
 | **ID** | `alberich-mail@alberich.pro` |
 | **Mindest-Thunderbird** | 128 (Manifest V3) |
 
 ## Idee
 
-Im **Schreiben-Fenster** Text tippen → Alberich-Button → ver- oder entschlüsseln → Ergebnis zurück in die Mail. Monatstafel (JSON) einmal laden, Tag wählen, fertig.
+Im **Schreiben-Fenster** Text tippen → Alberich-Button → ver- oder entschlüsseln → Ergebnis zurück in die Mail. Monatstafel einmal laden (JSON oder `.alb3cb2`). Bei Tagesschlüssel Tag wählen; bei V3 gehärtet folgt der Slot der Uhr.
 
 **Kurier an:** keine Chiffre, nur Buchstaben und QR zwischen Offline-Gerät und Mail. QR-Fenster extra (wie der JSON-Import), damit Kamera und Dateidialog das Popup nicht schließen.
 
@@ -29,11 +30,16 @@ Im **Schreiben-Fenster** Text tippen → Alberich-Button → ver- oder entschlü
 
 Nach einem Thunderbird-Neustart ist ein temporäres Add-on wieder weg – erneut laden.
 
-### Später: Thunderbird Add-ons Store
+### XPI für addons.thunderbird.net
 
-- XPI bauen (Inhalt von `thunderbird/` zippen, Endung `.xpi`)  
-- Unter [addons.thunderbird.net](https://addons.thunderbird.net/) einreichen  
-- Reviewer: Demo-Tafel unter **Info → Demo-Tafel laden**
+Öffentliche Listung: [addons.thunderbird.net/addon/alberich-mail-companion](https://addons.thunderbird.net/addon/alberich-mail-companion/)
+
+```bash
+./pack-xpi.sh
+```
+
+Ausgabe: `dist/alberich-mail-companion-1.0.16.xpi`  
+Nicht den Ordner `thunderbird/` per Hand zippen. Reviewer: Demo-Tafel unter **Info → Demo-Tafel laden**.
 
 ## Bedienung (kurz)
 
@@ -65,7 +71,9 @@ Status:
 | `storage` | Monatstafel + gewählter Tag + Sprache (lokal) |
 | `compose` | Body im Schreiben-Fenster lesen und schreiben |
 | `messagesRead` | Text empfangener Mails zum Entschlüsseln lesen (kein Ändern) |
-| `clipboardWrite` / `clipboardRead` | Kopieren / Einfügen |
+| `clipboardWrite` | Kopieren im Klartext-Tab (`result/`) |
+
+Einfügen läuft über ein Textfeld (Import/Kurier), nicht über `clipboardRead`.
 
 **Keine** Host-Permissions, kein Netzwerk, keine Telemetrie. Klar- und Geheimtext bleiben auf dem Gerät.
 
@@ -90,7 +98,8 @@ Die Warnungen blockieren die Einreichung in der Regel nicht. Text für Reviewer:
 ```text
 alberich-mail/
 ├── README.md
-├── sync-shared.sh              # Core aus alberich-browser übernehmen
+├── sync-shared.sh              # Core aus alberich-browser (ohne Tests)
+├── pack-xpi.sh                 # Allowlist-XPI nach dist/
 └── thunderbird/                # ladbare Extension
     ├── manifest.json
     ├── background/             # Badge, storage-Listener (TB-spezifisch)
@@ -105,12 +114,12 @@ alberich-mail/
 Identisch im Ansatz zum Browser-Companion (`alberich-browser/shared/`):
 
 - `shared/crypto/` – Modern-Crypto, Engine, Round-Trip-Prüfung  
-- `shared/codebook/` – `alberich-codebook` v1  
+- `shared/codebook/` – `alberich-codebook`  
 - `shared/modern-ops.js` – Encrypt/Decrypt  
 - `shared/key-manager.js` – Tafel/Tag → Maschinenkonfig  
 - `shared/i18n.js` – DE|EN  
 - `shared/courier-*.js` – Kurier-QR, Scan, Render, Persistenz  
-- `shared/samples/demo-codebook.json` – öffentliche Demo-Tafel  
+- `shared/samples/demo-codebook-v3.json` – öffentliche V3-Demo-Tafel  
 
 ### Thunderbird-spezifisch
 
@@ -129,13 +138,15 @@ Core-Update aus dem Browser-Repo:
 ./sync-shared.sh
 ```
 
-Danach Thunderbird-spezifische Anpassungen in `shared/i18n.js` / `key-manager.js` ggf. erneut prüfen (Skript überschreibt `shared/`).
+Danach Thunderbird-spezifische Anpassungen in `shared/i18n.js` / `key-manager.js` ggf. erneut prüfen (Skript überschreibt `shared/`). Tests und Legacy-Demo-JSON werden nicht mitkopiert.
 
 ## Selftest (Core)
 
+Tests liegen im Browser-Baum, nicht im XPI:
+
 ```bash
-node thunderbird/shared/tests/selftest.mjs
-node thunderbird/shared/tests/courier-qr-selftest.mjs
+node ../alberich-browser/shared/tests/selftest.mjs
+node ../alberich-browser/shared/tests/courier-qr-selftest.mjs
 ```
 
 ## Privacy

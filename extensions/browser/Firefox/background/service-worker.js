@@ -12,6 +12,10 @@ import {
   createKeyManager,
 } from '../shared/key-manager.js';
 import { decryptModern, encryptModern } from '../shared/modern-ops.js';
+import {
+  decryptTimebookOnce,
+  encryptTimebookOnce,
+} from '../shared/timebook/timebook-ops.js';
 import { loadLocale, t } from '../shared/i18n.js';
 import { lettersFromInput } from '../shared/courier-qr.js';
 import { loadCourierOn } from '../shared/courier-store.js';
@@ -205,17 +209,22 @@ async function onMenuClicked(info) {
   }
 
   await keys.load();
-  const config = keys.getDayConfig();
-  if (!config) {
+  const book = keys.getTimebook();
+  const config = book ? null : keys.getDayConfig();
+  if (!book && !config) {
     await setBadge('Key?', 'err');
     return;
   }
 
   let result;
   if (info.menuItemId === MENU_ENCRYPT) {
-    result = await encryptModern(config, selection);
+    result = book
+      ? await encryptTimebookOnce(book, selection)
+      : await encryptModern(config, selection);
   } else if (info.menuItemId === MENU_DECRYPT) {
-    result = await decryptModern(config, selection);
+    result = book
+      ? await decryptTimebookOnce(book, selection)
+      : await decryptModern(config, selection);
   } else {
     return;
   }

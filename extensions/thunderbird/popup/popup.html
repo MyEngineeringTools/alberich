@@ -1,6 +1,6 @@
+<!DOCTYPE html>
 <!-- SPDX-FileCopyrightText: 2026 Christian Peter Kaiser -->
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
-<!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -44,7 +44,7 @@
       <ul>
         <li>
           <strong data-i18n="ui.info.sheet.label">Tafel:</strong>
-          <span data-i18n="ui.info.sheet.body"> JSON laden, Tag wählen.</span>
+          <span data-i18n="ui.info.sheet.body"> JSON oder .alb3cb2 laden.</span>
         </li>
         <li>
           <strong data-i18n="ui.info.send.label">Verschlüsseln:</strong>
@@ -93,6 +93,12 @@
         <p>
           <a href="mailto:alberich@posteo.de?subject=Alberich%20Mail%20Companion">alberich@posteo.de</a>
         </p>
+        <p data-i18n="ui.license">Lizenz: AGPL-3.0-only · Name und Marke nicht unter der AGPL.</p>
+        <p>
+          <a href="../LICENSE" data-i18n="ui.licenseLink">Lizenztext</a>
+          ·
+          <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer" data-i18n="ui.sourceLink">Quellcode</a>
+        </p>
         <p data-i18n="ui.thirdParty">QR: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe). „QR Code“ ist eine Marke von DENSO WAVE.</p>
         <p>
           <a href="../shared/THIRD_PARTY.md" data-i18n="ui.thirdPartyLink">Hinweise Dritter</a>
@@ -137,6 +143,7 @@
     <section class="card key-card">
       <div class="status empty" id="keyStatus" data-i18n="ui.noSheet">Keine Tafel — bitte JSON laden</div>
       <div class="tafelwort-line" id="tafelwortLine" hidden></div>
+      <div class="hardened-live" id="hardenedLive" hidden></div>
       <div class="month-banner" id="monthBanner" hidden>
         <p class="month-banner-text" id="monthBannerText"></p>
         <button type="button" class="btn btn-secondary" id="btnMonthBannerKeep" data-i18n="status.monthKeep">

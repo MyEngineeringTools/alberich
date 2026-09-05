@@ -3,6 +3,14 @@
 Versions in this repository are the same as the shipped apps. There is no
 separate GitHub 0.x line.
 
+## Browser 1.0.25 / Mail Companion 1.0.17
+
+Studio sync into this tree: V3 gehärtet (`.alb3cb2`), AGPL notices, Mail Companion naming.
+Web remains `1.0 (Revision 65)`; Android remains `1.0 (Revision 31)`.
+
+- Browser extension under `extensions/browser/` — version `1.0.25`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.17`.
+
 ## 1.0 (Revision 65) — web
 
 Folgt **1.0 (Revision 52)** in this tree (53–64 were local Web revisions).
@@ -14,8 +22,8 @@ Research fingerprint moves because `codebook.js` / `codebook-generate.js`
 now reject timebook JSON and enforce unique V3 full keys on daily sheets.
 
 - Web app under `web/` — version `1.0 (Revision 65)`.
-- Browser extension under `extensions/browser/` — version `1.0.24`.
-- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.16`.
+- Browser extension under `extensions/browser/` — version `1.0.25`.
+- Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.17`.
 - Android (outside this tree) — `1.0 (Revision 31)`, `versionCode` 31.
 
 ## 1.0 (Revision 52) — web
@@ -29,7 +37,7 @@ Research stamp bleibt unverändert; die Scanneränderungen betreffen keine
 Algorithmus-JavaScript-Dateien des Research-Fingerprints.
 
 - Web app under `web/` — version `1.0 (Revision 52)`.
-- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Browser extension under `extensions/browser/` — version `1.0.25`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
 - Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
 
@@ -43,7 +51,7 @@ Research stamp: fingerprint hashes algorithm JS only, not `VERSIONS`.
 Checked-in results restamped (`909cc1f35c98789c`).
 
 - Web app under `web/` — version `1.0 (Revision 51)`.
-- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Browser extension under `extensions/browser/` — version `1.0.25`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
 - Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
 
@@ -55,7 +63,7 @@ letter was not A decrypts differently. Handbook at `/manual/`.
 Modern V3 unchanged.
 
 - Web app under `web/` — version `1.0 (Revision 50)`.
-- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Browser extension under `extensions/browser/` — version `1.0.25`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
 - Android (outside this tree) — `1.0 (Revision 29)`, `versionCode` 29.
 
@@ -87,7 +95,7 @@ Public-release hygiene on this same revision line (no protocol change):
   `style-src 'unsafe-inline'` remains for vendor QR HTML.
 
 - Web app under `web/` — version `1.0 (Revision 49)`.
-- Browser extension under `extensions/browser/` — version `1.0.24`.
+- Browser extension under `extensions/browser/` — version `1.0.25`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.14`.
 - Android (outside this tree) — `1.0 (Revision 29)`, `versionCode` 29.
 

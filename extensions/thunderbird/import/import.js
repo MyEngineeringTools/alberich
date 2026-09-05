@@ -1,8 +1,6 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- */
-/**
  * Eigenes Fenster für Codebook-Import.
  * Warum: Das Compose/Action-Popup schließt beim nativen Dateidialog —
  * die change-Events und storage.set laufen dann nicht zu Ende.
@@ -24,6 +22,7 @@ const keys = createKeyManager(storage);
 
 const els = {
   fileInput: document.getElementById('fileInput'),
+  fileInputAlb3cb2: document.getElementById('fileInputAlb3cb2'),
   fileName: document.getElementById('fileName'),
   pasteArea: document.getElementById('pasteArea'),
   btnImportPaste: document.getElementById('btnImportPaste'),
@@ -124,6 +123,36 @@ async function init() {
     } catch (err) {
       els.fileInput.value = '';
       console.error('Alberich import read failed', err);
+      showHint(t('import.readFailed'));
+    }
+  });
+
+  els.fileInputAlb3cb2?.addEventListener('change', async () => {
+    const file = els.fileInputAlb3cb2.files?.[0];
+    if (!file) return;
+    els.fileName.hidden = false;
+    els.fileName.textContent = file.name;
+    showHint('');
+    if (await loadCourierOn(storage)) {
+      els.fileInputAlb3cb2.value = '';
+      showHint(t('toast.courierNoKeys'));
+      return;
+    }
+    try {
+      const buf = new Uint8Array(await file.arrayBuffer());
+      els.fileInputAlb3cb2.value = '';
+      const result = await keys.importTimebookBytes(buf);
+      if (!result.ok) {
+        showHint(t(result.error));
+        return;
+      }
+      showToast(t('import.success'));
+      setTimeout(() => {
+        try { window.close(); } catch { /* manuell schließen */ }
+      }, 900);
+    } catch (err) {
+      els.fileInputAlb3cb2.value = '';
+      console.error('Alberich alb3cb2 import failed', err);
       showHint(t('import.readFailed'));
     }
   });

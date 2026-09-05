@@ -1,8 +1,6 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- */
-/**
  * Kompakte Tafel-Anzeige für Companion / Thunderbird:
  * Tafelwort + optionale Monatsabweichung (eine Zeile, ein Button).
  */
@@ -16,6 +14,11 @@ export function sheetMonthKey(st) {
 
 export function sheetDiffersFromNow(st) {
   if (!st?.loaded) return false;
+  const year = Number(st.albYear);
+  const month = Number(st.albMonth);
+  if (Number.isInteger(year) && Number.isInteger(month)) {
+    return Number(st.year) !== year || Number(st.month) !== month;
+  }
   const now = new Date();
   return Number(st.year) !== now.getFullYear() || Number(st.month) !== now.getMonth() + 1;
 }
@@ -52,9 +55,14 @@ export function renderSheetChrome(els, st, t, locale = 'de') {
   }
 
   if (els.tafelwortLine) {
-    const word = st.loaded ? st.tafelwort : '';
-    els.tafelwortLine.hidden = !word;
-    if (word) els.tafelwortLine.textContent = t('status.tafelwort', { word });
+    if (st.loaded && st.hardened && st.fingerprintShort) {
+      els.tafelwortLine.hidden = false;
+      els.tafelwortLine.textContent = t('status.fingerprint', { fp: st.fingerprintShort });
+    } else {
+      const word = st.loaded ? st.tafelwort : '';
+      els.tafelwortLine.hidden = !word;
+      if (word) els.tafelwortLine.textContent = t('status.tafelwort', { word });
+    }
   }
 
   if (els.monthBanner) {

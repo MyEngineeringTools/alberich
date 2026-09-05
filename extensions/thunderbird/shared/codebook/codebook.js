@@ -1,8 +1,6 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- */
-/**
  * Import von Alberich-Schlüsseltafeln (JSON aus dem Codebook-Tool).
  * Format: format === "alberich-codebook", formatVersion 1 oder 2.
  */
@@ -20,6 +18,22 @@ import { validateEndwalzeWiring, validateLueckenfueller } from '../crypto/modern
 
 export const ALBERICH_CODEBOOK_FORMAT = 'alberich-codebook';
 export const ALBERICH_CODEBOOK_FORMAT_VERSION = 3;
+
+/** Modern V3 standard profile: exactly 10 disjoint pairs. Validate, do not repair. */
+export function validateStandardPlugboard(raw) {
+  const s = String(raw ?? '').toUpperCase().trim();
+  if (!/^(?:[A-Z]{2} ){9}[A-Z]{2}$/.test(s)) {
+    return { ok: false, error: 'codebook.err.plugsInvalid' };
+  }
+  const pairs = s.split(' ');
+  const letters = [];
+  for (const pair of pairs) {
+    if (pair[0] === pair[1]) return { ok: false, error: 'codebook.err.plugSelf' };
+    letters.push(pair[0], pair[1]);
+  }
+  if (new Set(letters).size !== 20) return { ok: false, error: 'codebook.err.plugDuplicate' };
+  return { ok: true, plugboard: s };
+}
 
 const REFLECTOR_IDS = new Set([
   REFLECTOR_ID_BRUNO,
@@ -72,6 +86,10 @@ export function parseCodebookJson(raw) {
 
   if (!data || typeof data !== 'object') {
     return { ok: false, error: 'codebook.err.notObject' };
+  }
+
+  if (data.kind === 'ALB3_TIMEBOOK_V1' || data.format === 'ALB3_TIMEBOOK_V1') {
+    return { ok: false, error: 'timebook.err.notLegacyFormat' };
   }
 
   if (data.format !== ALBERICH_CODEBOOK_FORMAT) {

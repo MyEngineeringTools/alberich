@@ -4,7 +4,7 @@
     "description": "Extension name"
   },
   "extDescription": {
-    "message": "Modern-Modus lokal. Optional Kurier: nur Geheimtext-QR, Rechnen bleibt offline.",
+    "message": "Modern-Modus lokal. Tagesschlüssel (JSON) und V3 gehärtet (.alb3cb2). Optional Kurier: nur Geheimtext-QR.",
     "description": "Extension description"
   }
 }

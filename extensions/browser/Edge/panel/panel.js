@@ -9,6 +9,16 @@ import {
   createKeyManager,
 } from '../shared/key-manager.js';
 import { decryptModern, encryptModern } from '../shared/modern-ops.js';
+import { randomMessageKey4 } from '../shared/crypto/modern-crypto.js';
+import { createModernSession } from '../shared/timebook/modern-session.js';
+import {
+  beginTimebookSendSession,
+  externalizePinnedSlot,
+} from '../shared/timebook/timebook-session.js';
+import {
+  decryptTimebookOnce,
+  timebookKeyToConfig,
+} from '../shared/timebook/timebook-ops.js';
 import {
   getLocale,
   loadLocale,
@@ -43,6 +53,8 @@ import {
 
 const storage = createChromeStorage();
 const keys = createKeyManager(storage);
+const modernSession = createModernSession();
+let slotTickTimer = 0;
 
 const els = {
   keyStatus: document.getElementById('keyStatus'),
@@ -54,6 +66,8 @@ const els = {
   settingsBody: document.getElementById('settingsBody'),
   daySelect: document.getElementById('daySelect'),
   fileInput: document.getElementById('fileInput'),
+  fileInputAlb3cb2: document.getElementById('fileInputAlb3cb2'),
+  hardenedLive: document.getElementById('hardenedLive'),
   btnClearSheet: document.getElementById('btnClearSheet'),
   btnInfo: document.getElementById('btnInfo'),
   infoPanel: document.getElementById('infoPanel'),
@@ -432,11 +446,34 @@ function formatSettingsBody(st) {
 }
 
 function refreshStatus() {
-  const st = keys.getStatusSummary();
+  const pin = modernSession.pinnedSlot();
+  const st = keys.getStatusSummary({
+    pin: els.mainText.value && pin ? pin : null,
+    timestampMs: Date.now(),
+  });
   renderSheetChrome(els, st, t, getLocale());
+
+  if (els.hardenedLive) {
+    if (st.loaded && st.hardened && !st.outOfMonth) {
+      els.hardenedLive.hidden = false;
+      els.hardenedLive.textContent = t('status.hardenedLive', {
+        slot: st.slotId || '',
+        remain: st.remain || '',
+        source: st.source === 'pin' ? t('status.pinned') : t('status.clock'),
+      });
+    } else {
+      els.hardenedLive.hidden = true;
+      els.hardenedLive.textContent = '';
+    }
+  }
 
   if (st.loaded) {
     els.settingsFold.hidden = false;
+    if (els.settingsFold.querySelector('summary')) {
+      els.settingsFold.querySelector('summary').textContent = st.hardened
+        ? t('ui.settingsSummaryHardened')
+        : t('ui.settingsSummary');
+    }
     els.settingsBody.textContent = formatSettingsBody(st);
   } else {
     els.settingsFold.hidden = true;
@@ -446,6 +483,15 @@ function refreshStatus() {
 
   while (els.daySelect.firstChild) {
     els.daySelect.removeChild(els.daySelect.firstChild);
+  }
+  if (st.hardened) {
+    els.daySelect.disabled = true;
+    els.daySelect.title = t('ui.dayTitleHardened');
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = st.day ? t('status.dayLabel', { day: st.day }) : t('ui.dayPlaceholder');
+    els.daySelect.appendChild(opt);
+    return;
   }
   if (!st.loaded || !st.dayOptions?.length) {
     els.daySelect.disabled = true;
@@ -483,10 +529,36 @@ async function importRaw(raw) {
     showHint(t(result.error));
     return;
   }
+  modernSession.invalidate();
   clearSessionFold();
   refreshStatus();
   const word = keys.getStatusSummary().tafelwort;
   showToast(word ? t('sheetLoadedWord', { word }) : t('sheetLoaded'));
+}
+
+async function importAlb3cb2(bytes) {
+  showHint('');
+  if (courierOn) {
+    showHint(t('toast.courierNoKeys'));
+    return;
+  }
+  const result = await keys.importTimebookBytes(bytes);
+  if (!result.ok) {
+    showHint(t(result.error));
+    return;
+  }
+  modernSession.invalidate();
+  clearSessionFold();
+  refreshStatus();
+  const fp = keys.getStatusSummary().fingerprintShort;
+  showToast(fp ? t('sheetLoadedHardened', { fp }) : t('sheetLoaded'));
+}
+
+function ensureSlotTick() {
+  if (slotTickTimer) return;
+  slotTickTimer = window.setInterval(() => {
+    if (keys.isHardened()) refreshStatus();
+  }, 1000);
 }
 
 async function readClipboard() {
@@ -550,6 +622,7 @@ async function init() {
   applyRole();
   clearSessionFold();
   applyCourierUi();
+  ensureSlotTick();
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
@@ -650,8 +723,21 @@ async function init() {
     }
   });
 
+  els.fileInputAlb3cb2?.addEventListener('change', async () => {
+    const file = els.fileInputAlb3cb2.files?.[0];
+    els.fileInputAlb3cb2.value = '';
+    if (!file) return;
+    try {
+      const buf = await file.arrayBuffer();
+      await importAlb3cb2(new Uint8Array(buf));
+    } catch {
+      showHint(t('cbqr2.err.magic'));
+    }
+  });
+
   els.btnClearSheet.addEventListener('click', async () => {
     await keys.clearSheet();
+    modernSession.invalidate();
     clearSessionFold();
     refreshStatus();
     showToast(t('sheetCleared'));
@@ -661,6 +747,7 @@ async function init() {
   els.btnCourierOn.addEventListener('click', () => setCourier(true));
   els.btnCourierClearSheet?.addEventListener('click', async () => {
     await keys.clearSheet();
+    modernSession.invalidate();
     clearSessionFold();
     refreshStatus();
     refreshCourierBridge();
@@ -733,17 +820,23 @@ async function init() {
       showHint(t('toast.courierNoKeys'));
       return;
     }
-    const config = keys.getDayConfig();
-    if (!config) {
-      showHint(t('modern.noKey'));
-      return;
-    }
     const plain = els.mainText.value;
     if (!plain) {
       showHint(t('emptyInput'));
       return;
     }
-    const result = await encryptModern(config, plain);
+    let result;
+    const book = keys.getTimebook();
+    if (book) {
+      result = await encryptHardened(book, plain);
+    } else {
+      const config = keys.getDayConfig();
+      if (!config) {
+        showHint(t('modern.noKey'));
+        return;
+      }
+      result = await encryptModern(config, plain);
+    }
     if (!result.ok) {
       showHint(errorText(result));
       return;
@@ -757,6 +850,7 @@ async function init() {
     });
     role = 'recv';
     applyRole();
+    refreshStatus();
     showToast(t('encryptOk'));
   });
 
@@ -766,17 +860,23 @@ async function init() {
       showHint(t('toast.courierNoKeys'));
       return;
     }
-    const config = keys.getDayConfig();
-    if (!config) {
-      showHint(t('modern.noKey'));
-      return;
-    }
     const cipher = els.mainText.value;
     if (!cipher.trim()) {
       showHint(t('emptyInput'));
       return;
     }
-    const result = await decryptModern(config, cipher);
+    let result;
+    const book = keys.getTimebook();
+    if (book) {
+      result = await decryptTimebookOnce(book, cipher);
+    } else {
+      const config = keys.getDayConfig();
+      if (!config) {
+        showHint(t('modern.noKey'));
+        return;
+      }
+      result = await decryptModern(config, cipher);
+    }
     if (!result.ok) {
       showHint(errorText(result));
       return;
@@ -798,6 +898,15 @@ async function init() {
     if (!text) {
       showHint(t('emptyInput'));
       return;
+    }
+    const pin = modernSession.pinnedSlot();
+    if (pin?.codebookFingerprint) {
+      const ext = await externalizePinnedSlot(pin);
+      if (!ext.ok) {
+        showHint(t(ext.error || 'modern.externalizeFailed'));
+        return;
+      }
+      modernSession.markExposed(text);
     }
     if (await writeClipboard(text)) {
       showToast(t('copied'));
@@ -824,10 +933,34 @@ async function init() {
 
   els.btnClear.addEventListener('click', () => {
     els.mainText.value = '';
+    modernSession.invalidate();
     clearSessionFold();
+    refreshStatus();
     showHint('');
     showToast(t('cleared'));
   });
+}
+
+async function encryptHardened(book, plain) {
+  let pin = modernSession.pinnedSlot();
+  let mk = modernSession.reservedMessageKey();
+  if (!pin?.fullKey || modernSession.shouldRotateForPlain(plain)) {
+    modernSession.invalidate();
+    const started = await beginTimebookSendSession({
+      timebook: book,
+      timestampMs: Date.now(),
+      nextMessageKey: randomMessageKey4,
+    });
+    if (!started.ok) return started;
+    modernSession.noteAuthorized({
+      ...started.pin,
+      messageKey: started.messageKey,
+    });
+    pin = modernSession.pinnedSlot();
+    mk = started.messageKey;
+  }
+  const config = timebookKeyToConfig(pin.fullKey, book, pin.epoch);
+  return encryptModern(config, plain, mk);
 }
 
 init();

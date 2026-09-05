@@ -64,7 +64,7 @@
         </li>
         <li>
           <strong data-i18n="ui.info.sheet.label">Tafel:</strong>
-          <span data-i18n="ui.info.sheet.body"> JSON aus dem Codebook laden, Tag wählen.</span>
+          <span data-i18n="ui.info.sheet.body"> JSON (Tagesschlüssel) oder .alb3cb2 (V3 gehärtet) laden.</span>
         </li>
         <li>
           <strong data-i18n="ui.info.send.label">Senden:</strong>
@@ -122,6 +122,12 @@
           <span data-i18n="ui.emailLabel">E-Mail:</span>
           <a href="mailto:alberich@posteo.de?subject=Alberich%20Companion">alberich@posteo.de</a>
         </p>
+        <p data-i18n="ui.license">Lizenz: AGPL-3.0-only · Name und Marke nicht unter der AGPL.</p>
+        <p>
+          <a href="../LICENSE" data-i18n="ui.licenseLink">Lizenztext</a>
+          ·
+          <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer" data-i18n="ui.sourceLink">Quellcode</a>
+        </p>
         <p data-i18n="ui.thirdParty">QR: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe). „QR Code“ ist eine Marke von DENSO WAVE.</p>
         <p>
           <a href="../shared/THIRD_PARTY.md" data-i18n="ui.thirdPartyLink">Hinweise Dritter</a>
@@ -151,6 +157,7 @@
     <section class="card key-card">
       <div class="status empty" id="keyStatus" data-i18n="ui.noSheet">Keine Tafel — bitte JSON laden</div>
       <div class="tafelwort-line" id="tafelwortLine" hidden></div>
+      <div class="hardened-live" id="hardenedLive" hidden></div>
       <div class="month-banner" id="monthBanner" hidden>
         <p class="month-banner-text" id="monthBannerText"></p>
         <button type="button" class="btn btn-secondary" id="btnMonthBannerKeep" data-i18n="status.monthKeep">
@@ -167,8 +174,16 @@
           data-i18n-title="ui.loadJsonTitle"
           title="Monatstafel (alberich-codebook JSON)"
         >
-          <span data-i18n="ui.loadJson">JSON-Datei</span>
+          <span data-i18n="ui.loadJson">JSON</span>
           <input type="file" id="fileInput" accept="application/json,.json,text/plain" hidden />
+        </label>
+        <label
+          class="btn btn-secondary file-btn"
+          data-i18n-title="ui.loadAlb3cb2Title"
+          title="V3 gehärtet (.alb3cb2)"
+        >
+          <span data-i18n="ui.loadAlb3cb2">.alb3cb2</span>
+          <input type="file" id="fileInputAlb3cb2" accept=".alb3cb2,application/octet-stream" hidden />
         </label>
         <button
           type="button"

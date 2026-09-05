@@ -1,7 +1,10 @@
-# Third-party notices — Alberich Mail Companion
+# Third-party notices — Alberich Companion
 
-Alberich itself is not published under an open-source license in this package.
-The following libraries are bundled under `shared/vendor/` and keep their own terms.
+Alberich is licensed under **AGPL-3.0-only**. Source:
+https://github.com/MyEngineeringTools/alberich
+
+The name and mark are not under the AGPL. The following libraries are bundled
+under `shared/vendor/` and keep their own terms.
 
 ## qrcode-generator
 
@@ -17,6 +20,6 @@ The word “QR Code” is a registered trademark of DENSO WAVE INCORPORATED.
 - Author: Cosmo Wolfe
 - URL: https://github.com/cozmo/jsQR
 - License: Apache License 2.0 — `shared/vendor/jsQR.LICENSE`
-- Used for: reading QR images when Thunderbird has no BarcodeDetector
+- Used for: reading QR images when the browser has no BarcodeDetector
 - Note: this copy is the upstream webpack browser bundle; a license header
   was added locally because the bundle ships without one.

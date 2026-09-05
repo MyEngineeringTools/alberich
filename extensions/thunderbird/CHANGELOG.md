@@ -1,5 +1,14 @@
 # Changelog – Alberich Mail Companion
 
+## 1.0.17
+
+- V3 gehärtet: Import `.alb3cb2`, Slot folgt der Alberich-Schlüsselzeit (UTC+1)
+- MAC-first beim Empfang; MK-Register und Sende-Wasserzeichen (fail-closed)
+- JSON bleibt Tagesschlüssel. Kein Live-QR, kein Erzeugen.
+- AGPL-3.0-only in Info, `LICENSE` im Paket
+
+Folgt der veröffentlichten **1.0.16**.
+
 ## 1.0.16
 
 - Add-on-Name vollständig auf **Alberich Mail Companion** vereinheitlicht.

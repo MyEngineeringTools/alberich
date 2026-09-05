@@ -1,7 +1,10 @@
 # Third-party notices — Alberich Companion
 
-Alberich is licensed under **AGPL-3.0-only**.
-The following libraries are bundled under `shared/vendor/` and keep their own terms.
+Alberich is licensed under **AGPL-3.0-only**. Source:
+https://github.com/MyEngineeringTools/alberich
+
+The name and mark are not under the AGPL. The following libraries are bundled
+under `shared/vendor/` and keep their own terms.
 
 ## qrcode-generator
 

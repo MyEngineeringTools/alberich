@@ -1,5 +1,16 @@
 # Changelog – Alberich Companion (Chrome / Edge / Firefox)
 
+## 1.0.25
+
+- V3 gehärtet: Import `.alb3cb2`, Slot folgt der Alberich-Schlüsselzeit (UTC+1), Pin vor Uhr
+- MAC-first beim Empfang; MK-Register und Sende-Wasserzeichen (fail-closed)
+- JSON bleibt Tagesschlüssel. Kein Live-QR, kein Erzeugen.
+- AGPL-3.0-only in Info, `LICENSE` im Paket, `THIRD_PARTY.md` ohne OSS-Absage
+
+Chrome, Edge, Firefox.
+
+Folgt der veröffentlichten **1.0.24**.
+
 ## 1.0.24
 
 - Tafeltags-`epoch` wie Web/Android — ALBV-Sprüche von der Website wieder entschlüsselbar

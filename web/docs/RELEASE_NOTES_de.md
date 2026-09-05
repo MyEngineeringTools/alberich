@@ -6,8 +6,8 @@
 |---|---|
 | **Web** | 1.0 (Revision 65) |
 | **Android** | 1.0 (Revision 31), `versionCode` 31 |
-| **Companion** | 1.0.24 |
-| **Thunderbird** | 1.0.16 |
+| **Companion** | 1.0.25 |
+| **Thunderbird** | 1.0.17 |
 
 What’s new kurz: [`whatsnew-de.txt`](whatsnew-de.txt)  
 Ausführlich: [`whatsnew-long-de.txt`](whatsnew-long-de.txt)  

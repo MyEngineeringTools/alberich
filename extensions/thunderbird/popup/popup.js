@@ -1,8 +1,6 @@
 /**
  * SPDX-FileCopyrightText: 2026 Christian Peter Kaiser
  * SPDX-License-Identifier: AGPL-3.0-only
- */
-/**
  * Alberich Mail Companion – einfache UI
  *
  * Verschlüsseln: Schreiben-Fenster → Crypto → zurück
@@ -16,6 +14,10 @@ import {
   createKeyManager,
 } from '../shared/key-manager.js';
 import { decryptModern, encryptModern } from '../shared/modern-ops.js';
+import {
+  decryptTimebookOnce,
+  encryptTimebookOnce,
+} from '../shared/timebook/timebook-ops.js';
 import {
   getLocale,
   loadLocale,
@@ -58,6 +60,7 @@ const keys = createKeyManager(storage);
 const els = {
   keyStatus: document.getElementById('keyStatus'),
   tafelwortLine: document.getElementById('tafelwortLine'),
+  hardenedLive: document.getElementById('hardenedLive'),
   monthBanner: document.getElementById('monthBanner'),
   monthBannerText: document.getElementById('monthBannerText'),
   btnMonthBannerKeep: document.getElementById('btnMonthBannerKeep'),
@@ -324,9 +327,32 @@ function showSession(messageKey, header, messageId, pruefgruppe) {
 function refreshStatus() {
   const st = keys.getStatusSummary();
   renderSheetChrome(els, st, t, getLocale());
+  if (els.hardenedLive) {
+    if (st.loaded && st.hardened && !st.outOfMonth) {
+      els.hardenedLive.hidden = false;
+      els.hardenedLive.textContent = t('status.hardenedLive', {
+        slot: st.slotId || '',
+        remain: st.remain || '',
+        source: st.source === 'pin' ? t('status.pinned') : t('status.clock'),
+      });
+    } else {
+      els.hardenedLive.hidden = true;
+      els.hardenedLive.textContent = '';
+    }
+  }
 
   while (els.daySelect.firstChild) {
     els.daySelect.removeChild(els.daySelect.firstChild);
+  }
+  if (st.hardened) {
+    els.daySelect.disabled = true;
+    els.daySelect.title = t('ui.dayTitleHardened');
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = st.day ? t('status.dayLabel', { day: st.day }) : t('ui.dayPlaceholder');
+    els.daySelect.appendChild(opt);
+    updateActionButtons(!!keys.getDayConfig());
+    return;
   }
   if (!st.loaded || !st.dayOptions?.length) {
     els.daySelect.disabled = true;
@@ -404,12 +430,6 @@ async function onEncrypt() {
     showHint(t('toast.courierNoKeys'));
     return;
   }
-  const config = keys.getDayConfig();
-  if (!config) {
-    showHint(t('modern.noKey'));
-    return;
-  }
-
   const body = await readComposeBody();
   if (!body.ok) {
     showHint(t('ui.encryptNeedsCompose'));
@@ -421,7 +441,18 @@ async function onEncrypt() {
     return;
   }
 
-  const result = await encryptModern(config, body.text);
+  const book = keys.getTimebook();
+  let result;
+  if (book) {
+    result = await encryptTimebookOnce(book, body.text);
+  } else {
+    const config = keys.getDayConfig();
+    if (!config) {
+      showHint(t('modern.noKey'));
+      return;
+    }
+    result = await encryptModern(config, body.text);
+  }
   if (!result.ok) {
     showHint(errorText(result));
     return;
@@ -440,16 +471,21 @@ async function onDecrypt() {
     showHint(t('toast.courierNoKeys'));
     return;
   }
-  const config = keys.getDayConfig();
-  if (!config) {
+  const book = keys.getTimebook();
+  const config = book ? null : keys.getDayConfig();
+  if (!book && !config) {
     showHint(t('modern.noKey'));
     return;
   }
 
+  const decrypt = (text) => book
+    ? decryptTimebookOnce(book, text)
+    : decryptModern(config, text);
+
   // 1) Schreiben-Fenster (editierbar → Ergebnis zurück)
   const compose = await readComposeBody();
   if (compose.ok && String(compose.text || '').trim()) {
-    const result = await decryptModern(config, compose.text);
+    const result = await decrypt(compose.text);
     if (!result.ok) {
       showHint(errorText(result));
       return;
@@ -468,7 +504,7 @@ async function onDecrypt() {
     return;
   }
 
-  const result = await decryptModern(config, mail.text);
+  const result = await decrypt(mail.text);
   if (!result.ok) {
     showHint(errorText(result));
     return;
@@ -507,6 +543,9 @@ async function init() {
   refreshStatus();
   await refreshContext();
   applyCourierUi();
+  window.setInterval(() => {
+    if (keys.isHardened()) refreshStatus();
+  }, 1000);
 
   api.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;

@@ -5,9 +5,9 @@
 | Platform | Now |
 |---|---|
 | **Web** | 1.0 (Revision 65) |
-| **Android** | 1.0 (Revision 30), `versionCode` 30 |
+| **Android** | 1.0 (Revision 31), `versionCode` 31 |
 | **Companion** | 1.0.24 |
-| **Thunderbird** | 1.0.15 |
+| **Thunderbird** | 1.0.16 |
 
 What’s new (short): [`whatsnew-en.txt`](whatsnew-en.txt)  
 Long form: [`whatsnew-long-en.txt`](whatsnew-long-en.txt)  

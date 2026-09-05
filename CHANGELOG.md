@@ -16,7 +16,7 @@ now reject timebook JSON and enforce unique V3 full keys on daily sheets.
 - Web app under `web/` — version `1.0 (Revision 65)`.
 - Browser extension under `extensions/browser/` — version `1.0.24`.
 - Thunderbird MailExtension under `extensions/thunderbird/` — version `1.0.16`.
-- Android (outside this tree) — `1.0 (Revision 30)`, `versionCode` 30.
+- Android (outside this tree) — `1.0 (Revision 31)`, `versionCode` 31.
 
 ## 1.0 (Revision 52) — web
 

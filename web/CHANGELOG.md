@@ -7,6 +7,7 @@ Format: Version **X.Y (Revision N)**
 - Kurz erklärt: 24 Stunden · Einfach vs. V3 · Tagesschlüssel (gleicher Takt, Live-QR/MEZ vs. JSON/Standbild)
 - Netze: gehärtete Tafel zeigt Monat + Fingerprint (nicht Legacy-Tafelwort); Scan setzt fehlendes Monatslabel
 - Live-QR: während MUR-Empfang voller Frame und kürzerer Takt (1-Stunden-Tafeln)
+- Live-QR: Bildschirm bleibt hell beim Scannen und Anzeigen (Screen Wake Lock)
 - Speichern: Quota-/Schreibfehler sichtbar statt still
 - Gehärtete Tafeln: Binärdatei (.alb3cb2) importieren und speichern, analog JSON beim Tagesschlüssel
 - Cache-Bust `styles.css?v=65` / `js/app.js?v=65` / i18n `?v=17`

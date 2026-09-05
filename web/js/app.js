@@ -152,6 +152,7 @@ import { freezeShareSession, LabSender, LAB_MODE } from './cbqr2-lab-session.js'
 import { LabReceiver, TRANSFER, classifyCameraError } from './cbqr2-lab-scan.js';
 import { STATIC_TEXT_MAGIC, TRANSPORT_CODEC, decodeStaticText } from './cbqr2-transport.js';
 import { decodeCbqr2, encodeCbqr2, isCbqr2Bytes, timebookBinaryFilename } from './cbqr2-binary.js';
+import { acquireScreenWakeLock, releaseScreenWakeLock } from './screen-wake-lock.js';
 
 let codebookKind = 'hardened';
 let liveShareSender = null;
@@ -1321,6 +1322,7 @@ function liveShareCssSize() {
 }
 
 function stopLiveShare({ silent = false } = {}) {
+  releaseScreenWakeLock('live-share');
   if (liveShareSender) {
     liveShareSender.abort();
     liveShareSender = null;
@@ -1352,6 +1354,7 @@ function resumeLiveShare() {
 
 async function startLiveTimebookShare(book) {
   stopLiveShare({ silent: true });
+  await acquireScreenWakeLock('live-share');
   const session = await freezeShareSession({
     timebook: book,
     codec: TRANSPORT_CODEC.GZIP,
@@ -1361,6 +1364,7 @@ async function startLiveTimebookShare(book) {
     ecc: CBQR2_MUR_PROFILE_V1.ecc,
   });
   if (!session.ok) {
+    releaseScreenWakeLock('live-share');
     showToast(localizeError(session.error || 'toast.shareQrFailed'));
     return;
   }
@@ -2238,6 +2242,7 @@ async function startQrScan(purpose = 'codebook') {
       : t('qr.hint');
   }
   if (els.qrScanStatus) els.qrScanStatus.textContent = t('qr.statusStarting');
+  if (qrScanPurpose === 'codebook') await acquireScreenWakeLock('qr-scan');
   openModal('qrScanModal');
 
   try {
@@ -2334,6 +2339,7 @@ async function startQrScan(purpose = 'codebook') {
  * @param {{ silent?: boolean }} [opts]
  */
 function stopCodebookQrScan({ silent = false, keepPending = false } = {}) {
+  releaseScreenWakeLock('qr-scan');
   if (qrScanRaf) {
     cancelAnimationFrame(qrScanRaf);
     qrScanRaf = 0;

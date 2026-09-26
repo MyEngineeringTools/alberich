@@ -4,6 +4,10 @@
  * Kompakte Tafel-Anzeige für Companion / Thunderbird:
  * Tafelwort + optionale Monatsabweichung (eine Zeile, ein Button).
  */
+/**
+ * Kompakte Tafel-Anzeige für Companion / Thunderbird:
+ * Tafelwort + optionale Monatsabweichung (eine Zeile, ein Button).
+ */
 
 /** @type {string | null} */
 let monthMismatchDismissedKey = null;

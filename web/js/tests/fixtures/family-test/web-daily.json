@@ -1,0 +1,527 @@
+{
+  "format": "alberich-codebook",
+  "formatVersion": 3,
+  "machine": "Enigma M4",
+  "generator": "Alberich Web",
+  "year": 2026,
+  "month": 9,
+  "monthIndex0": 8,
+  "monthLabel": "September 2026",
+  "generatedAt": "2026-09-26T11:27:33.624Z",
+  "kenngruppen": false,
+  "dayCount": 30,
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-09-01",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "V",
+      "rotorRight": "I",
+      "ringCode": "IXUO",
+      "keyCode": "RUTC",
+      "plugboard": "AI BL CX DJ FK GP MZ OY QT RU",
+      "endwalzeWiring": "BOTJRASQXUPVGIDEFHKYNMZLCW",
+      "lueckenfueller": {
+        "left": "EFOVX",
+        "middle": "CGJPTUVXY",
+        "right": "LSWYZ"
+      }
+    },
+    {
+      "day": 2,
+      "date": "2026-09-02",
+      "rotorThin": "Beta",
+      "rotorLeft": "VIII",
+      "rotorMiddle": "VI",
+      "rotorRight": "I",
+      "ringCode": "DZXL",
+      "keyCode": "LPNK",
+      "plugboard": "AG BP DZ FH IJ KV LO MU QS RW",
+      "endwalzeWiring": "XTZKGUFAIJRBCYODSWVLMPHQNE",
+      "lueckenfueller": {
+        "left": "CEKLP",
+        "middle": "BIKSZ",
+        "right": "DJKPS"
+      }
+    },
+    {
+      "day": 3,
+      "date": "2026-09-03",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "V",
+      "rotorRight": "I",
+      "ringCode": "JZKF",
+      "keyCode": "VXYK",
+      "plugboard": "AV BP CL DH EG FK IS MY QR TW",
+      "endwalzeWiring": "WDEURSIZOYPLAGXHMQCJNVKTBF",
+      "lueckenfueller": {
+        "left": "BKMPRVY",
+        "middle": "GIJNQVW",
+        "right": "DHKUY"
+      }
+    },
+    {
+      "day": 4,
+      "date": "2026-09-04",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "VIII",
+      "rotorRight": "V",
+      "ringCode": "ZQWU",
+      "keyCode": "AFTE",
+      "plugboard": "AS BT CX EG FR IL JV KW NY PZ",
+      "endwalzeWiring": "WSRTHIOBQEDCYLXUFPZNJMKVGA",
+      "lueckenfueller": {
+        "left": "ABFGJPR",
+        "middle": "HKMOSVW",
+        "right": "DGHIJQUVZ"
+      }
+    },
+    {
+      "day": 5,
+      "date": "2026-09-05",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "V",
+      "rotorRight": "II",
+      "ringCode": "NBKJ",
+      "keyCode": "FRYT",
+      "plugboard": "AO BS CQ FN HJ MX PW RU TY VZ",
+      "endwalzeWiring": "IJEGFUANKDSXLWBHQTZVYCPROM",
+      "lueckenfueller": {
+        "left": "ADEFJLNUV",
+        "middle": "FNQVX",
+        "right": "CMSTUYZ"
+      }
+    },
+    {
+      "day": 6,
+      "date": "2026-09-06",
+      "rotorThin": "Gamma",
+      "rotorLeft": "I",
+      "rotorMiddle": "VIII",
+      "rotorRight": "VII",
+      "ringCode": "EYDD",
+      "keyCode": "WDAH",
+      "plugboard": "AE BY CV DF IQ JU KN LT MZ PS",
+      "endwalzeWiring": "KLTXBWGJHVIZQOSCRPAFYDNEUM",
+      "lueckenfueller": {
+        "left": "INOPQSY",
+        "middle": "ADGHKMR",
+        "right": "FGNSV"
+      }
+    },
+    {
+      "day": 7,
+      "date": "2026-09-07",
+      "rotorThin": "Beta",
+      "rotorLeft": "V",
+      "rotorMiddle": "VI",
+      "rotorRight": "IV",
+      "ringCode": "OKQM",
+      "keyCode": "YSJW",
+      "plugboard": "AN BH DW EV FT IZ JK LS MQ RU",
+      "endwalzeWiring": "ZAWBROISGJNPLDXKTYFQMHVCEU",
+      "lueckenfueller": {
+        "left": "CDJXZ",
+        "middle": "BCEKLNQWZ",
+        "right": "BEFNOPQ"
+      }
+    },
+    {
+      "day": 8,
+      "date": "2026-09-08",
+      "rotorThin": "Gamma",
+      "rotorLeft": "II",
+      "rotorMiddle": "V",
+      "rotorRight": "VII",
+      "ringCode": "ZKSL",
+      "keyCode": "QEIE",
+      "plugboard": "BU CJ DF EP HS IY KM LV NZ OX",
+      "endwalzeWiring": "NPUMAFRYHOCWJBZSVTDGEXKLQI",
+      "lueckenfueller": {
+        "left": "DJNPQ",
+        "middle": "DGMPY",
+        "right": "BGHMW"
+      }
+    },
+    {
+      "day": 9,
+      "date": "2026-09-09",
+      "rotorThin": "Beta",
+      "rotorLeft": "III",
+      "rotorMiddle": "I",
+      "rotorRight": "VI",
+      "ringCode": "RQTQ",
+      "keyCode": "KOUW",
+      "plugboard": "AV BL CJ EZ FH IW KP NT RX UY",
+      "endwalzeWiring": "GQNSVOCRBFUDMIEJPKYXTLWHAZ",
+      "lueckenfueller": {
+        "left": "CGKPQSTWX",
+        "middle": "DHKQSTW",
+        "right": "HOTUV"
+      }
+    },
+    {
+      "day": 10,
+      "date": "2026-09-10",
+      "rotorThin": "Gamma",
+      "rotorLeft": "I",
+      "rotorMiddle": "VI",
+      "rotorRight": "VIII",
+      "ringCode": "HZLV",
+      "keyCode": "BECT",
+      "plugboard": "CL DU FQ GS HM IZ JN OX RY TW",
+      "endwalzeWiring": "VZKBAWORJMDQPNXLHYTEFCIGUS",
+      "lueckenfueller": {
+        "left": "HJKOPQTVZ",
+        "middle": "ABMPQRU",
+        "right": "LPSWX"
+      }
+    },
+    {
+      "day": 11,
+      "date": "2026-09-11",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VIII",
+      "rotorMiddle": "V",
+      "rotorRight": "II",
+      "ringCode": "DJZU",
+      "keyCode": "ZAUE",
+      "plugboard": "AC BX FP GY IJ MU OW QV RT SZ",
+      "endwalzeWiring": "RGBQFUIOELZHWKNMJASXDCYTVP",
+      "lueckenfueller": {
+        "left": "ABDFHKNQV",
+        "middle": "JNRTUVZ",
+        "right": "ABGHKNQ"
+      }
+    },
+    {
+      "day": 12,
+      "date": "2026-09-12",
+      "rotorThin": "Gamma",
+      "rotorLeft": "I",
+      "rotorMiddle": "VI",
+      "rotorRight": "III",
+      "ringCode": "QRWK",
+      "keyCode": "GKLX",
+      "plugboard": "AT BO DE GM HN IV JR KZ LU PX",
+      "endwalzeWiring": "TQVGZWNAYSIXLKHCUJPMBFDROE",
+      "lueckenfueller": {
+        "left": "HSTUV",
+        "middle": "AFHTX",
+        "right": "GMPQR"
+      }
+    },
+    {
+      "day": 13,
+      "date": "2026-09-13",
+      "rotorThin": "Beta",
+      "rotorLeft": "VI",
+      "rotorMiddle": "IV",
+      "rotorRight": "V",
+      "ringCode": "JVJA",
+      "keyCode": "GXYZ",
+      "plugboard": "BG CH DZ EY FJ KO LV QR SU WX",
+      "endwalzeWiring": "GYRANEXTQZPOWIDSBVFKJHCLUM",
+      "lueckenfueller": {
+        "left": "DHLMX",
+        "middle": "BGPVW",
+        "right": "ACDFINO"
+      }
+    },
+    {
+      "day": 14,
+      "date": "2026-09-14",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "VIII",
+      "rotorRight": "VI",
+      "ringCode": "JTBO",
+      "keyCode": "XIZC",
+      "plugboard": "AR BU CY DT FZ HX IP KO MS NW",
+      "endwalzeWiring": "HABELSYDQTFNMGUORXVICWZPKJ",
+      "lueckenfueller": {
+        "left": "BDKMO",
+        "middle": "CQTVZ",
+        "right": "BKLMPTUYZ"
+      }
+    },
+    {
+      "day": 15,
+      "date": "2026-09-15",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "VIII",
+      "rotorRight": "VI",
+      "ringCode": "AVXA",
+      "keyCode": "CUZV",
+      "plugboard": "BZ CN DF EU HO IT JL KR MV PQ",
+      "endwalzeWiring": "WVBLYSOEHIDQGPNJZRFUTCAXMK",
+      "lueckenfueller": {
+        "left": "ACEFGJSWZ",
+        "middle": "BCFKLNU",
+        "right": "BCGIJLY"
+      }
+    },
+    {
+      "day": 16,
+      "date": "2026-09-16",
+      "rotorThin": "Gamma",
+      "rotorLeft": "I",
+      "rotorMiddle": "II",
+      "rotorRight": "V",
+      "ringCode": "IUOJ",
+      "keyCode": "WVXC",
+      "plugboard": "AW BX CU DV GZ IJ LT MN PS QY",
+      "endwalzeWiring": "GZBTAMHPWYELRQSNIUJFOXCVKD",
+      "lueckenfueller": {
+        "left": "CDHLZ",
+        "middle": "BGHIJOU",
+        "right": "GJKQR"
+      }
+    },
+    {
+      "day": 17,
+      "date": "2026-09-17",
+      "rotorThin": "Beta",
+      "rotorLeft": "VII",
+      "rotorMiddle": "VI",
+      "rotorRight": "II",
+      "ringCode": "BGNU",
+      "keyCode": "WKPH",
+      "plugboard": "BI DQ EV HT JL MX NO PW RU YZ",
+      "endwalzeWiring": "JOXQNMIHZREGUYBSPLFKDTWCVA",
+      "lueckenfueller": {
+        "left": "DIKOPQTUX",
+        "middle": "ABFIT",
+        "right": "EHOPU"
+      }
+    },
+    {
+      "day": 18,
+      "date": "2026-09-18",
+      "rotorThin": "Beta",
+      "rotorLeft": "II",
+      "rotorMiddle": "VIII",
+      "rotorRight": "III",
+      "ringCode": "UZPT",
+      "keyCode": "PGLI",
+      "plugboard": "AP CG EU FV HI JT LQ MY OZ RW",
+      "endwalzeWiring": "KGFHZUETCSOWVLQRIPDBAMYNJX",
+      "lueckenfueller": {
+        "left": "BSTWX",
+        "middle": "EFOPRSTWY",
+        "right": "JMPQSVY"
+      }
+    },
+    {
+      "day": 19,
+      "date": "2026-09-19",
+      "rotorThin": "Gamma",
+      "rotorLeft": "IV",
+      "rotorMiddle": "VI",
+      "rotorRight": "I",
+      "ringCode": "YDYW",
+      "keyCode": "AYWZ",
+      "plugboard": "AW BQ CJ DO EV FI GK HT LP MU",
+      "endwalzeWiring": "XYSJWNDQKAFPOLIUREGVTBCZMH",
+      "lueckenfueller": {
+        "left": "CFGUW",
+        "middle": "GHIJMWZ",
+        "right": "ABGIMWZ"
+      }
+    },
+    {
+      "day": 20,
+      "date": "2026-09-20",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VII",
+      "rotorMiddle": "III",
+      "rotorRight": "V",
+      "ringCode": "VAXL",
+      "keyCode": "JJRR",
+      "plugboard": "AS BL DU EY FK IJ MT NV OR XZ",
+      "endwalzeWiring": "ILBQZRCAJXWESYUHPFTMOGVNKD",
+      "lueckenfueller": {
+        "left": "BEFKLOUVY",
+        "middle": "BDHIJMW",
+        "right": "EFMRSXZ"
+      }
+    },
+    {
+      "day": 21,
+      "date": "2026-09-21",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "III",
+      "rotorRight": "II",
+      "ringCode": "HXAW",
+      "keyCode": "UKTJ",
+      "plugboard": "AL BQ DY EK GS IM JP NZ RT UX",
+      "endwalzeWiring": "NIFKQHLUBSDOMXZPWYVARJCETG",
+      "lueckenfueller": {
+        "left": "CGOPQ",
+        "middle": "BFHIMTW",
+        "right": "ABFMOQRUX"
+      }
+    },
+    {
+      "day": 22,
+      "date": "2026-09-22",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "V",
+      "rotorRight": "VII",
+      "ringCode": "OSPI",
+      "keyCode": "MXBP",
+      "plugboard": "AO BR CY DK HV IL JS MX PZ UW",
+      "endwalzeWiring": "OBTGDZJRSMUVALCWKYXFEIQNHP",
+      "lueckenfueller": {
+        "left": "BDHKORSUY",
+        "middle": "AIMUW",
+        "right": "GJNOPRU"
+      }
+    },
+    {
+      "day": 23,
+      "date": "2026-09-23",
+      "rotorThin": "Beta",
+      "rotorLeft": "I",
+      "rotorMiddle": "II",
+      "rotorRight": "III",
+      "ringCode": "PQYE",
+      "keyCode": "CXTU",
+      "plugboard": "BF DN EY GR HP JS KV LX MZ OQ",
+      "endwalzeWiring": "QXENUICKOAHVWRSTGFMDJLBZYP",
+      "lueckenfueller": {
+        "left": "EGJPRUV",
+        "middle": "GHIJQSX",
+        "right": "CTUVZ"
+      }
+    },
+    {
+      "day": 24,
+      "date": "2026-09-24",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VII",
+      "rotorMiddle": "V",
+      "rotorRight": "III",
+      "ringCode": "CDRK",
+      "keyCode": "ODNS",
+      "plugboard": "EQ FZ GL HU IX JR KT MV NW OP",
+      "endwalzeWiring": "GFMQCONSXDZBRJVEAKYTHWLUPI",
+      "lueckenfueller": {
+        "left": "DGILU",
+        "middle": "ABDIKLT",
+        "right": "CFGHJLTVX"
+      }
+    },
+    {
+      "day": 25,
+      "date": "2026-09-25",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VII",
+      "rotorMiddle": "III",
+      "rotorRight": "VI",
+      "ringCode": "NNZN",
+      "keyCode": "YOCL",
+      "plugboard": "AG CD ES FU HQ IP KW LZ MX RY",
+      "endwalzeWiring": "GMFCDIOBPXRSNQYJVAZLETKUWH",
+      "lueckenfueller": {
+        "left": "ACDFLPUVW",
+        "middle": "ABEFOQSUW",
+        "right": "DFKOP"
+      }
+    },
+    {
+      "day": 26,
+      "date": "2026-09-26",
+      "rotorThin": "Gamma",
+      "rotorLeft": "III",
+      "rotorMiddle": "VIII",
+      "rotorRight": "II",
+      "ringCode": "WTIA",
+      "keyCode": "OWFP",
+      "plugboard": "AH BI CP DF EN JR MT OX QS VW",
+      "endwalzeWiring": "ZNHPBKCATXRVLGUEIYQOFJMWDS",
+      "lueckenfueller": {
+        "left": "ACIJKST",
+        "middle": "HJKMNOTYZ",
+        "right": "AFIKOTWYZ"
+      }
+    },
+    {
+      "day": 27,
+      "date": "2026-09-27",
+      "rotorThin": "Beta",
+      "rotorLeft": "VII",
+      "rotorMiddle": "VIII",
+      "rotorRight": "V",
+      "ringCode": "SRQX",
+      "keyCode": "UULX",
+      "plugboard": "AN BK CD EM FQ GJ LZ OR PW VY",
+      "endwalzeWiring": "AYIBNUSZEWJORKHDPMCLTFQVGX",
+      "lueckenfueller": {
+        "left": "FHMRSUVXY",
+        "middle": "CGJLOWX",
+        "right": "BEIJNOQWZ"
+      }
+    },
+    {
+      "day": 28,
+      "date": "2026-09-28",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VIII",
+      "rotorMiddle": "III",
+      "rotorRight": "VI",
+      "ringCode": "RTSU",
+      "keyCode": "MPSU",
+      "plugboard": "AV BD CN ET FU JS KY LQ MR WX",
+      "endwalzeWiring": "MODUFQZYLKVWSPRTXNICGEBJAH",
+      "lueckenfueller": {
+        "left": "BCDFIJMTW",
+        "middle": "FIKLOSU",
+        "right": "DGHKMST"
+      }
+    },
+    {
+      "day": 29,
+      "date": "2026-09-29",
+      "rotorThin": "Gamma",
+      "rotorLeft": "VII",
+      "rotorMiddle": "II",
+      "rotorRight": "V",
+      "ringCode": "CXZE",
+      "keyCode": "PIUY",
+      "plugboard": "AT DJ FN GQ HS KV LY MZ OW RU",
+      "endwalzeWiring": "XNGTDALOEUCWMHFBJSKPRQYIVZ",
+      "lueckenfueller": {
+        "left": "CMNRTUV",
+        "middle": "BDGMOQW",
+        "right": "CDEGILQRV"
+      }
+    },
+    {
+      "day": 30,
+      "date": "2026-09-30",
+      "rotorThin": "Gamma",
+      "rotorLeft": "V",
+      "rotorMiddle": "VII",
+      "rotorRight": "IV",
+      "ringCode": "OCTC",
+      "keyCode": "CXCR",
+      "plugboard": "AQ CX DW EL FO HZ IY JM KP NS",
+      "endwalzeWiring": "UBRJPMDAKWTEHFQXINOLGYZSCV",
+      "lueckenfueller": {
+        "left": "DKPQRSX",
+        "middle": "ADGHJMO",
+        "right": "AFRVY"
+      }
+    }
+  ],
+  "endwalzePolicy": "permutation",
+  "networkContext": "ALB"
+}

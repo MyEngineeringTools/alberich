@@ -36,7 +36,7 @@ export default {
   'mode.status.modern': 'Modern · Spruchschlüssel',
   'mode.hint.traditional': 'Klassische Enigma. Involutorisch. Manuelle Kontrolle. Nur A–Z.',
   'mode.hint.modern':
-    'Endwalze + Lückenfüllerwalzen + Base-26 + automatischer Spruchschlüssel. Stärker und alltagstauglicher.',
+    'Endwalze + Lückenfüllerwalzen + Base-26 + automatischer Spruchschlüssel. Für Volltext-Nachrichten.',
   'mode.info.summary': 'Kurz erklärt',
   'mode.info.traditional':
     'Traditionell simuliert das historische Verhalten: Umkehrwalze (involutorisch), feste Kerben, nur A–Z. Einfach = eine Startlage. Spruchschlüssel = manuell pro Nachricht mit Kopfgruppe.',
@@ -193,6 +193,9 @@ export default {
     'Traditionell ist reziprok (gleiche Einstellung = Ver- und Entschlüsseln). Modern: Klartext senden, Geheimtext empfangen — gleicher Tagesschlüssel.',
 
   'toast.inputCopied': 'Eingabe kopiert',
+  'toast.outputChanged': 'Ausgabe während des Kopierens geändert. Bitte erneut ausgeben.',
+  'modern.noCodebook': 'Keine Schlüsseltafel im aktiven Netz. Bitte zuerst eine Tafel importieren oder erzeugen.',
+  'codebook.statusCompareFingerprint': 'Vergleiche diesen Fingerabdruck mit deinem Partner.',
   'toast.outputCopied': 'Ausgabe kopiert',
   'toast.keyCopied': 'Schlüssel kopiert',
   'toast.sessionCopied': 'Sitzung kopiert',
@@ -298,13 +301,13 @@ export default {
   'codebook.profile.24h': '24 Stunden',
   'codebook.profile.24hHint': 'Einfach',
   'codebook.profile.1h': '1 Stunde',
-  'codebook.profile.1hHint': 'Hoher Schutz',
+  'codebook.profile.1hHint': 'Kurzes Intervall',
   'codebook.hardened.info.body':
     '<p>V3 gehärtet ist Modern V3 mit automatisch wechselndem vollständigem Schlüssel: Endwalze und Lückenfüller stehen auf der Tafel, Telegramm <code>ALBV</code>. Die Uhr wählt den Zeitraum; sie erzeugt den Schlüssel nicht.</p>'
     + '<p>Alberich wechselt nach der <strong>Alberich-Schlüsselzeit</strong> (ganzjährig MEZ, UTC+1, ohne Sommerzeit). Die Anzeige „Aktueller Schlüssel“ folgt der Uhr. Eine schon begonnene Nachricht bleibt auf ihrem Schlüssel. Die nächste neue Nachricht nutzt den dann aktuellen Zeitraum.</p>'
     + '<p><strong>24 Stunden · Einfach</strong> — ein vollständiger V3-Schlüssel pro Kalendertag. Gleicher Takt wie „V3 · Tagesschlüssel“, aber Live-QR und MEZ statt JSON oder Standbild. Druck oder Datei: Tagesschlüssel; gleiches Teilen wie 4&nbsp;h: 24 Stunden; weniger Nachrichten unter einem Schlüssel: 4 Stunden.</p>'
     + '<p><strong>4 Stunden · Empfohlen</strong> — sechs Zeitschlüssel am Tag. Weniger Nachrichten unter demselben Schlüssel als bei 24 Stunden.</p>'
-    + '<p><strong>1 Stunde · Hoher Schutz</strong> — 24 Zeitschlüssel am Tag, kürzeste gemeinsame Schlüsselzeit.</p>'
+    + '<p><strong>1 Stunde · Kurzes Intervall</strong> — 24 Zeitschlüssel am Tag, kürzeste gemeinsame Schlüsselzeit.</p>'
     + '<p>Alle Teilnehmer eines Netzes brauchen dieselbe Tafel. Teilen über den laufenden QR-Code; empfangen mit der Kamera, ohne einen Zeitraum zu wählen.</p>',
   'codebook.hardenedLabel': 'V3 gehärtet',
   'codebook.legacyLabel': 'V3 · Tagesschlüssel',
@@ -397,6 +400,7 @@ export default {
   'codebook.importQr': 'QR-Bild laden',
   'codebook.scanQr': 'Kamera scannen',
   'codebook.dayLabel': 'Tag der Tafel',
+  'codebook.today': 'Heute',
   'codebook.formatHint': 'Gilt für das aktive Netz. Hier erzeugen oder JSON/QR importieren. Die Kamera erkennt bestehende und gehärtete Tafeln automatisch. Nach dem Laden Tafelwort oder Fingerprint mit dem Partner vergleichen.',
   'codebook.formatHintHardened':
     'Gehärtete Tafel: Binärdatei (.alb3cb2) speichern oder importieren, analog zum JSON beim Tagesschlüssel. Teilen per Live-QR bleibt. QR-Standbild nicht verwenden.',

@@ -5,6 +5,11 @@
  * Warum: Das Compose/Action-Popup schließt beim nativen Dateidialog —
  * die change-Events und storage.set laufen dann nicht zu Ende.
  */
+/**
+ * Eigenes Fenster für Codebook-Import.
+ * Warum: Das Compose/Action-Popup schließt beim nativen Dateidialog —
+ * die change-Events und storage.set laufen dann nicht zu Ende.
+ */
 
 import {
   createBrowserStorage,

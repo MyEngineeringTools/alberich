@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * QR aus Bild oder Videobild lesen (BarcodeDetector, sonst jsQR).
  */
+/**
+ * QR aus Bild oder Videobild lesen (BarcodeDetector, sonst jsQR).
+ */
 
 import jsQR from './vendor/jsQR.js';
 

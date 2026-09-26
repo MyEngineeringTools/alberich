@@ -178,6 +178,16 @@ export function resolveTimebookSlot(book, timestampMs) {
  * A pinned in-progress message wins; otherwise the clock slot.
  * @returns {{ key: object, slotId: string, source: 'pin' | 'clock' } | null}
  */
+/**
+ * Fields for “export key settings”.
+ * The clock or pinned V3 key wins. The panel fields stay as they were.
+ * @param {object} panel
+ * @param {{ key?: object } | null | undefined} displaySelection
+ */
+export function machineShownInSettings(panel, displaySelection) {
+  return displaySelection?.key || panel;
+}
+
 export function selectDisplayFullKey(opts) {
   const book = opts.book;
   if (!opts.isModernMode || opts.keySource !== 'codebook' || !isTimebook(book)) {

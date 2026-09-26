@@ -6,6 +6,12 @@
  * Badge am Compose-Button: gültiger Tagesschlüssel geladen oder nicht.
  * Keine Netzwerkzugriffe, keine Telemetrie.
  */
+/**
+ * Alberich Mail Companion – Background
+ *
+ * Badge am Compose-Button: gültiger Tagesschlüssel geladen oder nicht.
+ * Keine Netzwerkzugriffe, keine Telemetrie.
+ */
 
 import {
   createBrowserStorage,

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * Kurier-Schalter und Geheimtext-Entwurf (Default: aus).
  */
+/**
+ * Kurier-Schalter und Geheimtext-Entwurf (Default: aus).
+ */
 
 export const COURIER_ON_KEY = 'alberichCompanion.courierOn';
 export const COURIER_DRAFT_KEY = 'alberichCompanion.courierDraft';

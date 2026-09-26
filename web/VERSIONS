@@ -2,13 +2,13 @@
 # Android source is not in this tree; the numbers still live here so
 # studio and this repo stay aligned.
 
-web.display=1.0 (Revision 65)
+web.display=1.0 (Revision 67)
 web.name=1.0
-web.revision=65
+web.revision=67
 
 browser.version=1.0.25
 
-thunderbird.version=1.0.17
+thunderbird.version=1.0.18
 
 android.display=1.0 (Revision 31)
 android.name=1.0

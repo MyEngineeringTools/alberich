@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * UI-Sprachen DE / EN für Alberich Companion.
  */
+/**
+ * UI-Sprachen DE / EN für Alberich Companion.
+ */
 
 /** @typedef {'de'|'en'} Locale */
 

@@ -6,13 +6,7 @@ Alberich is a small solo project. Patches are welcome if they stay focused.
 
 - Read [docs/crypto-spec/overview.md](docs/crypto-spec/overview.md). Behaviour
   that disagrees with the spec or the golden vectors is a bug.
-- Product versions live in [VERSIONS](VERSIONS). They are the same numbers
-  as the shipped apps (web Revision 65 is Revision 65, not a GitHub-only
-  0.x). Bump that file first, then `web/js/app.js`, `web/index.html`, the
-  extension manifests, and (outside this tree) Android `version.properties`.
-  Do not let studio copies drift. Sync studio → this tree, never the reverse.
-  A display-only web bump does not change the research fingerprint; run
-  `scripts/reproduce-research.sh --full` only when algorithm JS changes.
+- Product source versions live in [VERSIONS](VERSIONS); this repository is not a GitHub-only 0.x line. Hosting and store deployment are separate and may lag. Sync studio → this tree, never the reverse. Bump the ledger and relevant platform files together. Android source is outside this tree. A display-only web bump does not change the research fingerprint; run `scripts/reproduce-research.sh --full` only when algorithm JS changes.
 - Keep the web app a static site. Do not add a bundler or an npm dependency
   tree. `web/package.json`, `extensions/browser/package.json`, and
   `extensions/thunderbird/package.json` exist only so Node 18 treats those

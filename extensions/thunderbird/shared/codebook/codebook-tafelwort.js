@@ -4,6 +4,10 @@
  * Tafelwort: CRC-32-Kenngruppe über den Slim-Inhalt einer Monatstafel.
  * Parität Web `codebook-tafelwort.js` / Android CodebookTafelwort.
  */
+/**
+ * Tafelwort: CRC-32-Kenngruppe über den Slim-Inhalt einer Monatstafel.
+ * Parität Web `codebook-tafelwort.js` / Android CodebookTafelwort.
+ */
 
 /** @typedef {import('./codebook.js').CodebookSheet} CodebookSheet */
 

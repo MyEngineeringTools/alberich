@@ -4,6 +4,10 @@
  * Thunderbird: angezeigte (gelesene) Nachricht lesen.
  * Lese-Fenster ist read-only → Entschlüsselung öffnet Ergebnis-Tab.
  */
+/**
+ * Thunderbird: angezeigte (gelesene) Nachricht lesen.
+ * Lese-Fenster ist read-only → Entschlüsselung öffnet Ergebnis-Tab.
+ */
 
 import { htmlToPlain } from './compose-io.js';
 

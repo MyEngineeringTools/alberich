@@ -1,13 +1,9 @@
 # Alberich
 
-Enigma-M4 machine in the browser: **Traditional** (historical, involutory) and
-**Modern V3** and **V3 gehärtet** (time slots, CBQR2). Daily keys, networks, month
-sheets, courier QR.
+Alberich is a local rotor-encryption application: **Traditional** is a historical Enigma M4 simulation; **Modern V3** is its own procedure, with optional hardened time slots and CBQR2. Daily keys, networks, month sheets, and courier QR.
 
 - Live instance: [https://alberich.pro/](https://alberich.pro/)
-- Versions: see [VERSIONS](VERSIONS) — the same numbers as the live apps:
-  web `1.0 (Revision 65)`, browser `1.0.25`, Thunderbird `1.0.17`,
-  Android `1.0 (Revision 31)` / code 31. Not a separate GitHub count.
+- Versions: see [VERSIONS](VERSIONS) for repository source. Web is `1.0 (Revision 67)`, browser `1.0.25`, Mail Companion `1.0.18`; Android source is outside this tree (public-tree ledger: `1.0 (Revision 31)` / code 31). The hosted website may lag until separately deployed.
 - Platforms here: static **web** app, **browser companion** (Chrome / Edge /
   Firefox), and **Thunderbird** MailExtension
 - Not in this tree: Android sources, store listings

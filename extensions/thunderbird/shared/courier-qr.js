@@ -4,6 +4,10 @@
  * Kurier-QR: ein Spruch als einzelner Code (Parity Web / Android CourierQr).
  * Alphanumeric-Nutzlast ALBERICH-CTQR1- + A–Z, QR Version 20 / ECC M = 970 Zeichen.
  */
+/**
+ * Kurier-QR: ein Spruch als einzelner Code (Parity Web / Android CourierQr).
+ * Alphanumeric-Nutzlast ALBERICH-CTQR1- + A–Z, QR Version 20 / ECC M = 970 Zeichen.
+ */
 
 import { utf8ToBase26 } from './crypto/modern-crypto.js';
 

@@ -20,8 +20,8 @@ const css = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 const app = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const versions = readFileSync(new URL('../../VERSIONS', import.meta.url), 'utf8');
 
-assert(/web\.revision=65\b/.test(versions), 'product revision stays 65');
-assert(app.includes("const VERSION = '1.0 (Revision 65)'"), 'app VERSION stays 65');
+assert(/web\.revision=67\b/.test(versions), 'product revision matches 67');
+assert(app.includes("const VERSION = '1.0 (Revision 67)'"), 'app VERSION matches 67');
 
 const shareStart = html.indexOf('id="qrShareModal"');
 const share = html.slice(shareStart, html.indexOf('id="toast"', shareStart));

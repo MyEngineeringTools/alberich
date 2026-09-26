@@ -4,6 +4,10 @@
  * Anzeige des entschlüsselten Klartexts (neues Tab).
  * Nur textContent — kein innerHTML mit Mailinhalt.
  */
+/**
+ * Anzeige des entschlüsselten Klartexts (neues Tab).
+ * Nur textContent — kein innerHTML mit Mailinhalt.
+ */
 
 import { RESULT_STORAGE_KEY } from '../popup/mail-io.js';
 import {

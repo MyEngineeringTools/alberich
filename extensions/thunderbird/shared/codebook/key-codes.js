@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * Minimale Schlüssel-/Ring-Helfer (aus alberich-web text-processing).
  */
+/**
+ * Minimale Schlüssel-/Ring-Helfer (aus alberich-web text-processing).
+ */
 
 const ROMAN = { I: '1', II: '2', III: '3', IV: '4', V: '5', VI: '6', VII: '7', VIII: '8' };
 

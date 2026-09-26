@@ -10,6 +10,16 @@
  *
  * Reine Hilfsfunktionen (Base-26, Kerben, Endwalze) sind DOM-frei und testbar.
  */
+/**
+ * Kryptographischer Kern des Modern-Modus (Web).
+ *
+ * - Endwalze: nicht-involutorische Permutation (statt UKW)
+ * - Lückenfüllerwalzen (Weg B): schlüsselabhängige Kerben aus Ringstellung + Steckerbrett
+ * - Base-26: UTF-8-Bytes ↔ Buchstabenpaare A–Z
+ * - Auto-Spruchschlüssel: Kopfgruppe + Körper (klassisch, mit Endwalze-Invertierung)
+ *
+ * Reine Hilfsfunktionen (Base-26, Kerben, Endwalze) sind DOM-frei und testbar.
+ */
 
 import {
   REFLECTOR_ID_BRUNO,

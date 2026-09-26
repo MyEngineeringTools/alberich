@@ -5,7 +5,7 @@ Videos: [alberich.pro/blog](https://alberich.pro/blog/).
 
 ## 1. Was ist Alberich?
 
-Alberich ist ein kostenloser Enigma-M4-Simulator im Browser (Deutsch/Englisch), ohne Account. Vier-Walzen-Chiffre mit Walzen, Ringen, Steckerbrett und Tagesschlüssel – plus Schlüsseltafeln und Netze. Monatstafeln erzeugt die Web-App oder die Android-App.
+Alberich ist eine lokale Rotor-Verschlüsselungsanwendung mit einer historischen Enigma-M4-Simulation und dem eigenständigen Verfahren Modern V3. Sie läuft im Browser (Deutsch/Englisch), ohne Account. Vier Walzen, Ringe, Steckerbrett und Tagesschlüssel – plus Schlüsseltafeln und Netze. Monatstafeln erzeugt die Web-App oder die Android-App.
 
 ## 2. Zwei Hauptmodi
 

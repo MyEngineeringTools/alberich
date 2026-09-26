@@ -33,7 +33,6 @@ import {
   parseCodebookJson,
   dayEntryToSettingsPatch,
   findCodebookDay,
-  defaultCodebookDay,
   todayOnSheet,
   sheetDiffersFromCalendar,
 } from './codebook.js';
@@ -77,7 +76,7 @@ import {
   clearAllNetworkSheets,
   sanitizeNetworkName,
 } from './networks.js';
-import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=17';
+import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=19';
 import {
   getModeProfileId,
   isModern,
@@ -133,6 +132,7 @@ import { generateTimebook } from './timebook-generate.js';
 import {
   isTimebook,
   resolveTimebookSlot,
+  machineShownInSettings,
   selectDisplayFullKey,
   validateTimebook,
 } from './timebook.js';
@@ -163,7 +163,7 @@ let slotTickTimer = 0;
 let lastRotorDisplaySlotId = '';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 65)';
+const VERSION = '1.0 (Revision 67)';
 /** Replaced by scripts/release.sh in the packaged web zip. */
 const BUILD_COMMIT = 'unpublished';
 const PROTOCOL_LABEL = 'Modern V3';
@@ -340,6 +340,7 @@ function init() {
   bindEvents();
   fillCodebookGenerateSelects();
   syncCodebookEndwalzePolicyUi();
+  followSheetKind(state.codebookSheet);
   renderAll();
   maybeApplyTodaysCodebookDay();
   applyCodebookDeepLink();
@@ -348,6 +349,8 @@ function init() {
     renderTimebookNow();
     renderHardenedLiveBadge();
     refreshTimebookRotorView();
+    syncTagDerTafelToActiveKey();
+    refreshTodayButton();
   }, 1000);
   window.addEventListener('hashchange', () => {
     if (wantsCodebookDeepLink()) applyCodebookDeepLink();
@@ -381,7 +384,7 @@ function cacheElements() {
     'btnSourceCodebook', 'btnSourceManual', 'codebookPanel', 'codebookStatus',
     'codebookMonthBanner', 'codebookMonthBannerText', 'btnMonthBannerKeep', 'btnMonthBannerNew',
     'codebookFileInput', 'codebookQrFileInput', 'btnImportCodebook',
-    'btnImportCodebookQr', 'btnScanCodebookQr', 'codebookDaySelect', 'codebookHint',
+    'btnImportCodebookQr', 'btnScanCodebookQr', 'codebookDaySelect', 'btnCodebookToday', 'codebookHint',
     'codebookGenMonth', 'codebookGenYear', 'btnGenerateCodebook',
     'codebookKindBlock', 'codebookProfileBlock', 'btnKindHardened', 'btnKindLegacy',
     'codebookGenerateStatus',
@@ -438,7 +441,7 @@ function bindEvents() {
   document.getElementById('btnCopyInput').addEventListener('click', () => copyText(state.plaintext, t('toast.inputCopied')));
   document.getElementById('btnPasteInput').addEventListener('click', onPasteButtonClick);
   document.getElementById('btnCopyOutput').addEventListener('click', () => {
-    void externalizeThen(() => copyText(state.ciphertext, t('toast.outputCopied')));
+    void externalizeThen((output) => copyText(output, t('toast.outputCopied')));
   });
   document.getElementById('btnShareOutput').addEventListener('click', () => shareOutput());
   els.btnShowCourierQr?.addEventListener('click', () => {
@@ -552,6 +555,7 @@ function bindEvents() {
   els.codebookFileInput?.addEventListener('change', onCodebookFileSelected);
   els.codebookQrFileInput?.addEventListener('change', onCodebookQrFileSelected);
   els.codebookDaySelect?.addEventListener('change', onCodebookDayChange);
+  els.btnCodebookToday?.addEventListener('click', onCodebookToday);
   els.btnNetworkAdd?.addEventListener('click', onNetworkAdd);
   els.btnNetworkRename?.addEventListener('click', onNetworkRename);
   els.btnNetworkClearSheet?.addEventListener('click', onNetworkClearSheet);
@@ -1033,7 +1037,7 @@ function applyImportedCodebookSheet(sheet, sourceLabel) {
     if (!ok) return;
   }
 
-  const day = isTimebook(sheet) ? defaultTimebookDay(sheet) : defaultCodebookDay(sheet);
+  const day = isTimebook(sheet) ? defaultTimebookDay(sheet) : defaultDayOnKeyTime(sheet);
   const networks = syncActiveIntoNetworks(
     state.networks,
     state.activeNetworkId,
@@ -1113,7 +1117,7 @@ function activateNetwork(id) {
   const day = exact.sheet
     ? (findCodebookDay(exact.sheet, exact.selectedDay)
       ? exact.selectedDay
-      : defaultCodebookDay(exact.sheet))
+      : defaultDayOnKeyTime(exact.sheet))
     : 1;
 
   state = {
@@ -1133,9 +1137,56 @@ function activateNetwork(id) {
   }
 
   saveState();
+  followSheetKind(state.codebookSheet);
   renderAll();
   renderSetupForm();
   showActionFeedback(t('toast.networkActivated', { network: displayNetworkName(exact) }));
+}
+
+/** Umschalter V3 gehärtet / Tagesschlüssel folgt der Tafel des angeklickten Netzes. */
+function followSheetKind(sheet) {
+  if (!sheet) return;
+  setCodebookKind(isTimebook(sheet) ? 'hardened' : 'legacy');
+}
+
+function todayDayForActiveSheet(sheet) {
+  if (!sheet) return null;
+  const alb = getAlberichDateTime();
+  return todayOnSheet(sheet, alb.year, alb.month, alb.day);
+}
+
+function defaultDayOnKeyTime(sheet) {
+  return todayDayForActiveSheet(sheet) ?? sheet.days[0]?.day ?? 1;
+}
+
+function refreshTodayButton() {
+  const btn = els.btnCodebookToday;
+  if (!btn) return;
+  btn.disabled = todayDayForActiveSheet(state.codebookSheet) == null;
+}
+
+function onCodebookToday() {
+  const day = todayDayForActiveSheet(state.codebookSheet);
+  if (day == null) return;
+  applyCodebookDay(day, { notify: true });
+}
+
+/** Tag der Tafel zeigt den Tag des gerade gesetzten V3-Satzes. */
+function sheetDayOfActiveKey(sheet) {
+  if (!isTimebook(sheet) || state.keySource !== 'codebook') return null;
+  const resolved = resolveTimebookSlot(sheet, Date.now());
+  if (!resolved.ok) return null;
+  return resolved.meta.day;
+}
+
+function syncTagDerTafelToActiveKey() {
+  const select = els.codebookDaySelect;
+  const day = sheetDayOfActiveKey(state.codebookSheet);
+  if (!select || day == null) return;
+  const value = String(day);
+  if ([...select.options].some((opt) => opt.value === value) && select.value !== value) {
+    select.value = value;
+  }
 }
 
 /** @param {import('./networks.js').Network} net */
@@ -1169,6 +1220,7 @@ function onNetworkAdd() {
     plaintext: '',
     ciphertext: '',
   };
+  invalidateModernSessionKey();
   messageReceive = false;
   lastHeaderGroup = '';
   saveState();
@@ -1849,7 +1901,7 @@ function onNetworkDelete() {
   const day = next?.sheet
     ? (findCodebookDay(next.sheet, next.selectedDay)
       ? next.selectedDay
-      : defaultCodebookDay(next.sheet))
+      : defaultDayOnKeyTime(next.sheet))
     : 1;
 
   state = {
@@ -2378,10 +2430,10 @@ function maybeApplyTodaysCodebookDay() {
   const sheet = state.codebookSheet;
   if (!sheet) return;
 
-  const alb = isTimebook(sheet) ? getAlberichDateTime() : null;
-  const year = alb ? alb.year : new Date().getFullYear();
-  const month = alb ? alb.month : new Date().getMonth() + 1;
-  const dayOfMonth = alb ? alb.day : new Date().getDate();
+  const alb = getAlberichDateTime();
+  const year = alb.year;
+  const month = alb.month;
+  const dayOfMonth = alb.day;
   const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayOfMonth).padStart(2, '0')}`;
   const todayDay = todayOnSheet(sheet, year, month, dayOfMonth);
   if (todayDay == null) {
@@ -2771,6 +2823,10 @@ function markModernCipherExposed() {
 
 async function externalizeThen(fn) {
   if (!state.ciphertext) return;
+  const output = state.ciphertext;
+  // Mark the clicked version before asynchronous storage: editing while the
+  // watermark commits must not reuse a message key already being exported.
+  markModernCipherExposed();
   const pin = modernSession.pinnedSlot();
   if (pin?.codebookFingerprint) {
     const out = await externalizePinnedSlot(pin);
@@ -2779,8 +2835,11 @@ async function externalizeThen(fn) {
       return;
     }
   }
-  markModernCipherExposed();
-  await fn();
+  if (state.ciphertext !== output) {
+    showToast(t('toast.outputChanged'));
+    return;
+  }
+  await fn(output);
 }
 
 function usesModernV3() {
@@ -2932,6 +2991,10 @@ async function processTextModernEncryptTimebook(plainText) {
 }
 
 async function processTextModernEncrypt(plainText) {
+  if (state.keySource === 'codebook' && !state.codebookSheet) {
+    lastModernCryptoError = 'modern.noCodebook';
+    return '';
+  }
   if (isTimebook(state.codebookSheet) && state.keySource === 'codebook') {
     return processTextModernEncryptTimebook(plainText);
   }
@@ -3044,6 +3107,10 @@ async function processTextModernDecryptTimebook(cipherLetters) {
 }
 
 async function processTextModernDecrypt(cipherLetters) {
+  if (state.keySource === 'codebook' && !state.codebookSheet) {
+    lastModernCryptoError = 'modern.noCodebook';
+    return '';
+  }
   if (isTimebook(state.codebookSheet) && state.keySource === 'codebook') {
     const clean = String(cipherLetters ?? '').toUpperCase().replace(/[^A-Z]/g, '');
     if (clean.length < 4) {
@@ -3736,18 +3803,19 @@ function showDuplicateHint(text) {
 
 function formatKeyExport() {
   const modern = isModern(state.mainMode);
-  const v3 = usesModernV3();
-  const reflector = v3 ? state.endwalzeWiring : reflectorLabel(state.reflectorId);
+  const machine = machineShownInSettings(state, activeTimebookDisplayKey());
+  const v3 = machine !== state || usesModernV3();
+  const reflector = v3 ? machine.endwalzeWiring : reflectorLabel(state.reflectorId);
   // Traditionell: UKW Bruno/Caesar/Dora · Modern V2: EW + Typ · V3: EW + 26-Buchstaben-Verdrahtung
   const prefix = modern ? t('export.ewPrefix') : t('export.ukwPrefix');
-  const walzenlage = `${prefix} ${reflector}-${state.rotorThin}-${state.rotorLeft}-${state.rotorMiddle}-${state.rotorRight}`;
-  const stecker = parsePlugboardPairs(state.plugboard).join(' ');
+  const walzenlage = `${prefix} ${reflector}-${machine.rotorThin}-${machine.rotorLeft}-${machine.rotorMiddle}-${machine.rotorRight}`;
+  const stecker = parsePlugboardPairs(machine.plugboard).join(' ');
   const lines = [
     `${t('export.walzenlage')}: ${walzenlage}`,
-    `${t('export.rings')}: ${state.ringCode}`,
+    `${t('export.rings')}: ${machine.ringCode}`,
   ];
-  if (modern && validateLueckenfueller(state.lueckenfueller).ok) {
-    const n = state.lueckenfueller;
+  if (modern && validateLueckenfueller(machine.lueckenfueller).ok) {
+    const n = machine.lueckenfueller;
     lines.push(t('export.notches', {
       left: n.left,
       middle: n.middle,
@@ -3759,7 +3827,7 @@ function formatKeyExport() {
     lines.push(`${modern ? t('export.ewd') : t('export.ukwd')}: ${formatDoraPairs(state.reflectorD, state.doraFree)}`);
   }
   if (usesTraditionalMessageKey(state) || modern) {
-    lines.push(`${t('export.grundstellung')}: ${state.keyCode}`);
+    lines.push(`${t('export.grundstellung')}: ${machine.keyCode}`);
     if (usesTraditionalMessageKey(state) && isValidFourKey(state.messageKey)) {
       lines.push(`${t('export.spruchschluessel')}: ${state.messageKey}`);
     }
@@ -4012,16 +4080,16 @@ async function ingestCiphertext(raw) {
 
 async function shareOutput() {
   if (!state.ciphertext) return;
-  await externalizeThen(async () => {
+  await externalizeThen(async (output) => {
     if (navigator.share) {
       try {
-        await navigator.share({ text: state.ciphertext });
+        await navigator.share({ text: output });
         return;
       } catch {
         /* fall through */
       }
     }
-    await copyText(state.ciphertext, t('toast.outputCopied'));
+    await copyText(output, t('toast.outputCopied'));
   });
 }
 
@@ -4045,6 +4113,7 @@ function showToast(message, durationMs = 2200) {
 
 async function onShowCourierQr(sourceText) {
   const text = typeof sourceText === 'string' ? sourceText : state.ciphertext;
+  if (!state.courierOn && state.inputRole === 'cipher' && text === state.ciphertext) return;
   if (!state.courierOn && text === state.ciphertext) {
     let released = !modernSession.pinnedSlot()?.codebookFingerprint;
     await externalizeThen(async () => { released = true; });
@@ -4103,7 +4172,7 @@ function renderCourierUi() {
   const modern = isModern(state.mainMode);
   const cipherRole = modern && state.inputRole === 'cipher';
   if (els.btnShowCourierQr) {
-    els.btnShowCourierQr.hidden = !modern || on;
+    els.btnShowCourierQr.hidden = !modern || on || state.inputRole === 'cipher';
     els.btnShowCourierQr.disabled = !canShowCourierQr(state.ciphertext);
   }
   if (els.btnScanInputCourierQr) {
@@ -4213,10 +4282,17 @@ function rotorDisplayIdentity() {
 
 function refreshTimebookRotorView() {
   const id = rotorDisplayIdentity();
+  const changed = Boolean(id) && id !== lastRotorDisplaySlotId;
   const livePinned = Boolean(modernSession.pinnedSlot()?.fullKey && state.plaintext);
-  if (id && id !== lastRotorDisplaySlotId && !livePinned) {
+  if (changed && !livePinned) {
     renderRotorSection();
+    syncTagDerTafelToActiveKey();
     return;
+  }
+  if (changed) {
+    lastRotorDisplaySlotId = id;
+    updateKeyExportDisplay();
+    syncTagDerTafelToActiveKey();
   }
   updateRotorNotchHint();
   updateReflectorKindLabel();
@@ -4637,6 +4713,7 @@ function renderRotorSection({ useCurrentEngine = false } = {}) {
   paintRotorGrid();
   updatePlugboardDisplay();
   updateRotorNotchHint();
+  updateKeyExportDisplay();
   lastRotorDisplaySlotId = rotorDisplayIdentity();
   // Kerben ändern sich mit Ringen/Stecker/Walzen
   if (isModern(state.mainMode)) renderModernFeaturePanel();
@@ -4740,6 +4817,10 @@ function renderCodebookStatus(sheet) {
     now.className = 'codebook-slot-now';
     now.id = 'codebookSlotNow';
     wordLine.appendChild(now);
+    const identity = document.createElement('div');
+    identity.className = 'mono';
+    identity.textContent = `${t('codebook.fingerprint')}: ${shortFingerprint(sheet.codebookFingerprint)}`;
+    wordLine.appendChild(identity);
   } else {
     wordLine.append(t('codebook.statusTafelwort'), ' ');
     const word = document.createElement('span');
@@ -4750,7 +4831,7 @@ function renderCodebookStatus(sheet) {
 
   const hint = document.createElement('div');
   hint.className = 'codebook-status-hint';
-  hint.textContent = t('codebook.statusCompare');
+  hint.textContent = t(isTimebook(sheet) ? 'codebook.statusCompareFingerprint' : 'codebook.statusCompare');
 
   const meta = document.createElement('div');
   meta.className = 'codebook-status-meta';
@@ -4876,14 +4957,16 @@ function renderCodebookUi() {
 
   select.disabled = false;
 
+  const selectedDay = sheetDayOfActiveKey(sheet) ?? state.codebookDay;
   for (const d of sheet.days) {
     const opt = document.createElement('option');
     opt.value = String(d.day);
     const label = String(d.day).padStart(2, '0');
     opt.textContent = d.date ? `${label} (${d.date})` : label;
-    if (d.day === state.codebookDay) opt.selected = true;
+    if (d.day === selectedDay) opt.selected = true;
     select.appendChild(opt);
   }
+  refreshTodayButton();
 
   if (!findCodebookDay(sheet, state.codebookDay) && sheet.days[0]) {
     select.value = String(sheet.days[0].day);

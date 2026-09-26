@@ -4,6 +4,10 @@
  * Kryptographisch sicherer Zufall (Web Crypto API).
  * Gleichverteilt per Rejection Sampling — wie im Codebook-Generator.
  */
+/**
+ * Kryptographisch sicherer Zufall (Web Crypto API).
+ * Gleichverteilt per Rejection Sampling — wie im Codebook-Generator.
+ */
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 

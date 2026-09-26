@@ -5,6 +5,11 @@
  * Storage-Backend ist austauschbar (chrome.storage / memory für Tests).
  * Löschen/Ersetzen der Tafel leert das MK-Register nicht.
  */
+/**
+ * Monatstafel oder gehärtetes Timebook → Maschinenkonfiguration.
+ * Storage-Backend ist austauschbar (chrome.storage / memory für Tests).
+ * Löschen/Ersetzen der Tafel leert das MK-Register nicht.
+ */
 
 import {
   defaultCodebookDay,

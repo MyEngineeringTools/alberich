@@ -16,4 +16,11 @@ Handbook: https://alberich.pro/manual/
 
 Networks lists a hardened sheet with month and fingerprint, not the legacy sheet word. A scan without a month label still shows up.
 
-Version 1.0 (Revision 65). Spec: crypto-spec-modern-v3.md
+Revision 66: Export key settings and Copy key use the same V3 key as the rotor view. Today sits next to Day on sheet. A saved network sets the switch to that sheet’s kind. Day on sheet shows the day of the key in force.
+
+
+
+
+Revision 67: Empty codebooks block output. Copy/Share keeps the selected message fixed during asynchronous storage; plaintext does not produce a ciphertext QR. `hidden` remains effective in the layout, hardened sheets show their comparison value. “Short interval” describes 1 hour without a security promise.
+
+Version 1.0 (Revision 67). Spec: crypto-spec-modern-v3.md

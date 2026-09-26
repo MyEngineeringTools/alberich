@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * Kurier-QR als PNG-Data-URL (reine Canvas-Zeichnung).
  */
+/**
+ * Kurier-QR als PNG-Data-URL (reine Canvas-Zeichnung).
+ */
 
 import qrcode from './vendor/qrcode-generator.js';
 

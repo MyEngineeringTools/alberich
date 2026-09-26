@@ -45,7 +45,7 @@
 
   <link rel="icon" href="assets/icon.png" type="image/png" sizes="any">
   <link rel="apple-touch-icon" href="assets/icon.png">
-  <link rel="stylesheet" href="styles.css?v=65">
+  <link rel="stylesheet" href="styles.css?v=67">
 
   <script type="application/ld+json">
   {
@@ -135,7 +135,7 @@
         </div>
 
         <p class="mode-hint" id="modeHint">
-          Endwalze + Lückenfüllerwalzen + Base-26 + automatischer Spruchschlüssel. Stärker und alltagstauglicher.
+          Endwalze + Lückenfüllerwalzen + Base-26 + automatischer Spruchschlüssel. Für Volltext-Nachrichten.
         </p>
         <details class="mode-info-details" id="modeInfoDetails">
           <summary class="mode-info-summary">
@@ -452,7 +452,7 @@
                 <input type="radio" name="codebookProfile" value="HOUR_1">
                 <span class="codebook-profile-copy">
                   <span class="codebook-profile-title" data-i18n="codebook.profile.1h">1 Stunde</span>
-                  <span class="codebook-profile-hint" data-i18n="codebook.profile.1hHint">Hoher Schutz</span>
+                  <span class="codebook-profile-hint" data-i18n="codebook.profile.1hHint">Kurzes Intervall</span>
                 </span>
               </label>
             </div>
@@ -494,6 +494,7 @@
           <div class="codebook-day-field">
             <label for="codebookDaySelect" data-i18n="codebook.dayLabel">Tag der Tafel</label>
             <select id="codebookDaySelect" disabled></select>
+            <button class="btn btn-secondary" id="btnCodebookToday" type="button" data-i18n="codebook.today" disabled>Heute</button>
           </div>
         </div>
         <div class="codebook-share" id="codebookShareRow">
@@ -711,7 +712,7 @@
       <p data-i18n-html="about.android">Android: <a href="/fdroid/">Play Store oder F-Droid unter alberich.pro/fdroid</a>.</p>
       <p data-i18n-html="about.license">Lizenz: <a href="LICENSE">AGPL-3.0-only</a> · <a href="https://github.com/MyEngineeringTools/alberich" target="_blank" rel="noopener noreferrer">Quellcode</a>. Name und Marke sind nicht unter der AGPL lizenziert.</p>
       <p class="muted" data-i18n-html="about.thirdParty">QR und Kompression: qrcode-generator (MIT, Kazuhiko Arase), jsQR (Apache-2.0, Cosmo Wolfe), fflate (MIT, Arjun Barrett). <a href="THIRD_PARTY.md">Hinweise Dritter</a>. „QR Code“ ist eine Marke von DENSO WAVE.</p>
-      <p id="versionLabel">Version 1.0 (Revision 65) · Modern V3</p>
+      <p id="versionLabel">Version 1.0 (Revision 67) · Modern V3</p>
       <div class="modal-actions">
         <button class="text-btn" data-close="infoModal" type="button" data-i18n="common.close">Schließen</button>
       </div>
@@ -812,7 +813,19 @@
 
   <div class="toast" id="toast"></div>
 
-  <script type="module" src="js/rotor-selects.js?v=65"></script>
-  <script type="module" src="js/app.js?v=65"></script>
+  <script type="module">
+    import { MAIN_ROTOR_IDS } from './js/cipher-data.js';
+
+    ['rotorLeft', 'rotorMiddle', 'rotorRight'].forEach((id) => {
+      const select = document.getElementById(id);
+      MAIN_ROTOR_IDS.forEach((rotorId) => {
+        const option = document.createElement('option');
+        option.value = rotorId;
+        option.textContent = rotorId;
+        select.appendChild(option);
+      });
+    });
+  </script>
+  <script type="module" src="js/app.js?v=67"></script>
 </body>
 </html>

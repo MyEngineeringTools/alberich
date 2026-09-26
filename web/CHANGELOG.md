@@ -2,12 +2,31 @@
 
 Format: Version **X.Y (Revision N)**
 
+## 1.0 (Revision 67) — source snapshot, 26. September 2026
+
+- Codebook-Korrekturen: leere Netze sperren Ausgabe; Copy/Share bindet die angeklickte Nachricht vor asynchroner Speicherung; keine Geheimtext-QR-Ausgabe von Klartext.
+- `hidden` bleibt trotz Flex/Grid wirksam. Gehärtete Tafeln zeigen ihren Vergleichswert. Import/Heute verwenden UTC+1 ganzjährig.
+- „Kurzes Intervall“ und sachliche Modern-Beschreibung in DE/EN; keine pauschale Sicherheitsgarantie.
+- Eigenständige Browser-/Android-Austauschprozeduren, öffentliche Fixtures, Familienanleitung und Testprozeduren.
+- Cache-URLs: App/CSS 67, i18n 19. Gefüllten Cache mit erhaltener Tafel lokal simuliert geprüft; Host-Header vor echtem Upload separat prüfen.
+- Cipher/Codecs und Drittanbieterbibliotheken unverändert. [Familien-Kurzanleitung](docs/FAMILY_CODEBOOK_QUICKSTART.md) und [Browser-/Android-Testverfahren](tools/testing/README.md).
+
+Die frühere NKB-Prüfung ist separat als historischer Nachweis dokumentiert.
+
+## 1.0 (Revision 66)
+
+- Schlüsseleinstellung exportieren und Schlüssel kopieren folgen dem gerade gesetzten V3-Satz, auch beim Stundenwechsel
+- Heute neben Tag der Tafel; der Umschalter folgt der Tafel des gewählten Netzes
+- Tag der Tafel zeigt den Tag des gesetzten V3-Satzes
+- Cache-Bust `styles.css?v=66` / `js/app.js?v=66` / i18n `?v=18`
+
+Folgt **1.0 (Revision 65)**.
+
 ## 1.0 (Revision 65)
 
 - Kurz erklärt: 24 Stunden · Einfach vs. V3 · Tagesschlüssel (gleicher Takt, Live-QR/MEZ vs. JSON/Standbild)
 - Netze: gehärtete Tafel zeigt Monat + Fingerprint (nicht Legacy-Tafelwort); Scan setzt fehlendes Monatslabel
 - Live-QR: während MUR-Empfang voller Frame und kürzerer Takt (1-Stunden-Tafeln)
-- Live-QR: Bildschirm bleibt hell beim Scannen und Anzeigen (Screen Wake Lock)
 - Speichern: Quota-/Schreibfehler sichtbar statt still
 - Gehärtete Tafeln: Binärdatei (.alb3cb2) importieren und speichern, analog JSON beim Tagesschlüssel
 - Cache-Bust `styles.css?v=65` / `js/app.js?v=65` / i18n `?v=17`

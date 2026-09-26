@@ -4,6 +4,10 @@
  * Import von Alberich-Schlüsseltafeln (JSON aus dem Codebook-Tool).
  * Format: format === "alberich-codebook", formatVersion 1 oder 2.
  */
+/**
+ * Import von Alberich-Schlüsseltafeln (JSON aus dem Codebook-Tool).
+ * Format: format === "alberich-codebook", formatVersion 1 oder 2.
+ */
 
 import {
   MAIN_ROTOR_IDS,

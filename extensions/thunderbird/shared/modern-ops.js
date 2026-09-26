@@ -4,6 +4,10 @@
  * Modern-Modus: Engine aus Tagesschlüssel konfigurieren + Encrypt/Decrypt-Payloads.
  * DOM-frei, nutzbar aus Popup und Service Worker.
  */
+/**
+ * Modern-Modus: Engine aus Tagesschlüssel konfigurieren + Encrypt/Decrypt-Payloads.
+ * DOM-frei, nutzbar aus Popup und Service Worker.
+ */
 
 import { CipherEngine } from './crypto/cipher-engine.js';
 import {

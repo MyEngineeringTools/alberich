@@ -1,7 +1,20 @@
 # Changelog
 
-Versions in this repository are the same as the shipped apps. There is no
-separate GitHub 0.x line.
+This repository tracks the current product source; hosting and store deployments are separate. There is no separate GitHub 0.x line.
+
+## Web 1.0 (Revision 67) / Mail Companion 1.0.18 — source sync, 2026-09-26
+
+Web source synchronized from the workbench at Revision 67. Codebook handling,
+message-session and import safeguards, UTC+1 day selection, truthful mode copy,
+and cache URLs are updated. Cipher formats and vendor libraries are unchanged.
+The local source revision does not deploy the hosted site.
+
+Mail Companion 1.0.18 synchronized from the ATN-listed workbench source. The
+unused `modern-session.js` module is excluded; package reachability and privacy
+checks are preserved. Android source is outside this repository and remains at
+Revision 31 in this public-tree ledger.
+
+Historical entries below record previous repository syncs.
 
 ## Browser 1.0.25 / Mail Companion 1.0.17
 

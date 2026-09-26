@@ -36,7 +36,7 @@ export default {
   'mode.status.modern': 'Modern · Message key',
   'mode.hint.traditional': 'Classic Enigma. Involutory. Manual control. A–Z only.',
   'mode.hint.modern':
-    'End rotor + filler notches + Base-26 + automatic message key. Stronger and everyday-ready.',
+    'End rotor + filler notches + Base-26 + automatic message key. For full-text messages.',
   'mode.info.summary': 'Quick explainer',
   'mode.info.traditional':
     'Traditional simulates historical behaviour: reflector (involutory), fixed notches, A–Z only. Simple = one start position. Message key = manual per message with header group.',
@@ -193,6 +193,9 @@ export default {
     'Traditional is reciprocal (same settings encrypt and decrypt). Modern: send as plaintext, receive as ciphertext — same daily key.',
 
   'toast.inputCopied': 'Input copied',
+  'toast.outputChanged': 'Output changed during export. Please export again.',
+  'modern.noCodebook': 'No codebook in the active network. Import or generate a sheet first.',
+  'codebook.statusCompareFingerprint': 'Compare this fingerprint with your partner.',
   'toast.outputCopied': 'Output copied',
   'toast.keyCopied': 'Key settings copied',
   'toast.sessionCopied': 'Session copied',
@@ -298,13 +301,13 @@ export default {
   'codebook.profile.24h': '24 hours',
   'codebook.profile.24hHint': 'Simple',
   'codebook.profile.1h': '1 hour',
-  'codebook.profile.1hHint': 'Higher protection',
+  'codebook.profile.1hHint': 'Short interval',
   'codebook.hardened.info.body':
     '<p>V3 hardened is Modern V3 with an automatically changing full key: end rotor and filler notches sit on the sheet, telegram <code>ALBV</code>. The clock selects the period; it does not derive the key.</p>'
     + '<p>Alberich switches on <strong>Alberich key time</strong> (CET / UTC+1 all year, no daylight saving). The “Current key” display follows the clock. A message already started stays on its key. The next new message uses the period that is current then.</p>'
     + '<p><strong>24 hours · Simple</strong> — one full V3 key per calendar day. Same interval as “V3 · daily key”, but live QR and CET instead of JSON or a still QR. Print or files: daily key; same sharing as 4&nbsp;h: 24 hours; less traffic under one key: 4 hours.</p>'
     + '<p><strong>4 hours · Recommended</strong> — six time keys per day. Less traffic under the same key than with 24 hours.</p>'
-    + '<p><strong>1 hour · Higher protection</strong> — 24 time keys per day, the shortest shared key period.</p>'
+    + '<p><strong>1 hour · Short interval</strong> — 24 time keys per day, the shortest shared key period.</p>'
     + '<p>Everyone on a network must use the same sheet. Share with the live QR code; receive with the camera, without picking a time slot.</p>',
   'codebook.hardenedLabel': 'V3 hardened',
   'codebook.legacyLabel': 'V3 · daily key',
@@ -397,6 +400,7 @@ export default {
   'codebook.importQr': 'Load QR image',
   'codebook.scanQr': 'Scan with camera',
   'codebook.dayLabel': 'Day on sheet',
+  'codebook.today': 'Today',
   'codebook.formatHint': 'Applies to the active network. Generate here or import JSON/QR. The camera recognises existing and hardened sheets automatically. After loading, compare the sheet word or fingerprint with your partner.',
   'codebook.formatHintHardened':
     'Hardened sheet: save or import a binary file (.alb3cb2), like JSON for the daily key. Live QR sharing remains. Do not use a still QR image.',

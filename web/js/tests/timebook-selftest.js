@@ -13,6 +13,7 @@ import {
   isTimebook,
   listTimebookSlots,
   rejectTimebookExport,
+  machineShownInSettings,
   selectDisplayFullKey,
   timebookFingerprint,
   validateTimebook,
@@ -417,6 +418,17 @@ assert(TIMEBOOK_KIND === 'ALB3_TIMEBOOK_V1', 'internal kind');
   });
   assert(pinned.source === 'pin' && pinned.slotId === clock10.slotId, 'display: pin wins over later hour');
   assert(pinned.key.keyCode === clock10.key.keyCode, 'display: pin keeps the started-message key');
+  const panel = { ringCode: 'AAAA', rotorLeft: 'I', keyCode: 'BBBB' };
+  assert(
+    machineShownInSettings(panel, clock11).ringCode === clock11.key.ringCode
+      && machineShownInSettings(panel, clock11).keyCode === clock11.key.keyCode,
+    'export follows the clock key, not the panel',
+  );
+  assert(
+    machineShownInSettings(panel, pinned).keyCode === clock10.key.keyCode,
+    'export follows the pinned key',
+  );
+  assert(machineShownInSettings(panel, null).ringCode === 'AAAA', 'export keeps the panel without a timebook key');
   assert(
     selectDisplayFullKey({
       book: timebook,

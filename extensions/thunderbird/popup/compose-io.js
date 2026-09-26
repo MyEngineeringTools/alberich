@@ -4,6 +4,10 @@
  * Thunderbird-spezifisch: Compose-Body lesen/schreiben.
  * Nutzt messenger.compose / browser.compose — nicht im shared Core.
  */
+/**
+ * Thunderbird-spezifisch: Compose-Body lesen/schreiben.
+ * Nutzt messenger.compose / browser.compose — nicht im shared Core.
+ */
 
 const api = globalThis.browser ?? globalThis.chrome;
 

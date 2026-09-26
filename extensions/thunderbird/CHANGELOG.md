@@ -1,5 +1,14 @@
 # Changelog – Alberich Mail Companion
 
+## 1.0.18
+
+- Packaging: ungenutzte `shared/timebook/modern-session.js` nicht mehr im XPI (ATN 1.0.17)
+- `sync-shared.sh` und `pack-xpi.sh` schließen die Datei aus; Packer prüft JS-Erreichbarkeit
+- Funktion unverändert zu 1.0.17 (V3 gehärtet). Cipher-Kern unverändert.
+
+Folgt der auf ATN abgelehnten **1.0.17**.
+
+
 ## 1.0.17
 
 - V3 gehärtet: Import `.alb3cb2`, Slot folgt der Alberich-Schlüsselzeit (UTC+1)

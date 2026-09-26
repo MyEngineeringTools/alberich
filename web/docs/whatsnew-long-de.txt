@@ -16,4 +16,11 @@ Handbuch: https://alberich.pro/manual/
 
 Netze listet eine gehärtete Tafel mit Monat und Fingerprint, nicht mit dem Legacy-Tafelwort. Ein Scan ohne Monatslabel bleibt sichtbar.
 
-Version 1.0 (Revision 65). Spezifikation: crypto-spec-modern-v3.md
+Revision 66: „Schlüsseleinstellung exportieren“ und „Schlüssel kopieren“ verwenden denselben V3-Satz wie die Walzenansicht. Neben „Tag der Tafel“ steht Heute. Ein gespeichertes Netz stellt den Umschalter auf seine Tafelart. „Tag der Tafel“ zeigt den Tag des gesetzten Satzes.
+
+
+
+
+Revision 67: Leere Tafeln sperren Ausgabe. Copy/Share bindet die angeklickte Nachricht vor asynchroner Speicherung; Klartext erzeugt keinen Geheimtext-QR. `hidden` bleibt im Layout wirksam, gehärtete Tafeln zeigen ihren Vergleichswert. „Kurzes Intervall“ beschreibt 1 Stunde ohne Sicherheitsversprechen.
+
+Version 1.0 (Revision 67). Spezifikation: crypto-spec-modern-v3.md

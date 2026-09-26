@@ -8,6 +8,14 @@
  *   - Schreiben-Fenster → zurück, oder
  *   - gelesene Mail (read-only) → Klartext-Tab
  */
+/**
+ * Alberich Mail Companion – einfache UI
+ *
+ * Verschlüsseln: Schreiben-Fenster → Crypto → zurück
+ * Entschlüsseln:
+ *   - Schreiben-Fenster → zurück, oder
+ *   - gelesene Mail (read-only) → Klartext-Tab
+ */
 
 import {
   createBrowserStorage,

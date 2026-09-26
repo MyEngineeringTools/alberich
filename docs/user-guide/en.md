@@ -5,7 +5,7 @@ Same text as **Guide** in the web app. Tutorials with videos:
 
 ## 1. What is Alberich?
 
-Alberich is a free Enigma M4 simulator in the browser (German/English), no account required. Four-rotor cipher with rotors, rings, plugboard and daily keys — plus code sheets and networks. Monthly sheets are created in the web app or the Android app.
+Alberich is a local rotor-encryption application with a historical Enigma M4 simulation and its own Modern V3 method. It runs in the browser (German/English), with no account. Four rotors, rings, plugboard and daily keys, plus code sheets and networks. Monthly sheets are created in the web app or the Android app.
 
 ## 2. Two main modes
 

@@ -3,7 +3,7 @@
 Alberich is a local rotor-encryption application: **Traditional** is a historical Enigma M4 simulation; **Modern V3** is its own procedure, with optional hardened time slots and CBQR2. Daily keys, networks, month sheets, and courier QR.
 
 - Live instance: [https://alberich.pro/](https://alberich.pro/)
-- Versions: see [VERSIONS](VERSIONS) for repository source. Web is `1.0 (Revision 67)`, browser `1.0.25`, Mail Companion `1.0.18`; Android source is outside this tree (public-tree ledger: `1.0 (Revision 31)` / code 31). The hosted website may lag until separately deployed.
+- Versions: see [VERSIONS](VERSIONS) for repository source. Web is `1.0 (Revision 68)`, browser `1.0.25`, Mail Companion `1.0.18`; Android source is outside this tree (public-tree ledger: `1.0 (Revision 31)` / code 31). The hosted website may lag until separately deployed.
 - Platforms here: static **web** app, **browser companion** (Chrome / Edge /
   Firefox), and **Thunderbird** MailExtension
 - Not in this tree: Android sources, store listings
@@ -17,7 +17,7 @@ SPDX-License-Identifier: `AGPL-3.0-only`
 
 ## Features
 
-- Traditional M4 simulator
+- Traditional: historical Enigma M4 simulation
 - Modern: visible rotors, rings, plugs, notches, and end-rotor wiring;
   ALBV telegram; 4-letter message key; A–Z groups; check group (HMAC-SHA-256);
   8-letter message id
@@ -95,6 +95,7 @@ bash scripts/test-packaging.sh
 
 ## Documentation
 
+- [Agent instructions](AGENTS.md) — for coding agents; workbench hub is outside this clone
 - [Architecture](docs/architecture.md)
 - [User guide](docs/user-guide/) — same Kurzanleitung as in the app
 - [Screenshots](docs/screenshots/)

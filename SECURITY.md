@@ -47,7 +47,7 @@ on this line.
 
 ## Supported versions
 
-Repository source line is in [VERSIONS](VERSIONS): web `1.0` (Revision 67), browser `1.0.25`, Mail Companion `1.0.18`; Android source is outside this tree. The hosted site may remain on its prior revision until separately deployed; this source update alone does not change the live service.
+Repository source line is in [VERSIONS](VERSIONS): web `1.0` (Revision 68), browser `1.0.25`, Mail Companion `1.0.18`; Android source is outside this tree. The hosted site may remain on its prior revision until separately deployed; this source update alone does not change the live service.
 
 ## Reporting
 

@@ -2,14 +2,22 @@
 
 Format: Version **X.Y (Revision N)**
 
-## 1.0 (Revision 67) — source snapshot, 26. September 2026
+## 1.0 (Revision 68) — lokal, 14. November 2026
+
+- Manuelle Ringstellung: der erste Buchstabe (Zusatzwalze) geht in die Maschine, nicht nur in Anzeige und Export.
+- Dieselbe Ringstellung speist Verschlüsselung und Prüfgruppe. Beim Laden gewinnt die sichtbare Ringstellung, wenn sie einem gespeicherten Zusatzwalzen-Ring widerspricht.
+- Ältere Nachrichten, die mit einem stillen anderen ersten Buchstaben entstanden sind (meist E), öffnen sich mit der angezeigten Ringstellung nicht mehr. Diesen Buchstaben einsetzen. Keine automatische Rückrechnung.
+- Schlüsseltafel, Schlüssel-QR, Timebook, Zufällig und Grundstellung waren nicht betroffen.
+- Cache-Bust `styles.css?v=68` / `js/app.js?v=68` / i18n `?v=20`. Cipher-Kern unverändert. Nicht hochgeladen.
+
+## 1.0 (Revision 67) — lokal, 26. September 2026
 
 - Codebook-Korrekturen: leere Netze sperren Ausgabe; Copy/Share bindet die angeklickte Nachricht vor asynchroner Speicherung; keine Geheimtext-QR-Ausgabe von Klartext.
 - `hidden` bleibt trotz Flex/Grid wirksam. Gehärtete Tafeln zeigen ihren Vergleichswert. Import/Heute verwenden UTC+1 ganzjährig.
 - „Kurzes Intervall“ und sachliche Modern-Beschreibung in DE/EN; keine pauschale Sicherheitsgarantie.
-- Eigenständige Browser-/Android-Austauschprozeduren, öffentliche Fixtures, Familienanleitung und Testprozeduren.
+- Eigenständige Browser-/Android-Austauschprozeduren, öffentliche Fixtures, Familienanleitung, README und Produktionsreview.
 - Cache-URLs: App/CSS 67, i18n 19. Gefüllten Cache mit erhaltener Tafel lokal simuliert geprüft; Host-Header vor echtem Upload separat prüfen.
-- Cipher/Codecs und Drittanbieterbibliotheken unverändert. [Familien-Kurzanleitung](docs/FAMILY_CODEBOOK_QUICKSTART.md) und [Browser-/Android-Testverfahren](tools/testing/README.md).
+- Cipher/Codecs und Drittanbieterbibliotheken unverändert. Keine Veröffentlichung. Details: [Produktionsreview](docs/PRODUCTION_REVIEW_2026-09-26.md).
 
 Die frühere NKB-Prüfung ist separat als historischer Nachweis dokumentiert.
 

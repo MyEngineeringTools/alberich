@@ -9,6 +9,10 @@ import {
   createKeyManager,
 } from '../shared/key-manager.js';
 import { decryptModern, encryptModern } from '../shared/modern-ops.js';
+import {
+  decryptTimebookOnce,
+  encryptTimebookOnce,
+} from '../shared/timebook/timebook-ops.js';
 import { t } from '../shared/messages-de.js';
 
 const keys = createKeyManager(createChromeStorage());
@@ -17,6 +21,7 @@ const els = {
   keyStatus: document.getElementById('keyStatus'),
   daySelect: document.getElementById('daySelect'),
   fileInput: document.getElementById('fileInput'),
+  fileInputAlb3cb2: document.getElementById('fileInputAlb3cb2'),
   btnClearSheet: document.getElementById('btnClearSheet'),
   jsonPaste: document.getElementById('jsonPaste'),
   btnImportJson: document.getElementById('btnImportJson'),
@@ -78,7 +83,17 @@ function refreshStatus() {
   els.keyStatus.textContent = st.text;
   els.keyStatus.classList.toggle('empty', !st.loaded);
 
-  els.daySelect.innerHTML = '';
+  while (els.daySelect.firstChild) {
+    els.daySelect.removeChild(els.daySelect.firstChild);
+  }
+  if (st.hardened) {
+    els.daySelect.disabled = true;
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = st.remain ? `noch ${st.remain}` : 'V3 gehärtet';
+    els.daySelect.appendChild(opt);
+    return;
+  }
   if (!st.loaded || !st.days?.length) {
     els.daySelect.disabled = true;
     const opt = document.createElement('option');
@@ -146,6 +161,23 @@ async function init() {
     }
   });
 
+  els.fileInputAlb3cb2?.addEventListener('change', async () => {
+    const file = els.fileInputAlb3cb2.files?.[0];
+    els.fileInputAlb3cb2.value = '';
+    if (!file) return;
+    try {
+      const result = await keys.importTimebookBytes(new Uint8Array(await file.arrayBuffer()));
+      if (!result.ok) {
+        showHint(t(result.error));
+        return;
+      }
+      refreshStatus();
+      showToast(t('sheetLoadedHardened', { fp: keys.getStatusSummary().fingerprintShort || '' }));
+    } catch {
+      showHint(t('cbqr2.err.magic'));
+    }
+  });
+
   els.btnImportJson.addEventListener('click', async () => {
     const text = els.jsonPaste.value.trim();
     if (!text) {
@@ -161,19 +193,25 @@ async function init() {
     showToast(t('sheetCleared'));
   });
 
-  els.btnEncrypt.addEventListener('click', () => {
+  els.btnEncrypt.addEventListener('click', async () => {
     showHint('');
-    const config = keys.getDayConfig();
-    if (!config) {
-      showHint(t('modern.noKey'));
-      return;
-    }
     const plain = els.mainText.value;
     if (!plain) {
       showHint(t('emptyInput'));
       return;
     }
-    const result = encryptModern(config, plain);
+    const book = keys.getTimebook();
+    let result;
+    if (book) {
+      result = await encryptTimebookOnce(book, plain);
+    } else {
+      const config = keys.getDayConfig();
+      if (!config) {
+        showHint(t('modern.noKey'));
+        return;
+      }
+      result = await encryptModern(config, plain);
+    }
     if (!result.ok) {
       showHint(errorText(result));
       return;
@@ -184,19 +222,25 @@ async function init() {
     showToast(t('encryptOk'));
   });
 
-  els.btnDecrypt.addEventListener('click', () => {
+  els.btnDecrypt.addEventListener('click', async () => {
     showHint('');
-    const config = keys.getDayConfig();
-    if (!config) {
-      showHint(t('modern.noKey'));
-      return;
-    }
     const cipher = els.mainText.value;
     if (!cipher.trim()) {
       showHint(t('emptyInput'));
       return;
     }
-    const result = decryptModern(config, cipher);
+    const book = keys.getTimebook();
+    let result;
+    if (book) {
+      result = await decryptTimebookOnce(book, cipher);
+    } else {
+      const config = keys.getDayConfig();
+      if (!config) {
+        showHint(t('modern.noKey'));
+        return;
+      }
+      result = await decryptModern(config, cipher);
+    }
     if (!result.ok) {
       showHint(errorText(result));
       return;

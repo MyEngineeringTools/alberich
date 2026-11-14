@@ -34,6 +34,7 @@ node js/tests/w10-selftest.js
 node js/tests/timebook-sheet-view-selftest.js
 node js/tests/w10b-layout-selftest.js
 node js/tests/qr-layout-selftest.js
+node js/tests/ring-thin-selftest.js
 node js/tests/v3-protocol-golden-selftest.js
 python3 ../reference/alberich_reference.py --vectors ../reference/v3-protocol-golden.json
 

@@ -680,7 +680,7 @@ export default {
   'guide.s5.walzenlage':
     '<strong>Walzenlage:</strong> Griechenwalze (Beta/Gamma) + drei Hauptwalzen (I–VIII), jede Hauptwalze nur einmal. Beispiel B241 = Beta + II + IV + I. Sie sitzt in allen Modi im Stromweg. Die Griechenwalze wurde bei der historischen M4 nicht fortgeschaltet (Traditionell: sie dreht nicht, ihre Ringstellung gilt). In Alberich Modern V3 kann sie durch die Fortschaltungslogik weitergeschaltet werden: sie läuft mit, wenn die linke Walze an einer Kerbe steht; sie selbst hat keine Kerben und treibt nichts. Die Ringstellung der Griechenwalze gilt in beiden Modi.',
   'guide.s5.rings':
-    '<strong>Ringstellung:</strong> 4 Buchstaben, gilt für die ganze Nachricht / den Tag.',
+    '<strong>Ringstellung:</strong> 4 Buchstaben, gilt für die ganze Nachricht / den Tag. Der erste Buchstabe ist die Zusatzwalze und wird mitgerechnet. Lässt sich eine ältere Nachricht mit der angezeigten Ringstellung nicht mehr lesen, stand beim Rechnen ein anderer erster Buchstabe (meist E). Diesen Buchstaben einsetzen. Es gibt keine automatische Anpassung.',
   'guide.s5.ground':
     '<strong>Grundstellung:</strong> Startlage aus dem Tagesschlüssel. Bei Traditionell · Einfach oft auch die sichtbare Startlage; bei Spruchschlüssel/Modern die Tages-Startlage (Spruchschlüssel separat bzw. automatisch).',
   'guide.s5.plugboard':

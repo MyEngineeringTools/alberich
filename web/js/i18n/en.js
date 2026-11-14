@@ -680,7 +680,7 @@ export default {
   'guide.s5.walzenlage':
     '<strong>Rotor order:</strong> Greek rotor (Beta/Gamma) + three main rotors (I–VIII), each main rotor once. Example B241 = Beta + II + IV + I. It sits in the electrical path in every mode. On the historical M4 the Greek rotor did not step (Traditional: it does not step; its ring setting applies). In Alberich Modern V3 it can step with the machine: it steps when the left rotor is at a notch; it has no notches of its own and drives nothing. The Greek rotor ring applies in both modes.',
   'guide.s5.rings':
-    '<strong>Ring settings:</strong> 4 letters, fixed for the message / day.',
+    '<strong>Ring settings:</strong> 4 letters, fixed for the message / day. The first letter is the extra rotor and is applied. If an older message no longer opens under the ring setting on screen, it was produced with a different first letter (usually E). Enter that letter. There is no automatic adjustment.',
   'guide.s5.ground':
     '<strong>Ground setting:</strong> Start positions from the daily key. In Traditional · Simple often the visible start; in Message key / Modern the daily start (message key separate or automatic).',
   'guide.s5.plugboard':

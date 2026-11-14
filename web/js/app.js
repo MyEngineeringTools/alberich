@@ -26,6 +26,9 @@ import {
   buildRingCode,
   buildKeyCode,
   applyRingCode,
+  resolveRingParts,
+  manualRingUpdate,
+  reconcileStoredRings,
   applyKeyCode,
   parsePlugboardPairs,
 } from './text-processing.js';
@@ -76,7 +79,7 @@ import {
   clearAllNetworkSheets,
   sanitizeNetworkName,
 } from './networks.js';
-import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=19';
+import { getLocale, initI18n, localizeError, setLocale, t } from './i18n/index.js?v=20';
 import {
   getModeProfileId,
   isModern,
@@ -163,7 +166,7 @@ let slotTickTimer = 0;
 let lastRotorDisplaySlotId = '';
 
 const STORAGE_KEY = 'alberich-web-settings-v1';
-const VERSION = '1.0 (Revision 67)';
+const VERSION = '1.0 (Revision 68)';
 /** Replaced by scripts/release.sh in the packaged web zip. */
 const BUILD_COMMIT = 'unpublished';
 const PROTOCOL_LABEL = 'Modern V3';
@@ -633,18 +636,18 @@ function bindSetupControls() {
 
   document.getElementById('ringCode').addEventListener('input', (e) => {
     markManualKeySource();
-    const cleaned = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
-    e.target.value = cleaned;
-    const rings = applyRingCode(cleaned);
-    if (!rings) {
-      updateSetting({ ringCode: cleaned }, false);
+    const update = manualRingUpdate(e.target.value);
+    e.target.value = update.ringCode;
+    if (!update.complete) {
+      updateSetting({ ringCode: update.ringCode }, false);
       return;
     }
     updateSetting({
-      ringLeft: rings.left,
-      ringMiddle: rings.middle,
-      ringRight: rings.right,
-      ringCode: `${rings.thin}${rings.left}${rings.middle}${rings.right}`,
+      ringThin: update.ringThin,
+      ringLeft: update.ringLeft,
+      ringMiddle: update.ringMiddle,
+      ringRight: update.ringRight,
+      ringCode: update.ringCode,
     });
   });
 
@@ -2647,10 +2650,7 @@ function loadState() {
       merged.endwalzeWiring = '';
       merged.lueckenfueller = null;
     }
-    if (typeof merged.ringThin !== 'string' || !/^[A-Z]$/.test(merged.ringThin)) {
-      const rings = applyRingCode(String(merged.ringCode || ''));
-      merged.ringThin = rings?.thin || 'A';
-    }
+    reconcileStoredRings(merged);
 
     if (!merged.codebookSheet && merged.keySource === 'codebook') {
       // leeres Netz im Tafel-Modus ist erlaubt (Import-Hinweis)
@@ -2706,7 +2706,7 @@ function setEngineToKeyCode(code) {
   } else {
     engine.setReflector(state.reflectorId);
   }
-  const thinRing = state.ringThin || applyRingCode(state.ringCode)?.thin || 'A';
+  const rings = resolveRingParts(state);
   engine.setRotors(
     state.rotorLeft,
     state.rotorMiddle,
@@ -2716,13 +2716,13 @@ function setEngineToKeyCode(code) {
     positions[2],
     positions[3],
     positions[0],
-    state.ringLeft,
-    state.ringMiddle,
-    state.ringRight,
-    thinRing,
+    rings.left,
+    rings.middle,
+    rings.right,
+    rings.thin,
   );
   engine.setPlugboard(state.plugboard);
-  engine.setThinRing(thinRing);
+  engine.setThinRing(rings.thin);
 
   if (isModern(state.mainMode)) {
     if (!usesModernV3()) {
@@ -2873,12 +2873,13 @@ function currentDayConfig() {
     month: sheet?.month,
     day: state.codebookDay,
   });
+  const rings = resolveRingParts(state);
   return {
     rotorThin: state.rotorThin,
     rotorLeft: state.rotorLeft,
     rotorMiddle: state.rotorMiddle,
     rotorRight: state.rotorRight,
-    ringCode: state.ringCode,
+    ringCode: `${rings.thin}${rings.left}${rings.middle}${rings.right}`,
     plugboard: state.plugboard,
     endwalzeWiring: state.endwalzeWiring,
     notches: state.lueckenfueller,

@@ -25,6 +25,7 @@ node js/tests/w10b-layout-selftest.js
 node js/tests/qr-layout-selftest.js
 node js/tests/limits-selftest.js
 node js/tests/v3-protocol-golden-selftest.js
+node js/tests/ring-thin-selftest.js
 python3 reference/alberich_reference.py --vectors reference/golden-vectors.json
 python3 reference/alberich_reference.py --vectors reference/v3-protocol-golden.json
 echo "All Alberich web tests + reference vectors passed."

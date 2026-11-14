@@ -1,0 +1,15 @@
+# Canonical product versions for this repository snapshot.
+# Android source is not in this tree.
+
+web.display=1.0 (Revision 68)
+web.name=1.0
+web.revision=68
+
+browser.version=1.0.25
+
+thunderbird.version=1.0.18
+
+android.display=1.0 (Revision 31)
+android.name=1.0
+android.revision=31
+android.versionCode=31

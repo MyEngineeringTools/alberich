@@ -23,4 +23,6 @@ Revision 66: Export key settings and Copy key use the same V3 key as the rotor v
 
 Revision 67: Empty codebooks block output. Copy/Share keeps the selected message fixed during asynchronous storage; plaintext does not produce a ciphertext QR. `hidden` remains effective in the layout, hardened sheets show their comparison value. “Short interval” describes 1 hour without a security promise.
 
-Version 1.0 (Revision 67). Spec: crypto-spec-modern-v3.md
+Revision 68. A ring setting typed by hand applies its first letter to the extra rotor. Encryption and the authentication group read that same value. If an older message no longer opens, set the first letter to the value stored at the time, usually E. There is no silent adjustment. Key sheets, key QR, timebooks and the ground setting were not affected.
+
+Version 1.0 (Revision 68). Spec: crypto-spec-modern-v3.md

@@ -4,8 +4,8 @@
  * Schlanke i18n-Schicht für Alberich Web (DE / EN).
  * Auto-Locale aus Browser + manuelle Wahl + localStorage.
  */
-import de from './de.js?v=19';
-import en from './en.js?v=19';
+import de from './de.js?v=20';
+import en from './en.js?v=20';
 
 const STORAGE_KEY = 'alberich-locale';
 const catalogs = { de, en };

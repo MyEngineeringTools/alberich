@@ -4,9 +4,9 @@
 # Android source is not in this tree; the numbers still live here so
 # studio and this repo stay aligned.
 
-web.display=1.0 (Revision 67)
+web.display=1.0 (Revision 68)
 web.name=1.0
-web.revision=67
+web.revision=68
 
 browser.version=1.0.25
 

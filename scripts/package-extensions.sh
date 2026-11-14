@@ -24,7 +24,10 @@ copy_tree "$ROOT/extensions/browser/Firefox" "$DIST/firefox"
 for dest in "$DIST/chrome" "$DIST/edge" "$DIST/firefox"; do
   rm -rf "$dest/shared"
   mkdir -p "$dest/shared"
-  tar -C "$SHARED" -cf - . | tar -C "$dest/shared" -xf -
+  tar -C "$SHARED" \
+    --exclude='tests' \
+    --exclude='samples/README.md' \
+    -cf - . | tar -C "$dest/shared" -xf -
 done
 
 # Firefox keeps its own background/manifest; shared crypto must match Chrome source.

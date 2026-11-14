@@ -1,5 +1,7 @@
 # Alberich Companion – Firefox
 
+Version **1.0.25**. V3 gehärtet: `.alb3cb2` laden, Slot folgt der Uhr (UTC+1). Tagesschlüssel weiter JSON. Erzeugen und Live-QR bleiben Web/Android.
+
 ## Neu laden (nach jedem Fix)
 
 1. `about:debugging#/runtime/this-firefox`

@@ -23,4 +23,6 @@ Revision 66: „Schlüsseleinstellung exportieren“ und „Schlüssel kopieren�
 
 Revision 67: Leere Tafeln sperren Ausgabe. Copy/Share bindet die angeklickte Nachricht vor asynchroner Speicherung; Klartext erzeugt keinen Geheimtext-QR. `hidden` bleibt im Layout wirksam, gehärtete Tafeln zeigen ihren Vergleichswert. „Kurzes Intervall“ beschreibt 1 Stunde ohne Sicherheitsversprechen.
 
-Version 1.0 (Revision 67). Spezifikation: crypto-spec-modern-v3.md
+Revision 68. Manuelle Ringstellung: der erste Buchstabe ist die Zusatzwalze und wird mitgerechnet. Verschlüsselung und Prüfgruppe lesen denselben Wert. Wer eine ältere Nachricht nicht mehr lesen kann, setzt den ersten Buchstaben auf den damals gespeicherten Wert, meist E. Keine stille Anpassung. Schlüsseltafel, Schlüssel-QR, Timebook und Grundstellung waren nicht betroffen.
+
+Version 1.0 (Revision 68). Spezifikation: crypto-spec-modern-v3.md

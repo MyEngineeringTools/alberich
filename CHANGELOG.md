@@ -2,6 +2,18 @@
 
 This repository tracks the current product source; hosting and store deployments are separate. There is no separate GitHub 0.x line.
 
+## Web 1.0 (Revision 68) — source sync, 2026-11-14
+
+Web source synchronized from the workbench at Revision 68. A hand-typed ring
+setting now includes the extra rotor (first letter) in the machine, the
+display, the export, and the check group. Key-sheet, key QR, timebook, and
+random setup were already correct. Cipher formats and vendor libraries are
+unchanged. The hosted site may lag until it is deployed separately.
+
+Browser companion remains `1.0.25`. Mail Companion remains `1.0.18`. Android
+source is outside this repository and remains at Revision 31 in this
+public-tree ledger.
+
 ## Web 1.0 (Revision 67) / Mail Companion 1.0.18 — source sync, 2026-09-26
 
 Web source synchronized from the workbench at Revision 67. Codebook handling,

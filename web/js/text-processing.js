@@ -188,6 +188,59 @@ export function applyRingCode(code) {
   return { thin: cleaned[0], left: cleaned[1], middle: cleaned[2], right: cleaned[3] };
 }
 
+/**
+ * Sichtbare Ringstellung gewinnt. Ein gespeichertes ringThin gilt nur,
+ * solange ringCode keine vier Buchstaben hat.
+ * @param {{ ringCode?: string, ringThin?: string, ringLeft?: string, ringMiddle?: string, ringRight?: string }} source
+ */
+export function resolveRingParts(source) {
+  const parsed = applyRingCode(String(source?.ringCode ?? ''));
+  if (parsed) return parsed;
+  const thin = typeof source?.ringThin === 'string' && /^[A-Z]$/.test(source.ringThin)
+    ? source.ringThin
+    : 'A';
+  return {
+    thin,
+    left: source?.ringLeft || 'A',
+    middle: source?.ringMiddle || 'A',
+    right: source?.ringRight || 'A',
+  };
+}
+
+/**
+ * Manuelle Eingabe der vier Ringbuchstaben. Unvollständig: nur der Rohtext.
+ * @param {string} code
+ */
+export function manualRingUpdate(code) {
+  const cleaned = String(code ?? '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+  const rings = applyRingCode(cleaned);
+  if (!rings) return { complete: false, ringCode: cleaned };
+  return {
+    complete: true,
+    ringThin: rings.thin,
+    ringLeft: rings.left,
+    ringMiddle: rings.middle,
+    ringRight: rings.right,
+    ringCode: `${rings.thin}${rings.left}${rings.middle}${rings.right}`,
+  };
+}
+
+/**
+ * Gespeicherten Zustand an die sichtbare Ringstellung angleichen.
+ * @param {Record<string, unknown>} merged
+ */
+export function reconcileStoredRings(merged) {
+  const rings = resolveRingParts(merged);
+  merged.ringThin = rings.thin;
+  if (applyRingCode(String(merged.ringCode || ''))) {
+    merged.ringLeft = rings.left;
+    merged.ringMiddle = rings.middle;
+    merged.ringRight = rings.right;
+    merged.ringCode = `${rings.thin}${rings.left}${rings.middle}${rings.right}`;
+  }
+  return merged;
+}
+
 export function applyKeyCode(code) {
   const cleaned = code.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
   if (cleaned.length !== 4) return null;

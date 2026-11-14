@@ -46,6 +46,16 @@ node shared/tests/selftest.mjs
 node shared/tests/courier-qr-selftest.mjs
 ```
 
+## Store-ZIPs
+
+Nicht den Ordner `Chrome/` / `Firefox/` per Hand zippen (Symlinks, Tests, Nested-Zips).
+
+```bash
+./pack-zips.sh
+```
+
+Ausgabe unter `dist/`. `shared/timebook/modern-session.js` bleibt im Paket. Tests und `samples/README.md` nicht. Firefox ohne ungenutztes `messages-de.js`.
+
 ## Privacy
 
 Nur lokal. Keine Server, keine Analyse.
